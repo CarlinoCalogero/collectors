@@ -1,0 +1,111 @@
+<!doctype html>
+
+<html><head>
+<meta charset="UTF-8"/>
+<title>Laboratorio di Basi di Dati: Progetti di Fine Corso</title>
+<style>body { font-family: Cambria; font-size: 12pt; text-align: justify; margin: 2rem 5rem; } h1 { margin: 1rem -2rem; background-color: rgb(46,116,181); text-align:center; border-radius: 5px; font-size: 200%; font-weight: bold; color: white; padding: 5px; } h2 { font-size: 200%; font-weight: bold; margin-bottom: 1rem; } h3 { font-size: 140%; border-bottom: 1px solid black; margin-bottom: 1rem; margin-top: 2rem; font-weight: normal; } p, li { margin-bottom: 0.5rem; } ul,ol { margin-left: 0; padding-left: 1rem; } blockquote { margin-left: 0; font-style: italic; font-size: 110%; margin-top: 0.5rem; font-weight: normal; } ul > li::marker { content: '\2014 '; } table { width: 100%; border: 2px solid black; border-spacing: 0px; border-collapse: collapse; } td, th { border: 1px solid black; } .linetocompile { border-bottom: 0.5px solid gray; width: 100%; line-height: 2rem; } .break { page-break-before: always; } @media print { @page { size: A4; margin: 1cm; } body {margin: 0 2rem} h1 { margin: 1rem -1rem; } }</style>
+</head>
+<body>
+<h1>Corso di Laboratorio di Basi di Dati<br/><em>Progetti A.A. 2022/2023</em> - Specifica 2</h1>
+<section class="specifica">
+<h2>Progetto &quot;Collectors&quot;</h2>
+<blockquote>
+<p>Versione 1.0</p>
+</blockquote>
+<h3>Premessa</h3>
+<p>I progetti di fine corso si ispirano sempre ad esigenze
+reali. La specifica informale del problema data nei paragrafi seguenti può
+essere, come in ogni caso reale, incompleta e, in alcuni punti, ambigua o
+contraddittoria. Lo studente dovrà quindi raffinare e disambiguare le
+specifiche mediante l'interazione con il committente. In alcuni casi allo
+studente sarà richiesto di valutare diverse possibili alternative, per poi
+sceglierne una in maniera motivata. Le motivazioni di tutte le scelte
+interpretative, progettuali e implementative andranno sempre chiaramente
+documentate nel progetto e verranno discusse in sede di esame.</p>
+<p><em>Nota</em> : alcune delle funzionalità richieste dalla
+specifica potrebbero non essere realizzabili con singole query, ma richiedere
+l'uso di strumenti più avanzati messi a disposizione dal DBMS, come le
+procedure. In ogni caso, tali procedure avrebbero una o più query come parte
+principale. L'uso di queste caratteristiche avanzate aumenta notevolmente il
+valore di un progetto. Tuttavia, nel caso si decida di non utilizzarle
+nell'implementazione, è necessario comunque presentare lo pseudocodice
+corrispondente, e realizzare <em>completamente</em> le query relative.</p>
+<h3>Specifiche</h3>
+<section class="descrizione"><div>
+ <p>Il database <em>Collectors</em> memorizza informazioni relative a collezioni di dischi (anche se lo stesso tipo di database potrebbe adattarsi quasi a qualunque tipo di collezione, useremo i dischi come caso di studio in modo da poter aggiungere più dettagli alla specifica).</p>
+ <p>Nel database andranno prima di tutto registrati i dati (saranno sufficienti nickname e indirizzo email) relativi ai <em>collezionisti</em>, e poi i dati relativi alle loro <em>collezioni</em> di dischi (dovete prevedere che ogni collezionista possa creare più collezioni, ciascuna con un nome distinto). Per ogni <em>disco</em> in una collezione, dovranno essere specificati gli autori, il titolo, l'anno di uscita, l'etichetta (casa editrice), il genere (scelto da una lista predefinita di generi musicali), lo stato di conservazione dell'oggetto (scelto da una lista predefinita), il formato (vinile, CD, digitale,...), il numero di barcode, se disponibile (i codici a barre garantiscono l'identificazione univoca dell'elemento), e poi ovviamente la lista delle <em>tracce</em>, ciascuna con titolo, durata, ed eventuali informazioni su compositore ed esecutore (cantante, musicista), se diverso da quelli dell'intero disco. Infine, ogni disco potrebbe essere associato a una o più immagini (copertina, retro, eventuali facciate interne o libretti, ecc.). Insomma, cercate di essere il più realistici possibile.</p>
+ <p>Per ogni disco, il collezionista potrà inoltre indicare l'eventuale numero di <em>doppioni</em> a sua disposizione (spesso si hanno più copie dello stesso disco, magari a seguito di scambi, e magari anche perché se ne prevede la rivendita).</p>
+ <p>I collezionisti potranno decidere di <em>condividere</em> la propria collezione con specifici utenti o in maniera pubblica. Ogni collezione avrà quindi associato un flag privato/pubblico e la lista di collezionisti con i quali è stata condivisa.</p>
+</div></section>
+<p>Ci sono indubbiamente svariati vincoli che possono essere
+applicati ai contenuti di questa base di dati. L'individuazione dei vincoli e
+la loro implementazione (con vincoli sulle tabelle, trigger o quantomeno
+definendo il codice e le query necessari a effettuarne il controllo)
+costituiscono un requisito importante per lo sviluppo di un progetto
+realistico, e ne verrà tenuto conto durante la valutazione finale.</p>
+<h3>Operazioni da realizzare</h3>
+<p>Di seguito sono illustrate schematicamente le operazioni
+previste sulla base di dati, ciascuna da realizzare tramite una query (o, se
+necessario, tramite più query, <em>opzionalmente</em> racchiuse in una <em>stored
+procedure</em>). Ovviamente, ogni ulteriore raffinamento o arricchimento di
+queste specifiche aumenterà il valore del progetto.</p>
+<section class="operazioni"><div>
+ <ol>
+  <li>Inserimento di una nuova collezione.</li>
+  <li>Aggiunta di dischi a una collezione e di tracce a un disco.</li>
+  <li>Modifica dello stato di pubblicazione di una collezione (da privata a pubblica e viceversa) e aggiunta di nuove condivisioni a una collezione.</li>
+  <li>Rimozione di un disco da una collezione.</li>
+  <li>Rimozione di una collezione.</li>
+  <li>Lista di tutti i dischi in una collezione.</li>
+  <li>Track list di un disco.</li>
+  <li>Ricerca di dischi in base a nomi di autori/compositori/interpreti e/o titoli. Si potrà decidere di includere nella ricerca le collezioni di un certo collezionista e/o quelle condivise con lo stesso collezionista e/o quelle pubbliche. <em>(Suggerimento: potete realizzare diverse query in base alle varie combinazioni di criteri di ricerca. Usate la UNION per unire i risultati delle ricerche effettuate sulle collezioni private, condivise e pubbliche)</em></li>
+  <li>Verifica della visibilità di una collezione da parte di un collezionista. <em>(Suggerimento: una collezione è visibile a un collezionista se è sua, condivisa con lui o pubblica)</em></li>
+  <li>Numero dei brani (tracce di dischi) distinti di un certo autore (compositore, musicista) presenti nelle collezioni pubbliche.</li>
+  <li>Minuti totali di musica riferibili a un certo autore (compositore, musicista) memorizzati nelle collezioni pubbliche.</li>
+  <li>Statistiche (<em>una query per ciascun valore</em>): numero di collezioni di ciascun collezionista, numero di dischi per genere nel sistema.</li>
+  <li><em>Opzionalmente</em>, dati un numero di barcode, un titolo e il nome di un autore, individuare tutti i dischi presenti nelle collezioni che sono più coerenti con questi dati (funzionalità utile, ad esempio, per individuare un disco già presente nel sistema prima di inserirne un doppione). L'idea è che il barcode è univoco, quindi i dischi con lo stesso barcode sono senz'altro molto coerenti, dopodichè è possibile cercare dischi con titolo simile e/o con l'autore dato, assegnando maggior punteggio di somiglianza a quelli che hanno più corrispondenze. Questa operazione può essere svolta con una stored procedure o implementata nell'interfaccia Java/PHP.</li>
+ </ol>
+</div></section>
+<p>È possibile inserire procedure di gestione addizionali che
+si ritengano utili.</p>
+</section>
+<section class="indicazioni break"><div>
+ <h1>Indicazioni per lo Sviluppo del Progetto</h1>
+ <h3>Tecnologie da utilizzare</h3>
+ <p>Il DBMS da utilizzare per la realizzazione del progetto è MySQL. MariaDB è un'alternativa accettabile.</p>
+ <p>Opzionalmente, il database realizzato potrà essere dotato di un'interfaccia scritta con un linguaggio di programmazione a scelta (Java o PHP) tramite la quale invocare le query richieste (fornendone gli eventuali parametri) e visualizzarne i risultati.</p>
+ <h3>Svolgimento e Documentazione del Progetto</h3>
+ <p>Le specifiche fornite potrebbero non risultare esaustive o completamente definite. Ogni funzionalità aggiunta o raffinata, anche tramite l'interazione con il committente, sarà adeguatamente valutata. Tutte le scelte progettuali vanno comunque discusse e motivate.</p>
+ <p>Il progetto dovrà essere svolto secondo le seguenti fasi:</p>
+ <ol>
+  <li>Formalizzazione ed analisi dei requisiti.</li>
+  <li>Progettazione concettuale tramite il modello Entità-Relazione.</li>
+  <li>Formalizzazione di tutti i vincoli non esprimibili nel modello ER.</li>
+  <li>Ristrutturazione ed ottimizzazione del modello ER.</li>
+  <li>Traduzione del modello ER nel corrispondente modello relazionale.</li>
+  <li>Implementazione effettiva del modello relazionale e di tutti i vincoli tramite SQL.</li>
+  <li>Implementazione delle query, procedure, funzioni, ecc. tramite SQL.</li>
+ </ol>
+ <p>Tutte le fasi del progetto dovranno essere corredate da adeguata documentazione <strong>in formato elettronico</strong> che illustri quanto viene realizzato e le scelte intraprese. In particolare, dovranno essere necessariamente inclusi nella documentazione gli schemi ER risultanti dai passi (2) e (4), debitamente commentati, e il modello relazionale della base di dati ottenuto al passo (5), in cui siano messe in evidenza le chiavi delle varie tabelle e le relazioni tra queste ultime.</p>
+ <p>Il database finale, risultato dei passi (6) e (7), dovrà essere consegnato nella forma di un <em>script</em> SQL contenente la struttura del database (istruzioni CREATE, comprese eventuali procedure, funzioni e viste), dei dati di prova (istruzioni INSERT) e il codice delle query necessarie a realizzare le funzionalità richieste. <strong>Il codice di ciascuna query dovrà essere preceduto del suo numero identificativo e dal testo della sua definizione</strong>, come riportato nella presente specifica.</p>
+ <p><em>Suggerimento</em>: potete usare le funzioni di esportazione presenti in phpMyAdmin e MySQL workbench oppure direttamente il comando mysqldump per esportare un dump del database contenente sia la struttura che i dati. Inoltre, per praticità, nella maggior parte dei casi potrete incorporare la anche definizione delle query nel dump del database, definendole come viste o stored procedures con nomi significativi come "Query_1", ecc.</p>
+ <p>Le parti della specifica marcate come <em>opzionali</em>, se omesse, non renderanno il progetto insufficiente ma non gli permetteranno comunque di raggiungere il massimo dei voti. Nel caso si decida di realizzarle, non sarà necessario che siano perfette o complete, ma che dimostrino chiaramente il vostro impegno nell'affrontare una tematica avanzata.</p>
+ <p>Nel caso di gruppi di lavoro composti da più componenti, <em>il contributo effettivo offerto da ciascun componente</em> alla realizzazione finale <strong>deve</strong> essere descritto nella documentazione (indicando, ad esempio, chi si è dedicato prevalentemente alla modellazione concettuale, chi ha realizzato il database con SQL, chi ha lavorato su ciascuna query, ecc.). In sede di esame, i responsabili potranno essere chiamati a riferire sugli aspetti loro delegati.</p>
+ <h3>Valutazione del Progetto</h3>
+ <p>La documentazione e il codice del progetto descritti nella sezione precedente andranno consegnati, anche per email, almeno <em>una settimana prima</em> della data prevista per l'appello d'esame. Eventuali eccezioni a questa regola potranno essere concordate col docente.</p>
+ <p>In sede di esame saranno discussi eventuali problemi riscontrati nel progetto e potrà essere richiesta una dimostrazione del funzionamento di alcune query e/o dell'eventuale interfaccia realizzata (è quindi opportuno portare con sé un portatile con il progetto installato e funzionante).</p>
+ <p>Nel valutare il progetto consegnato saranno prese in considerazione le seguenti caratteristiche:</p>
+ <ol>
+  <li>Rispetto delle specifiche e loro corretto raffinamento, ove necessario.</li>
+  <li>Correttezza e conformità alle specifiche dei modelli realizzati.</li>
+  <li>Correttezza tecnica dell'implementazione fisica del database (struttura, vincoli).</li>
+  <li>Correttezza tecnica delle query realizzate e loro aderenza alle funzionalità richieste.</li>
+  <li>Adeguatezza della documentazione.</li>
+ </ol>
+ <p>A questa valutazione si aggiungerà quella generale derivata dalla discussione del progetto in sede d'esame.</p>
+ <h3>Ulteriori Informazioni</h3>
+ <p>Questa specifica è disponibile nel repository del corso di Laboratorio di Basi di Dati, all'indirizzo https://github.com/LaboratorioBasiDiDati-Univaq/LBD_Project_Specifications. Ulteriori informazioni e chiarimenti sulle specifiche possono essere richiesti direttamente via email all'indirizzo giuseppe.dellapenna@univaq.it.</p>
+ <p>Si ricorda che i progetti vanno svolti in <em>piccoli</em> gruppi (due/tre persone è il numero consigliato). Eccezioni a questa regola andranno concordate direttamente col docente.</p>
+</div></section>
+</body>
+</html>
