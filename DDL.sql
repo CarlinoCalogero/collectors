@@ -1,5 +1,6 @@
 #Inizializzazione database
-create database if not exists collectors;
+drop database if exists collectors;
+create database collectors;
 use collectors;
 #Tabelle
 drop table if exists incide;
