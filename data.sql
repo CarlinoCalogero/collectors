@@ -242,3 +242,18 @@ INSERT INTO produce(id_traccia, id_autore,nome_ruolo) VALUES(11,5,"Musicista"); 
 INSERT INTO produce(id_traccia, id_autore,nome_ruolo) VALUES(12,5,"Proprietario"); #like a rolling stones
 INSERT INTO produce(id_traccia, id_autore,nome_ruolo) VALUES(12,5,"Cantante"); #like a rolling stones
 INSERT INTO produce(id_traccia, id_autore,nome_ruolo) VALUES(12,5,"Musicista"); #like a rolling stones
+
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Rock",1); #the dark side of the moon
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Rap",2); #noi, loro, gli altri
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Pop",3); #aida
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Cantautorato",3); #aida
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Metal",4); #meteora
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Rap",4); #meteora
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Rock",4); #meteora
+INSERT INTO classificazione(nome_genere,id_disco) VALUES ("Rock",5); #stripped
+
+INSERT INTO incide(id_disco,id_autore) VALUES(1,1);
+INSERT INTO incide(id_disco,id_autore) VALUES(2,2);
+INSERT INTO incide(id_disco,id_autore) VALUES(3,3);
+INSERT INTO incide(id_disco,id_autore) VALUES(4,4);
+INSERT INTO incide(id_disco,id_autore) VALUES(5,5);
