@@ -63,6 +63,7 @@ INSERT INTO collezione_di_dischi(nome, visibilita, ID_collezionista) VALUES("Mig
 INSERT INTO collezione_di_dischi(nome, visibilita, ID_collezionista) VALUES("Collezione personale",0,1);
 INSERT INTO collezione_di_dischi(nome, visibilita, ID_collezionista) VALUES("Mie vibes",1,3);
 INSERT INTO collezione_di_dischi(nome, visibilita, ID_collezionista) VALUES("Collezione segreta",0,2);
+INSERT INTO collezione_di_dischi(nome,visibilita, ID_collezionista) VALUES("PRIVATISSIMA",0,3);
 
 # date format YYYY-MM-DD
 INSERT INTO disco(titolo, anno_di_uscita, nome_formato, nome_stato, id_etichetta, id_collezione_di_dischi) 
@@ -173,11 +174,9 @@ INSERT INTO band(id_fondatore, data_fondazione, id_autore)
 INSERT INTO band(id_fondatore, data_fondazione, id_autore) 
 	VALUES(5,"1962-07-12",5);
     
-INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (2,1);
-INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (3,1);
-INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (3,2);
-INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (1,4);
-INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (2,4);
+INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (1,5);
+INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (3,5);
+INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (2,3);
 
 #pink floyd
 INSERT INTO costituito(id_band,id_artista) VALUES (1,6);
@@ -257,3 +256,4 @@ INSERT INTO incide(id_disco,id_autore) VALUES(2,2);
 INSERT INTO incide(id_disco,id_autore) VALUES(3,3);
 INSERT INTO incide(id_disco,id_autore) VALUES(4,4);
 INSERT INTO incide(id_disco,id_autore) VALUES(5,5);
+
