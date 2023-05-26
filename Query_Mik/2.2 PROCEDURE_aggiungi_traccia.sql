@@ -7,7 +7,7 @@ CREATE PROCEDURE aggiungi_tracce(
 	in id_etichetta integer,
 	in id_disco integer
 )
-    
+    BEGIN
     DECLARE ID_disc integer unsigned;
     DECLARE ID_etichett integer unsigned;
     DECLARE ID_traccia integer unsigned;
@@ -45,4 +45,5 @@ CREATE PROCEDURE aggiungi_tracce(
 		# Se l'id del disco o dell'etichetta sono errati o non esistono lancio una eccezione
 		SIGNAL SQLSTATE "45000" set message_text = "L'ID del disco o dell'etichetta non sono validi!";
     END IF;
+    END$
 DELIMITER ;
