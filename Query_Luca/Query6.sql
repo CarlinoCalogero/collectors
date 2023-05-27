@@ -1,7 +1,7 @@
 #Lista di tutti i dischi in una collezione
 drop procedure if exists dischi_in_collezione;
 delimiter $
-create procedure dischi_in_collezione(id_collezione integer unsigned)
+create procedure dischi_in_collezione(in id_collezione integer unsigned)
 begin
 	select d.titolo as "titolo",
 			d.anno_di_uscita as "anno di uscita",

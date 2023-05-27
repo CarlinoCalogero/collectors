@@ -1,7 +1,7 @@
 #Track list di un disco.
 drop procedure if exists track_list_disco;
 delimiter $
-create procedure track_list_disco(id_disco integer unsigned)
+create procedure track_list_disco(in id_disco integer unsigned)
 begin
 	select t.titolo,
 			t.durata,

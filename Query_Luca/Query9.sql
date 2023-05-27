@@ -1,6 +1,6 @@
 drop procedure if exists collezioni_visibili_by;
 delimiter $
-create procedure collezioni_visibili_by(id_collezionista integer unsigned)
+create procedure collezioni_visibili_by(in id_collezionista integer unsigned)
 begin
 	#Visualizzare collezioni personali
 	select coll.nome, coll.visibilita
