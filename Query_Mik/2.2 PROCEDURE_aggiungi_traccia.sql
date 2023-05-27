@@ -1,10 +1,10 @@
 DELIMITER $
-
+DROP PROCEDURE IF EXISTS aggiungi_traccia;
 #Aggiunta di tracce a un disco.
-CREATE PROCEDURE aggiungi_tracce(
+CREATE PROCEDURE aggiungi_traccia(
 	in titolo varchar(50),
 	in durata decimal(10,2),
-	in id_etichetta integer,
+	in partitaIVA varchar(11),
 	in id_disco integer
 )
     BEGIN
@@ -20,7 +20,7 @@ CREATE PROCEDURE aggiungi_tracce(
 	SET ID_etichett = (
 		SELECT e.id
         FROM etichetta e
-		WHERE e.id=id_etichetta
+		WHERE e.partitaIVA=partitaIVA
     );
 
     IF(ID_disc IS NOT NULL AND ID_etichett IS NOT NULL) THEN
@@ -28,10 +28,10 @@ CREATE PROCEDURE aggiungi_tracce(
         SET ID_traccia = (
 			SELECT t.id
             FROM traccia t
-            WHERE t.titolo=traccia
+            WHERE t.titolo=titolo
             AND t.durata=durata
-            AND t.etichetta=etichetta
-            AND t.disco=id_disco
+            AND t.id_etichetta=id_etichetta
+            AND t.id_disco=id_disco
         );
         IF(ID_traccia IS NOT NULL) THEN
 			#La traccia appartiene già a quel disco
@@ -39,7 +39,7 @@ CREATE PROCEDURE aggiungi_tracce(
 		ELSE 
 			# La traccia non è stata trovata, quindi la aggiungo al disco
             INSERT INTO traccia(`titolo`, `durata`, `id_etichetta`, `id_disco`) 
-            VALUES (titolo, durata, id_etichetta, id_disco);
+            VALUES (titolo, durata, id_etichett, id_disco);
         END IF;
     ELSE 
 		# Se l'id del disco o dell'etichetta sono errati o non esistono lancio una eccezione
