@@ -8,7 +8,7 @@ begin
             d.nome_stato as "stato",
             d.nome_formato as "formato",
             e.nome as "etichetta",
-            generi_disco(d.id) as generi
+            generi_disco(d.id) as "generi" #funzione per ricavare tutti i generi in un unica riga
 	from disco d
     join etichetta e on d.id_etichetta = e.id
     where d.id_collezione_di_dischi = id_collezione;

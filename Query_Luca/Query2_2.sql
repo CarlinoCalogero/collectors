@@ -1,5 +1,4 @@
 #Add Traccia ad un disco
-#insert into traccia(titolo,durata,id_etichetta,id_disco) values("traccia1",5.00,1,1)
 drop procedure if exists insert_traccia;
 delimiter $
 create procedure insert_traccia(titolo varchar(50),durata decimal(10,2),id_disco integer unsigned)

@@ -1,3 +1,4 @@
+#Rimozione di una collezione
 drop procedure if exists delete_collezione;
 delimiter $
 create procedure delete_collezione(id_collezione integer unsigned)

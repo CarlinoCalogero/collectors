@@ -1,3 +1,4 @@
+#Aggiunta di nuove condivisioni
 drop procedure if exists insert_condivisione;
 delimiter $
 create procedure insert_condivisione(nickname varchar(100), email varchar(200),id_collezione integer unsigned)
