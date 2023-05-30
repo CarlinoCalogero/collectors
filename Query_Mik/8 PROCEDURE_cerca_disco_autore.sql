@@ -30,12 +30,21 @@ BEGIN
     END IF;
     
 	# Collezioni personali e private
-    SELECT d.*
+    SELECT d.id as "ID",
+		   d.titolo as "Titolo",
+           d.anno_di_uscita as "Anno di uscita",
+           d.nome_formato as "Formato",
+           d.nome_stato as "Stato",
+           e.nome as "Etichetta",
+           c.nome as "Collezione",
+           c.visibilita as "Visibilità",
+           a.nome_darte as "Autore"
     FROM disco d
     JOIN incide i ON d.id=i.id_disco
     JOIN autore a ON a.id=i.id_autore
     JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi
     JOIN collezionista cl ON cl.id = c.id_collezionista
+    JOIN etichetta e ON e.id=d.id_etichetta
     WHERE a.nome_darte=nome_darte 
     AND cl.id=id_collezionista 
     AND c.visibilita=false
@@ -43,23 +52,41 @@ BEGIN
     UNION DISTINCT
     
     # Collezioni pubbliche
-    SELECT d.*
+    SELECT d.id as "ID",
+		   d.titolo as "Titolo",
+           d.anno_di_uscita as "Anno di uscita",
+           d.nome_formato as "Formato",
+           d.nome_stato as "Stato",
+           e.nome as "Etichetta",
+           c.nome as "Collezione",
+           c.visibilita as "Visibilità",
+		   a.nome_darte as "Autore"
     FROM disco d
     JOIN incide i ON d.id=i.id_disco
     JOIN autore a ON a.id=i.id_autore
     JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi
+    JOIN etichetta e ON e.id=d.id_etichetta
     WHERE a.nome_darte=nome_darte
     AND c.visibilita=true
     
     UNION DISTINCT 
     # Collezioni private condivise con me
-    SELECT d.*
+    SELECT d.id as "ID",
+		   d.titolo as "Titolo",
+           d.anno_di_uscita as "Anno di uscita",
+           d.nome_formato as "Formato",
+           d.nome_stato as "Stato",
+           e.nome as "Etichetta",
+           c.nome as "Collezione",
+           c.visibilita as "Visibilità",
+		   a.nome_darte as "Autore"
     FROM disco d
     JOIN incide i ON d.id=i.id_disco
     JOIN autore a ON a.id=i.id_autore
     JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi
     JOIN condivisa con ON con.id_collezione=c.id
     JOIN collezionista col ON col.id=con.id_collezionista
+    JOIN etichetta e ON e.id=d.id_etichetta
     WHERE a.nome_darte=nome_darte
     AND col.id=id_collezionista
     AND c.visibilita=false; #Superfluo, le collezioni condivise sono per forza private
