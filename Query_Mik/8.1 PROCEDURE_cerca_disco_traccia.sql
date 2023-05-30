@@ -4,16 +4,16 @@
 # base alle varie combinazioni di criteri di ricerca. Usate la UNION per unire i risultati delle
 # ricerche effettuate sulle collezioni private, condivise e pubbliche)
 
-# 1. Cercare nelle proprie collezioni dischi in base al nome dell'autore
-# 2. Cercare nelle collezioni condivise con me dischi in base al nome dell'autore
-# 3. Cercare nelle collezioni pubbliche dischi in base al nome dell'autore
+# 1. Cercare nelle proprie collezioni dischi in base al nome della traccia
+# 2. Cercare nelle collezioni condivise con me dischi in base al nome della traccia
+# 3. Cercare nelle collezioni pubbliche dischi in base al nome della traccia
 # Unire i risultati con UNION DISTINCT
 
 DELIMITER $
 
-DROP PROCEDURE IF EXISTS cerca_autore$
+DROP PROCEDURE IF EXISTS cerca_disco_con_traccia$
 
-CREATE PROCEDURE cerca_autore(
+CREATE PROCEDURE cerca_disco_con_autore(
 	in id_collezionista integer unsigned,
     in nome_darte varchar(100))
 BEGIN
