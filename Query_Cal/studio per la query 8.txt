@@ -30,6 +30,11 @@ DISCO
 19		robby		collezione=prova		autore=mieruko
 26		provatracce	collezione=minnie		autore=tatakai
 
+INFO DISCO
+-------------------
+23=bob		123123123
+19=robby	null
+21=mobius	76
 
 AUTORE
 --------------
