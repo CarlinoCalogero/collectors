@@ -1,6 +1,7 @@
 DELIMITER $
 
 DROP PROCEDURE IF EXISTS aggiungi_collezione$
+
 CREATE PROCEDURE aggiungi_collezione(
 	in nome_collezione varchar(200),
     in nickname varchar(100),

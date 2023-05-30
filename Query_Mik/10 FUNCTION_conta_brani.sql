@@ -21,7 +21,7 @@ BEGIN
 			JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi
 			WHERE c.visibilita=true 
 			AND a.nome_darte=nome_darte
-			GROUP BY t.id) as pippo);
+			GROUP BY t.id) as brani_distinti);
 	
     RETURN numero_brani;
 
