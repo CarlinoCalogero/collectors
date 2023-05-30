@@ -1,0 +1,93 @@
+COLLEZIONISTA
+---------------
+1		MARIO
+2		giaocomo
+
+
+COLLEZIONI
+--------------
+4		prova		1=mario		privata		condivisa con: Giacomo
+6		miagolo		1=mario		pubblica	condivisa con Mario
+7		pippo		2=giacomo	pubblica
+8		paperino	2=giacomo	privata		condivisa con: Mario, Giacomo
+9		minnie		1=mario		pubblica
+10		marionon	2=giacomo	privata
+11		giacomonon	1=mario		privata
+
+
+DISCO
+--------------
+23		bob		collezione=miagolo		autore=mieruko
+20		giacom		collezione=prova		autore=tatakai
+18		mik		collezione=prova		autore=tatakai
+21		mobius		collezione=prova		autore=mieruko
+22		mobius		collezione=miagolo		autore=mieruko
+24		mobius		collezione=marionon		autore=mieruko
+25		mobius		collezione=giacomonon		autore=mieruko
+19		robby		collezione=prova		autore=mieruko
+
+
+AUTORE
+--------------
+1		mieruko		band
+2		tatakai		singolo
+
+
+visibili a mario
+--------------------
+prova, miagolo, minnie, giacomonon		//collezioni di mario
+pippo						//collezioni pubbliche
+paperino					//collezioni condivise con mario
+
+visibili a giacomo
+-------------------------
+pippo, paperino, marionon
+miagolo, pippo, minnie
+prova, paperino
+
+dischi di mieruko visibili a mario
+-------------------------------------
+// dischi in collezioni di mario
+23		bob		collezione=miagolo		autore=mieruko
+21		mobius		collezione=prova		autore=mieruko
+22		mobius		collezione=miagolo		autore=mieruko
+25		mobius		collezione=giacomonon		autore=mieruko
+19		robby		collezione=prova		autore=mieruko
+// dischi in collezioni pubbliche
+23		bob		collezione=miagolo		autore=mieruko
+22		mobius		collezione=miagolo		autore=mieruko
+// dischi in collezioni condivise con mario
+23		bob		collezione=miagolo		autore=mieruko
+22		mobius		collezione=miagolo		autore=mieruko
+
+dischi di mieruko di nome "mobius" visibili a mario
+-------------------------------------
+// dischi in collezioni di mario
+21		mobius		collezione=prova		autore=mieruko
+22		mobius		collezione=miagolo		autore=mieruko
+25		mobius		collezione=giacomonon		autore=mieruko
+// dischi in collezioni pubbliche
+22		mobius		collezione=miagolo		autore=mieruko
+// dischi in collezioni condivise con mario
+22		mobius		collezione=miagolo		autore=mieruko
+
+
+dischi di mieruko visibili a giacomo
+-------------------------------------
+// dischi in collezioni di giacomo
+24		mobius		collezione=marionon		autore=mieruko
+// dischi in collezioni pubbliche
+23		bob		collezione=miagolo		autore=mieruko
+22		mobius		collezione=miagolo		autore=mieruko
+// dischi in collezioni condivise con giacomo
+21		mobius		collezione=prova		autore=mieruko
+19		robby		collezione=prova		autore=mieruko
+
+dischi di mieruko di nome "mobius" visibili a giacomo
+-------------------------------------
+// dischi in collezioni di mario
+24		mobius		collezione=marionon		autore=mieruko
+// dischi in collezioni giacomo
+22		mobius		collezione=miagolo		autore=mieruko
+// dischi in collezioni condivise con giacomo
+21		mobius		collezione=prova		autore=mieruko
