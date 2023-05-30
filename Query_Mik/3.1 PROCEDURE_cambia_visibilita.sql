@@ -2,6 +2,8 @@
 # aggiunta di nuove condivisioni a una collezione.
 DELIMITER $
 
+DROP PROCEDURE IF EXISTS cambia_visibilita$
+
 CREATE PROCEDURE cambia_visibilita(
 	in nome varchar(200), 
     in nickname varchar(100),

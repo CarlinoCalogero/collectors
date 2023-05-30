@@ -1,6 +1,7 @@
 DELIMITER $
 
-DROP PROCEDURE IF EXISTS aggiungi_disco;
+DROP PROCEDURE IF EXISTS aggiungi_disco$
+
 # Aggiunta di dischi a una collezione
 CREATE PROCEDURE aggiungi_disco(
 	in nickname varchar(100),

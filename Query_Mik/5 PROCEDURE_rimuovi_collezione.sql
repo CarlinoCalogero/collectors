@@ -1,6 +1,9 @@
 DELIMITER $
 
 #Rimozione di una collezione
+
+DROP PROCEDURE IF EXISTS rimuovi_collezione$
+
 CREATE PROCEDURE rimuovi_collezione(
 	in id_collezionista integer unsigned,
     in nome_collezione varchar(200)

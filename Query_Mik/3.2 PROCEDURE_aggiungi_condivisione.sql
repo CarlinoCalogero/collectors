@@ -1,6 +1,8 @@
 # Aggiunta di nuove condivisioni a una collezione privata.
 DELIMITER $
-DROP PROCEDURE IF EXISTS aggiungi_condivisione;
+
+DROP PROCEDURE IF EXISTS aggiungi_condivisione$
+
 CREATE PROCEDURE aggiungi_condivisione(
 	in nickname_from varchar(100),
 	in email_from varchar(200),

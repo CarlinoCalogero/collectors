@@ -1,7 +1,9 @@
 # Verifica della visibilità di una collezione da parte di un collezionista. (Suggerimento: una
 # collezione è visibile a un collezionista se è sua, condivisa con lui o pubblica)
 DELIMITER $
-DROP FUNCTION IF EXISTS verifica_visibilita;
+
+DROP FUNCTION IF EXISTS verifica_visibilita$
+
 CREATE FUNCTION verifica_visibilita(
 	id_collezionista integer unsigned,
 	id_collezione integer unsigned) # Usare il nome della collezione non sarebbe bastato, da chiedere al prof

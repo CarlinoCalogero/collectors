@@ -1,6 +1,7 @@
 DELIMITER $
 # Track list di un disco.
-DROP PROCEDURE IF EXISTS stampa_tracklist;
+DROP PROCEDURE IF EXISTS stampa_tracklist$
+
 CREATE PROCEDURE stampa_tracklist(
 	in id_disco integer unsigned
 )

@@ -1,5 +1,6 @@
 DELIMITER $
-DROP PROCEDURE IF EXISTS aggiungi_traccia;
+DROP PROCEDURE IF EXISTS aggiungi_traccia$
+
 #Aggiunta di tracce a un disco.
 CREATE PROCEDURE aggiungi_traccia(
 	in titolo varchar(50),

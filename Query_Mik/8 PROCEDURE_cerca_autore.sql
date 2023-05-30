@@ -11,7 +11,8 @@
 
 DELIMITER $
 
-DROP PROCEDURE IF EXISTS cerca_autore;
+DROP PROCEDURE IF EXISTS cerca_autore$
+
 CREATE PROCEDURE cerca_autore(
 	in id_collezionista integer unsigned,
     in nome_darte varchar(100))

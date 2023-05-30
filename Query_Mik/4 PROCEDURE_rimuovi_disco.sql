@@ -1,6 +1,8 @@
 DELIMITER $
 # Rimozione di un disco da una collezione
-DROP PROCEDURE IF EXISTS rimuovi_disco;
+
+DROP PROCEDURE IF EXISTS rimuovi_disco$
+
 CREATE PROCEDURE rimuovi_disco(
 	in id_disco integer unsigned,
     in nome_collezione varchar(200),
