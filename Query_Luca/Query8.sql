@@ -1,40 +1,36 @@
-# Ricerca in base al nome d'arte di un autore che partecipa ad un disco, presente nelle collezioni private di un collezionista
-drop procedure if exists search_disco_by_autore_e_titolo;
+drop procedure if exists search_disco;
 delimiter $
-create procedure search_disco_by_autore_e_titolo(in id_collezionista integer unsigned,in cercato varchar(100))
+create procedure search_disco(in id_collezionista integer unsigned, in cercato varchar(100),
+								in priv boolean, in cond boolean, in pub boolean)
 begin
-	#Ricerca di dischi in base a titolo, nome autore e autori nelle tracce in collezioni private
-	select d.*
-    from produce p
-    join traccia t on p.id_traccia = t.id
-    join autore a on p.id_autore = a.id
-    join disco d on t.id_disco = d.id
-    join incide i on i.id_disco = d.id
-    join autore ai on i.id_autore = ai.id
-    join collezione_di_dischi coll on d.id_collezione_di_dischi = coll.id
-    where coll.id_collezionista = id_collezionista and (a.nome_darte like cercato or ai.nome_darte like cercato or d.titolo like cercato)
-    union distinct
-    #Stessa ricerca ma sulle collezioni in condivisione
-    select d.*
-    from produce p
-    join traccia t on p.id_traccia = t.id
-    join autore a on p.id_autore = a.id
-    join disco d on t.id_disco = d.id
-    join incide i on i.id_disco = d.id
-    join autore ai on i.id_autore = ai.id
-    join collezione_di_dischi coll on d.id_collezione_di_dischi = coll.id
-    join condivisa cond on cond.id_collezione = coll.id
-    where cond.id_collezionista = id_collezionista and (a.nome_darte like cercato or ai.nome_darte like cercato or d.titolo like cercato)
-    union distinct
-    #Stessa ricerca sulle collezioni pubbliche
-    select d.*
-    from produce p
-    join traccia t on p.id_traccia = t.id
-    join autore a on p.id_autore = a.id
-    join disco d on t.id_disco = d.id
-    join incide i on i.id_disco = d.id
-    join autore ai on i.id_autore = ai.id
-    join collezione_di_dischi coll on d.id_collezione_di_dischi = coll.id
-    where coll.visibilita= true and (a.nome_darte like cercato or ai.nome_darte like cercato or d.titolo like cercato);
+	if(priv = true)
+    then
+		call search_disco_privato(id_collezionista, cercato);
+	else
+		call search_disco_privato(id_collezionista,null);
+	end if;
+    if(cond = true)
+    then
+		call search_disco_condiviso(id_collezionista, cercato);
+	else
+		call search_disco_condiviso(id_collezionista,null);
+	end if;
+    if(pub = true)
+    then
+		call search_disco_pubblico(cercato);
+	else
+		call search_disco_pubblico(null);
+	end if;
+	select *
+    from dischi_privati_trovati 
+    union
+    select *
+    from dischi_condivisi_trovati
+    union
+    select *
+    from dischi_pubblici_trovati;
+    drop temporary table if exists dischi_privati_trovati;
+	drop temporary table if exists dischi_condivisi_trovati;
+	drop temporary table if exists dischi_pubblici_trovati;
 end$
 delimiter ;
