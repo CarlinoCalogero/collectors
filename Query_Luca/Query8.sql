@@ -7,13 +7,13 @@ begin
     then
 		call search_disco_privato(id_collezionista, cercato);
 	else
-		call search_disco_privato(id_collezionista,null);
+		call search_disco_privato(null,null);
 	end if;
     if(cond = true)
     then
 		call search_disco_condiviso(id_collezionista, cercato);
 	else
-		call search_disco_condiviso(id_collezionista,null);
+		call search_disco_condiviso(null,null);
 	end if;
     if(pub = true)
     then
