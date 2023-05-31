@@ -2,6 +2,8 @@ COLLEZIONISTA
 ---------------
 1		MARIO
 2		giaocomo
+3		pluto
+4		paperoni
 
 
 COLLEZIONI
@@ -13,6 +15,7 @@ COLLEZIONI
 9		minnie		1=mario		pubblica
 10		marionon	2=giacomo	privata
 11		giacomonon	1=mario		privata
+13		dipluto		3=pluto		pubblica
 
 
 DISCO
@@ -25,7 +28,13 @@ DISCO
 24		mobius		collezione=marionon		autore=mieruko
 25		mobius		collezione=giacomonon		autore=mieruko
 19		robby		collezione=prova		autore=mieruko
+26		provatracce	collezione=minnie		autore=tatakai
 
+INFO DISCO
+-------------------
+23=bob		123123123
+19=robby	null
+21=mobius	76
 
 AUTORE
 --------------
@@ -33,17 +42,31 @@ AUTORE
 2		tatakai		singolo
 
 
+TRACCE
+-----------------
+5		due		19=robby	autore=tatakai
+6		asino		19=robby	autore=tatakai
+7		fagioli		19=robby	autore=mieruko
+
+8		dasdasdad	22=mobius	autore=mieruko
+9		prova23		22=mobius	autore=tatakai
+10		miele		22=mobius	autore=mieruko
+13		cannolo		22=mobius	autore=tatakai
+16		cannolo		26=provatracce	autore=tatakai
+
+
+
 visibili a mario
 --------------------
 prova, miagolo, minnie, giacomonon		//collezioni di mario
-pippo						//collezioni pubbliche
+miagolo, pippo, minnie				//collezioni pubbliche
 paperino					//collezioni condivise con mario
 
 visibili a giacomo
 -------------------------
-pippo, paperino, marionon
-miagolo, pippo, minnie
-prova, paperino
+pippo, paperino, marionon			//collezioni di giacomo
+miagolo, pippo, minnie				//collezioni pubbliche
+prova, paperino					//collezioni condivise con giacomo
 
 dischi di mieruko visibili a mario
 -------------------------------------
