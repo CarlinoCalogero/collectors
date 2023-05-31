@@ -12,7 +12,7 @@ BEGIN
 	DECLARE minutaggio_totale decimal(10,2);
 	
     SET minutaggio_totale = (
-		SELECT sum(distinct t.durata)
+		SELECT sum(t.durata)
 		FROM autore a
 		JOIN produce p ON p.id_autore=a.id
 		JOIN traccia t ON t.id=p.id_traccia
