@@ -1,5 +1,12 @@
-delimiter $$
-drop procedure if exists track_list_disco$$
-create procedure track_list_disco(id_disco integer unsigned)
-	select t.titolo as "Titolo traccia",t.durata as "Durata" from traccia as t where t.id_disco=id_disco$$
-delimiter ;
+# 7. Track list di un disco.
+
+DROP PROCEDURE IF EXISTS track_list_disco;
+
+DELIMITER $
+
+CREATE PROCEDURE track_list_disco(id_disco integer unsigned)
+BEGIN
+	SELECT t.titolo as "Titolo traccia",t.durata as "Durata" FROM traccia t WHERE t.id_disco=id_disco;
+END$
+
+DELIMITER ;

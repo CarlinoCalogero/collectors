@@ -1,7 +1,12 @@
-#Rimozione di una collezione
-drop procedure if exists delete_collezione;
-delimiter $
-create procedure delete_collezione(in id_collezione integer unsigned)
-begin
-	delete from collezione_di_dischi where id= id_collezione;
-end$
+# 5. Rimozione di una collezione
+
+DROP PROCEDURE IF EXISTS delete_collezione;
+
+DELIMITER $
+
+CREATE PROCEDURE rimuovi_collezione(in id_collezione integer unsigned)
+BEGIN
+	DELETE FROM collezione_di_dischi WHERE id= id_collezione;
+END$
+
+DELIMITER ;
