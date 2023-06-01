@@ -8,7 +8,7 @@ begin
 	then
 		signal sqlstate "45000" set message_text="Il tipo dell'autore non combacia";
     end if;
-    if(new.data_nascita > date(now()))
+    if(new.data_fondazione > date(now()))
     then
 		signal sqlstate "45000" set message_text="Errore nella data di nascita.";
     end if;
