@@ -1,16 +1,25 @@
-drop trigger if exists check_artista;
-delimiter $
-create trigger check_artista before insert on artista_singolo for each row
-begin
-	declare tipo_autore boolean;
-    set tipo_autore = (select tipo from autore where id = new.id_autore);
-    if(tipo_autore = true)#check del tipo 0/false è il tipo dell'artista singolo
-	then
-		signal sqlstate "45000" set message_text="Il tipo dell'autore non combacia.";
-    end if;
-    if(new.data_nascita > date(now()))
-    then
-		signal sqlstate "45000" set message_text="Errore nella data di nascita.";
-    end if;
-end$
-delimiter ;
+DROP TRIGGER IF EXISTS check_artista; 
+
+DELIMITER $ 
+
+CREATE TRIGGER check_artista BEFORE INSERT ON artista_singolo FOR EACH ROW
+BEGIN
+
+  DECLARE tipo_autore boolean; 
+
+  SET tipo_autore = (
+      SELECT tipo
+      FROM autore
+      WHERE id = new.id_autore); 
+      
+      /* Controlla che il tipo dichiarato nell'inserimento dell artista combaci con quello
+       dell'artista che si sta inserendo (artista singolo o band)*/
+      IF(tipo_autore = true) THEN 
+        SIGNAL SQLSTATE "45000" SET MESSAGE_TEXT="Il tipo dell'autore non combacia.";
+      END IF; 
+      
+      /* Controllo sulla data di nascita affinchè non ecceda quella corrente*/
+      IF(new.data_nascita > date(now())) THEN
+        SIGNAL SQLSTATE "45000" SET MESSAGE_TEXT="Errore nella data di nascita.";
+      END IF; 
+END$

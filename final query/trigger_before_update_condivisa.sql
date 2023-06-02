@@ -1,10 +1,14 @@
-drop trigger if exists on_update_visibilita;
-delimiter $
-create trigger on_update_visibilita before update on collezione_di_dischi for each row
-begin
-	if(old.visibilita = false and new.visibilita = true)
-    then
-		delete from condivisa where id_collezione = old.id;
-    end if;
-end$
-delimiter ;
+DROP TRIGGER IF EXISTS on_update_visibilita;
+
+DELIMITER $
+
+CREATE TRIGGER on_update_visibilita BEFORE UPDATE ON collezione_di_dischi FOR EACH ROW
+BEGIN
+
+	IF(old.visibilita = false AND new.visibilita = true) THEN
+		DELETE FROM condivisa WHERE id_collezione = old.id;
+  END IF;
+
+END$
+
+DELIMITER ;
