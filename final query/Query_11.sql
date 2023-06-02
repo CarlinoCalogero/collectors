@@ -1,9 +1,10 @@
-# Minuti totali di musica riferibili a un certo autore (compositore, musicista) memorizzati nelle
-# collezioni pubbliche.
+/* Minuti totali di musica riferibili a un certo autore (compositore, musicista) memorizzati nelle
+ collezioni pubbliche.
+*/
+
+DROP FUNCTION IF EXISTS conta_minuti_autore;
 
 DELIMITER $
-
-DROP FUNCTION IF EXISTS conta_minuti_autore$
 
 CREATE FUNCTION conta_minuti_autore(nome_darte varchar(100))
 RETURNS decimal(10,2) DETERMINISTIC

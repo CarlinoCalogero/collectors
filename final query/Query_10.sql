@@ -1,8 +1,10 @@
-# Numero dei brani (tracce di dischi) distinti di un certo autore (compositore, musicista) 
-# presenti nelle collezioni pubbliche.
-DELIMITER $
+/* Numero dei brani (tracce di dischi) distinti di un certo autore (compositore, musicista) 
+  presenti nelle collezioni pubbliche.
+*/
 
-DROP FUNCTION IF EXISTS conta_brani$
+DROP FUNCTION IF EXISTS conta_brani;
+
+DELIMITER $
 
 CREATE FUNCTION conta_brani(nome_darte varchar(200))
 RETURNS integer unsigned DETERMINISTIC
@@ -18,13 +20,16 @@ BEGIN
 		JOIN disco d ON d.id=t.id_disco
 		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi
 		WHERE c.visibilita=true 
-		AND a.nome_darte like nome_darte
+		AND a.nome_darte LIKE nome_darte
 		GROUP BY a.id);
 	
-    if numero_brani is null then
+    # Se numer_brani è null, ritorna 0, altrimenti il numero di brani
+    IF(numero_brani is null) THEN
 		RETURN 0;
-	else
-		return numero_brani;
-	end if;
+	ELSE
+		RETURN numero_brani;
+	END IF;
+    
 END$
+
 DELIMITER ;
