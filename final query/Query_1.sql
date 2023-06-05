@@ -1,4 +1,5 @@
 # 1. Inserimento di una nuova collezione
+
 USE collectors;
 DROP PROCEDURE IF EXISTS insert_collezione;
 
