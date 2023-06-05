@@ -36,19 +36,30 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.HomeController">
   <children>
-      <Label prefHeight="18.0" prefWidth="780.0" text="Benvenuto">
-         <font>
-            <Font size="19.0" />
-         </font>
+      <HBox>
          <VBox.margin>
             <Insets left="5.0" />
          </VBox.margin>
-      </Label>
+         <children>
+            <Label prefHeight="28.0" prefWidth="396.0" text="Benvenuto">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <TextField prefHeight="26.0" prefWidth="245.0" promptText="Cerca...">
+               <HBox.margin>
+                  <Insets bottom="5.0" right="10.0" top="5.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+      </HBox>
       <TableView editable="true" prefHeight="411.0" prefWidth="640.0">
         <columns>
           <TableColumn prefWidth="232.800048828125" text="Nome collezione" />
