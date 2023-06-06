@@ -33,6 +33,8 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
 	
+	private Collector collector;
+	
 	@FXML
 	private Button logoutButton;
 	
@@ -96,9 +98,10 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	}
 	
 	public void initializeData(Collector collector) {
-		benvenutoLabel.setText("Benvenuto "+collector.nickname);
+		benvenutoLabel.setText("Benvenuto "+collector.getNickname());
+		this.collector = collector;
 		try {
-			List<Collection> collections = implementation.getCollections(collector.ID);
+			List<Collection> collections = implementation.getCollections(collector.getID());
 			ObservableList<Collection> songsData = FXCollections.observableArrayList(collections);
 			collectionsTableView.setItems((ObservableList<Collection>) songsData);
 		} catch(DatabaseConnectionException e) {
@@ -114,7 +117,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	
 	@FXML
 	private void inserisciCollezione() {
-		dispatcher.renderView("insert_collection", null);
+		dispatcher.renderView("insert_collection", collector);
 	}
 
 }
