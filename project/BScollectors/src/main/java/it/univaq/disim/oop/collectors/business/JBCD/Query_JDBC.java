@@ -121,10 +121,82 @@ public class Query_JDBC {
 	}
 
 	// Query 3_2
-	public boolean switchVisibilita() {
-		return false;
+	public void switchVisibilita(Integer idCollection) throws DatabaseConnectionException {
+		if (!this.supports_procedures) {
+			try (PreparedStatement query = connection
+					.prepareStatement("UPDATE collezione_di_dischi SET visibilita = ? WHERE id= ?;");
+					PreparedStatement getVis = connection
+							.prepareStatement("SELECT visibilita FROM collezione_di_dischi WHERE id = ?;");) {
+				connection.setAutoCommit(false);
+				boolean visibilita = false;
+				getVis.setInt(1, idCollection);
+				ResultSet vis = getVis.executeQuery();
+				if (vis.next())
+					visibilita = !vis.getBoolean("visibilita");
+				query.setInt(2, idCollection);
+				query.setBoolean(1, visibilita);
+				query.execute();
+				connection.commit();
+				connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					throw new DatabaseConnectionException("Rollback fallito", e1);
+				}
+				throw new DatabaseConnectionException("Condivisione Fallita", e);
+			}
+			return;
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call cambia_visibilita(?)}");) {
+			query.setInt(1, idCollection);
+			query.execute();
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Condivisione Fallita", e);
+		}
 	}
 
+	// Query 4
+	public void deleteDisco(Integer idDisco) throws DatabaseConnectionException {
+		if (!this.supports_procedures) {
+			try (PreparedStatement query = connection.prepareStatement("DELETE FROM disco WHERE id = ?;");) {
+				query.setInt(1, idDisco);
+				query.execute();
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Rimozione Fallita", e);
+			}
+			return;
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call rimuovi_disco(?)}");) {
+			query.setInt(1, idDisco);
+			query.execute();
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Rimozione Fallita", e);
+		}
+	}
+
+	// Query 5
+	public void deleteCollezione(Integer idCollection) throws DatabaseConnectionException {
+		if (!this.supports_procedures) {
+			try (PreparedStatement query = connection
+					.prepareStatement("DELETE FROM collezione_di_dischi WHERE id=?;");) {
+				query.setInt(1, idCollection);
+				query.execute();
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Rimozione Fallita", e);
+			}
+			return;
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call rimuovi_collezione(?)}");) {
+			query.setInt(1, idCollection);
+			query.execute();
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Rimozione Fallita", e);
+		}
+	}
 	/*
 	 * ESEMPIO 1: esecuzione diretta di query e lettura dei risultati public void
 	 * classifica_marcatori(int anno) throws ApplicationException {
