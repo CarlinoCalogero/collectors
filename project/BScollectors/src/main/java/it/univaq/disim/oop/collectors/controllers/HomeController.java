@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
+import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
@@ -92,7 +93,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 			List<Collection> collections = implementation.getCollections(collector.ID);
 			ObservableList<Collection> songsData = FXCollections.observableArrayList(collections);
 			collectionsTableView.setItems((ObservableList<Collection>) songsData);
-		} catch(SQLException e) {
+		} catch(DatabaseConnectionException e) {
 			System.err.println(e.getMessage());
 		}
 	}
