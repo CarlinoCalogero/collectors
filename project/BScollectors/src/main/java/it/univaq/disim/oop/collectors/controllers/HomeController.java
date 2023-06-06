@@ -1,9 +1,11 @@
 package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import org.controlsfx.control.SearchableComboBox;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
@@ -21,13 +23,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 
 public class HomeController implements Initializable, DataInitalizable<Collector>{
 	
@@ -36,6 +37,9 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	
 	private Collector collector;
 	private ObservableList<Collection> collectionsData;
+	
+	@FXML
+	private HBox parentHBox;
 	
 	@FXML
 	private Button logoutButton;
@@ -111,6 +115,24 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 			List<Collection> collections = implementation.getCollections(collector.getID());
 			collectionsData = FXCollections.observableArrayList(collections);
 			collectionsTableView.setItems((ObservableList<Collection>) collectionsData);
+			
+			/*************Esempio a scopo inoformativo***************/
+			List<String> stringList = new ArrayList<>();
+			stringList.add("Mik");
+			stringList.add("luca");
+			stringList.add("Calogero");
+			stringList.add("Giacomo");
+			stringList.add("Enrico");
+			stringList.add("Raffaele");
+			SearchableComboBox<String> searchableComboBox = new SearchableComboBox<>(FXCollections.observableArrayList(stringList));
+			searchableComboBox.setPrefWidth(245);
+			searchableComboBox.setMaxWidth(245);
+			searchableComboBox.setPrefHeight(26);
+			searchableComboBox.setMaxHeight(26);
+			searchableComboBox.setPromptText("Cerca...");
+			parentHBox.getChildren().add(searchableComboBox);
+			/********************************************************/
+			
 		} catch(DatabaseConnectionException e) {
 			System.err.println(e.getMessage());
 		}
