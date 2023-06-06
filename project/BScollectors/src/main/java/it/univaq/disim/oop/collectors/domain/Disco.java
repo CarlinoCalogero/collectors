@@ -49,7 +49,13 @@ public class Disco {
 	}
 
 	public Set<String> getGeneri() {
-		return generi;
+		return new HashSet<String>(generi);
+	}
+
+	@Override
+	public String toString() {
+		return "Disco [id=" + id + ", titolo=" + titolo + ", annoDiUscita=" + annoDiUscita + ", stato=" + stato
+				+ ", formato=" + formato + ", etichetta=" + etichetta + ", generi=" + generi + "]";
 	}
 	
 }

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
+import it.univaq.disim.oop.collectors.domain.Disco;
 
 public class Query_JDBC {
 
@@ -197,47 +198,69 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Rimozione Fallita", e);
 		}
 	}
-	
-	//Query 6
-	
-	public void getDischiInCollezione(Integer idCollection) throws DatabaseConnectionException{
+
+	// Query 6
+
+	public ArrayList<Disco> getDischiInCollezione(Integer idCollection) throws DatabaseConnectionException {
 		if (!this.supports_procedures) {
-			String queryString = "SELECT d.id as \"ID\","
-					+ "		   d.titolo as \"Titolo\","
-					+ "		   d.anno_di_uscita as \"Anno di uscita\","
-					+ "		   d.nome_stato as \"Stato\","
-					+ "		   d.nome_formato as \"Formato\","
-					+ "		   e.nome as \"Etichetta\","
-					+ "           generi_disco(d.id) as \"Generi\""
-					+ "	from disco d"
-					+ "    join etichetta e on d.id_etichetta = e.id"
-					+ "    where d.id_collezione_di_dischi = ?;";
-			
+			String queryString = "SELECT d.id as \"ID\"," + "		   d.titolo as \"Titolo\","
+					+ "		   d.anno_di_uscita as \"Anno di uscita\"," + "		   d.nome_stato as \"Stato\","
+					+ "		   d.nome_formato as \"Formato\"," + "		   e.nome as \"Etichetta\","
+					+ "           generi_disco(d.id) as \"Generi\"" + "	from disco d"
+					+ "    join etichetta e on d.id_etichetta = e.id" + "    where d.id_collezione_di_dischi = ?;";
+
 			try (PreparedStatement query = connection.prepareStatement(queryString);) {
 				query.setInt(1, idCollection);
 				ResultSet result = query.executeQuery();
-				while(result.next()) {
-					System.out.printf("ID:%d,Titolo:%s,Anno:%s,Stato:%s,Formato:%s,Etichetta:%s,Generi:%s\n",
-							result.getInt("ID"),result.getString("Titolo"),result.getDate("Anno di uscita").toString(),
-							result.getString("Stato"),result.getString("Formato"),result.getString("Etichetta"), result.getString("Generi"));
+				ArrayList<Disco> dischi = new ArrayList<Disco>();
+				while (result.next()) {
+					Disco d = new Disco(result.getInt("ID"), result.getString("Titolo"),
+							result.getDate("Anno di uscita").toLocalDate(), result.getString("Stato"),
+							result.getString("Formato"), result.getString("Etichetta"),
+							result.getString("Generi").split(","));
+					dischi.add(d);
 				}
+				return dischi;
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
 			}
-			return;
 		}
 		// Altrimenti si esegue la procedura creata e salvata nel db
 		try (CallableStatement query = connection.prepareCall("{call dischi_in_collezione(?)}");) {
 			query.setInt(1, idCollection);
 			ResultSet result = query.executeQuery();
-			while(result.next()) {
-				System.out.printf("ID:%d,Titolo:%s,Anno:%s,Stato:%s,Formato:%s,Etichetta:%s,Generi:%s\n",
-						result.getInt("ID"),result.getString("Titolo"),result.getDate("Anno di uscita").toString(),
-						result.getString("Stato"),result.getString("Formato"),result.getString("Etichetta"), result.getString("Generi"));
+			ArrayList<Disco> dischi = new ArrayList<Disco>();
+			while (result.next()) {
+				Disco d = new Disco(result.getInt("ID"), result.getString("Titolo"),
+						result.getDate("Anno di uscita").toLocalDate(), result.getString("Stato"),
+						result.getString("Formato"), result.getString("Etichetta"),
+						result.getString("Generi").split(","));
+				dischi.add(d);
 			}
+			return dischi;
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
 		}
+	}
+
+	// Query 10
+	public int getNumberOfTracks(String nomeArte) throws DatabaseConnectionException {
+		String queryString = "SELECT count(distinct t.id) as 'conta'" + "		FROM autore a"
+				+ "		JOIN produce p ON p.id_autore=a.id" + "		JOIN traccia t ON t.id=p.id_traccia"
+				+ "		JOIN disco d ON d.id=t.id_disco"
+				+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi" + "		WHERE c.visibilita=true"
+				+ "		AND a.nome_darte LIKE ?" + "		GROUP BY a.id);";
+		if (this.supports_function_calls)
+			queryString = "SELECT conta_brani(?) as 'conta';";
+		try (PreparedStatement query = connection.prepareStatement(queryString);) {
+			query.setString(1, nomeArte);
+			ResultSet result = query.executeQuery();
+			if (result.next())
+				return result.getInt("conta");
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
+		}
+		return 0;
 	}
 	/*
 	 * ESEMPIO 1: esecuzione diretta di query e lettura dei risultati public void
