@@ -34,7 +34,7 @@ public class Connect_JDBC {
 
 	// connessione al database
 	private Connection connect() throws DatabaseConnectionException {
-		System.out.println("\n**** APERTURA CONNESSIONE ***************************");
+		System.out.println("Tentativo di connessione al DB...");
 		try {
 			// connessione al database
 			if (username != null && password != null) {
@@ -44,8 +44,7 @@ public class Connect_JDBC {
 			}
 			return this.connection;
 		} catch (SQLException ex) {
-			// Usiamo un'eccezione user-defined per trasportare e gestire più
-			// agevolmente tutte le eccezioni lagate all'uso del database
+			System.err.println("\nTentativo di connessione fallito!");
 			throw new DatabaseConnectionException("Errore di connessione", ex);
 		}
 	}
@@ -54,10 +53,11 @@ public class Connect_JDBC {
 	public void disconnect() throws DatabaseConnectionException {
 		try {
 			if (this.connection != null && !this.connection.isClosed()) {
-				System.out.println("\n**** CHIUSURA CONNESSIONE (modulo connect) **********");
+				System.out.println("\nTentativo di disconnessione della connessione...");
 				this.connection.close();
 			}
 		} catch (SQLException ex) {
+			System.err.println("\nTentativo di disconnessione falllito");
 			throw new DatabaseConnectionException("Errore di disconnessione", ex);
 		}
 	}

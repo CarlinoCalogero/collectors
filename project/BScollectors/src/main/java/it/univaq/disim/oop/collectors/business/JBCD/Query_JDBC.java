@@ -42,7 +42,7 @@ public class Query_JDBC {
 		return this.connection;
 	}
 
-	public Collector login(String nickname, String email) throws SQLException {
+	public Collector login(String nickname, String email) throws DatabaseConnectionException {
 		try (PreparedStatement s = connection
 				.prepareStatement("select * from collezionista where email = ? and nickname = ?");) {
 			s.setString(1, email);
@@ -53,7 +53,7 @@ public class Query_JDBC {
 			}
 			return null;
 		} catch (SQLException e) {
-			throw new SQLException(e);
+			throw new DatabaseConnectionException(e);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class Query_JDBC {
 		}
 	}
 
-	// Query 3_2
+	// Query 3
 	public void switchVisibilita(Integer idCollection) throws DatabaseConnectionException {
 		if (!this.supports_procedures) {
 			try (PreparedStatement query = connection
@@ -200,7 +200,6 @@ public class Query_JDBC {
 	}
 
 	// Query 6
-
 	public ArrayList<Disco> getDischiInCollezione(Integer idCollection) throws DatabaseConnectionException {
 		if (!this.supports_procedures) {
 			String queryString = "SELECT d.id as \"ID\"," + "		   d.titolo as \"Titolo\","

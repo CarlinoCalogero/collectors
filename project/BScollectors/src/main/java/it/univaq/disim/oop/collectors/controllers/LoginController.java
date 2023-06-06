@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
+import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
@@ -34,9 +35,13 @@ public class LoginController<T> implements Initializable, DataInitalizable<T>{
 		
 	}
 
-	public void login() throws SQLException {
+	public void login() {
+		try {
 		Collector collector = implementation.login(nickname.getText(), email.getText());
-		//System.out.println(collectorID);
+		if(collector == null) throw new DatabaseConnectionException("Wrong nickname or email!");
 		dispatcher.renderHome(collector);
+		} catch (DatabaseConnectionException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 }

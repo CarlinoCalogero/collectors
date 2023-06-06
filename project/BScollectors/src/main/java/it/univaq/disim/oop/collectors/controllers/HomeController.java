@@ -2,6 +2,8 @@ package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -81,7 +83,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		seeTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
 			final Button modifyButton = new Button("Visualizza");
 			modifyButton.setOnAction((ActionEvent event) -> {
-				System.out.println("Visualizzando...");
+				dispatcher.renderView("see_collection", new Couple<Collection,Collector>(param.getValue(),collector));
 			});
 			return new SimpleObjectProperty<Button>(modifyButton);
 		});
@@ -124,6 +126,13 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 			stringList.add("Giacomo");
 			stringList.add("Enrico");
 			stringList.add("Raffaele");
+			stringList.add("Raffaelelle");
+			stringList.add("Raffaelino");
+			stringList.add("Raffaeluccio");
+			Collections.sort(stringList, (s1, s2) -> {
+				if(s2.length()==s1.length()) return s2.compareTo(s1);
+				return s2.length()-s1.length();
+			});
 			SearchableComboBox<String> searchableComboBox = new SearchableComboBox<>(FXCollections.observableArrayList(stringList));
 			searchableComboBox.setPrefWidth(245);
 			searchableComboBox.setMaxWidth(245);
@@ -131,6 +140,8 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 			searchableComboBox.setMaxHeight(26);
 			searchableComboBox.setPromptText("Cerca...");
 			parentHBox.getChildren().add(searchableComboBox);
+			
+			
 			/********************************************************/
 			
 		} catch(DatabaseConnectionException e) {
