@@ -7,7 +7,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class ViewDispatcher {
-	private final String ESTENSIONE = ".fxml";
+	private static final String SUFFIX = ".fxml";
+	private static final String PREFIX = "/views/";
 	private Stage stage;
 	private BorderPane pane;
 	private Scene scene;
@@ -24,9 +25,9 @@ public class ViewDispatcher {
 			this.stage = s;
 			this.stage.setTitle("Collectors");
 			this.stage.setResizable(false);
-			Parent vista = caricaVista("login").getView();
-			this.pane = (BorderPane)vista;
-			this.scene = new Scene(vista);
+			Parent parent = loadView("login").getView();
+			this.pane = (BorderPane)parent;
+			this.scene = new Scene(parent);
 			this.stage.setScene(this.scene);
 			this.stage.show();
 		}catch(Exception e) {
@@ -35,9 +36,9 @@ public class ViewDispatcher {
 		}
 		
 	}
-	public<T> void renderVista(String nomeVista,T dato){
+	public<T> void renderView(String nomeVista,T dato){
 		try {
-			View<T> view = caricaVista(nomeVista);
+			View<T> view = loadView(nomeVista);
 			DataInitalizable<T> controller = view.getController();
 			controller.initializeData(dato);
 			Parent	p = view.getView();
@@ -47,9 +48,9 @@ public class ViewDispatcher {
 			System.exit(0);
 		}
 	}
-	private <T> View<T> caricaVista(String nomeVista) {
+	private <T> View<T> loadView(String nomeVista) {
 		try {
-			FXMLLoader loader= new FXMLLoader(getClass().getResource("/"+nomeVista+ESTENSIONE));
+			FXMLLoader loader= new FXMLLoader(getClass().getResource(PREFIX+nomeVista+SUFFIX));
 			View<T> vista = new View<T>(loader.load(), loader.getController());
 			return vista;
 		}catch(Exception e) {

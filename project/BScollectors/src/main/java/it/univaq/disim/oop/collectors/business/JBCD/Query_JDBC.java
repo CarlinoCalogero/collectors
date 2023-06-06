@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import it.univaq.disim.oop.collectors.domain.Collection;
+import it.univaq.disim.oop.collectors.domain.Collector;
 
 public class Query_JDBC {
 
@@ -34,18 +39,38 @@ public class Query_JDBC {
 	public Connection getConnection() {
 		return this.connection;
 	}
-	public Integer login(String nickname, String email) {
+	public Collector login(String nickname, String email) throws SQLException {
 		try(PreparedStatement s = 
-				connection.prepareStatement("select id from collezionista where email = ? and nickname = ?");){
+				connection.prepareStatement("select * from collezionista where email = ? and nickname = ?");){
 			s.setString(1, email);
 			s.setString(2, nickname);
 			try(ResultSet rs = s.executeQuery()){
 				if(rs.next())
-					return rs.getInt("id");
+					return new Collector(rs.getInt("id"),rs.getString("nickname"), rs.getString("email"));
 			}
 			return null;
 		}catch(SQLException e) {
-			return null;
+			throw new SQLException(e);
+		}
+	}
+	
+	public List<Collection> getCollections(Integer ID_collector) throws SQLException {
+		
+		List<Collection> collections = new ArrayList<>();
+		
+		try(PreparedStatement s = 
+				connection.prepareStatement("select * from collezione_di_dischi where ID_collezionista = ?");){
+			s.setInt(1, ID_collector);
+			try(ResultSet rs = s.executeQuery()){
+				while(rs.next()) {
+					Collection collection = new Collection(rs.getInt("id"), rs.getString("nome"), rs.getBoolean("visibilita"), rs.getInt("ID_collezionista"));
+					collections.add(collection);
+					System.out.println(collection);
+				}
+			}
+			return collections;
+		}catch(SQLException e) {
+			throw new SQLException(e);
 		}
 	}
 	/*
