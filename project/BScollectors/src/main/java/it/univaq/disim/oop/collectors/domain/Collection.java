@@ -30,8 +30,6 @@ public class Collection {
 		return ID_collezionista;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "Collection [ID=" + ID + ", nome=" + nome + ", visibilita=" + visibilita + ", ID_collezionista="

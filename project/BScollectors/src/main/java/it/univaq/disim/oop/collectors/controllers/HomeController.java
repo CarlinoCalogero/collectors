@@ -58,6 +58,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	public void initialize(URL location, ResourceBundle resources) {
 				
 		nameTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("nome"));
+		visibilityTableColumn.setStyle("-fx-alignment: CENTER;");
 		visibilityTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, Boolean>("visibilita"));
 		seeTableColumn.setStyle("-fx-alignment: CENTER;");
 		seeTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {

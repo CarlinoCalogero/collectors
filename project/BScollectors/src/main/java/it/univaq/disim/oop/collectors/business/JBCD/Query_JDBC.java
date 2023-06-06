@@ -63,9 +63,10 @@ public class Query_JDBC {
 			s.setInt(1, ID_collector);
 			try(ResultSet rs = s.executeQuery()){
 				while(rs.next()) {
-					Collection collection = new Collection(rs.getInt("id"), rs.getString("nome"), rs.getBoolean("visibilita"), rs.getInt("ID_collezionista"));
-					collections.add(collection);
-					System.out.println(collection);
+					collections.add(new Collection(rs.getInt("id"),
+												   rs.getString("nome"), 
+												   rs.getBoolean("visibilita"),
+												   rs.getInt("ID_collezionista")));
 				}
 			}
 			return collections;
