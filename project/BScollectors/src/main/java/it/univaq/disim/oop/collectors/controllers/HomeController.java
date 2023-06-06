@@ -19,6 +19,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -29,6 +31,12 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
+	
+	@FXML
+	private Button logoutButton;
+	
+	@FXML
+	private Button inserisciCollezioneButton;
 	
 	@FXML
 	private Label benvenutoLabel;
@@ -95,6 +103,17 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		} catch(SQLException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	@FXML
+	private void logout() {
+		System.out.println("OK");
+		dispatcher.logout();
+	}
+	
+	@FXML
+	private void inserisciCollezione() {
+		dispatcher.renderView("insert_collection", null);
 	}
 
 }

@@ -34,8 +34,19 @@ public class ViewDispatcher {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
 	}
+	
+	public void logout() {
+		try {
+			Parent loginView = loadView("login").getView();
+			Scene scene = new Scene(loginView);
+			stage.setScene(scene);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}	
+	
 	public<T> void renderView(String nomeVista,T dato){
 		try {
 			View<T> view = loadView(nomeVista);
@@ -48,6 +59,21 @@ public class ViewDispatcher {
 			System.exit(0);
 		}
 	}
+	
+	public<T> void renderHome(String nomeVista,T dato){
+		try {
+			View<T> homeView = loadView(nomeVista);
+			DataInitalizable<T> controller = homeView.getController();
+			controller.initializeData(dato);
+			this.pane = (BorderPane) homeView.getView();
+			Scene scene = new Scene(this.pane);
+			stage.setScene(scene);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
 	private <T> View<T> loadView(String nomeVista) {
 		try {
 			FXMLLoader loader= new FXMLLoader(getClass().getResource(PREFIX+nomeVista+SUFFIX));
