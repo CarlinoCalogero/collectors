@@ -1,6 +1,6 @@
 # 5. Rimozione di una collezione
 
-DROP PROCEDURE IF EXISTS delete_collezione;
+DROP PROCEDURE IF EXISTS rimuovi_collezione;
 
 DELIMITER $
 
