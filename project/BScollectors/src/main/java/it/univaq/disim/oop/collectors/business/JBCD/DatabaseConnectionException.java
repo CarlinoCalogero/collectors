@@ -13,4 +13,7 @@ public class DatabaseConnectionException extends Exception {
 	public DatabaseConnectionException(String cause, Exception e) {
 		super(cause, e);
 	}
+	public DatabaseConnectionException(String cause) {
+		super(cause);
+	}
 }

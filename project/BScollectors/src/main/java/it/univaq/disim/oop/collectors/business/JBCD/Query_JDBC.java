@@ -1,5 +1,6 @@
 package it.univaq.disim.oop.collectors.business.JBCD;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,41 +40,91 @@ public class Query_JDBC {
 	public Connection getConnection() {
 		return this.connection;
 	}
+
 	public Collector login(String nickname, String email) throws SQLException {
-		try(PreparedStatement s = 
-				connection.prepareStatement("select * from collezionista where email = ? and nickname = ?");){
+		try (PreparedStatement s = connection
+				.prepareStatement("select * from collezionista where email = ? and nickname = ?");) {
 			s.setString(1, email);
 			s.setString(2, nickname);
-			try(ResultSet rs = s.executeQuery()){
-				if(rs.next())
-					return new Collector(rs.getInt("id"),rs.getString("nickname"), rs.getString("email"));
+			try (ResultSet rs = s.executeQuery()) {
+				if (rs.next())
+					return new Collector(rs.getInt("id"), rs.getString("nickname"), rs.getString("email"));
 			}
 			return null;
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			throw new SQLException(e);
 		}
 	}
-	
-	public List<Collection> getCollections(Integer ID_collector) throws SQLException {
-		
+
+	public List<Collection> getCollections(Integer ID_collector) throws DatabaseConnectionException {
+
 		List<Collection> collections = new ArrayList<>();
-		
-		try(PreparedStatement s = 
-				connection.prepareStatement("select * from collezione_di_dischi where ID_collezionista = ?");){
+
+		try (PreparedStatement s = connection
+				.prepareStatement("select * from collezione_di_dischi where ID_collezionista = ?");) {
 			s.setInt(1, ID_collector);
-			try(ResultSet rs = s.executeQuery()){
-				while(rs.next()) {
-					collections.add(new Collection(rs.getInt("id"),
-												   rs.getString("nome"), 
-												   rs.getBoolean("visibilita"),
-												   rs.getInt("ID_collezionista")));
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					collections.add(new Collection(rs.getInt("id"), rs.getString("nome"), rs.getBoolean("visibilita"),
+							rs.getInt("ID_collezionista")));
 				}
 			}
 			return collections;
-		}catch(SQLException e) {
-			throw new SQLException(e);
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
 		}
 	}
+
+	/*
+	 * Implementazione della query 1.
+	 */
+	public void insertCollezione(Collection c) throws DatabaseConnectionException {
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+			try (PreparedStatement query = connection.prepareStatement(
+					"INSERT INTO collezione_di_dischi(nome,visibilita,id_collezionista)" + "VALUES(?,?,?);");) {
+				query.setString(1, c.getNome());
+				query.setBoolean(2, c.getVisibilita());
+				query.setInt(3, c.getID_collezionista());
+				query.execute();
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+			return;
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call insert_collezione(?,?,?)}");) {
+			query.setString(2, c.getNome());
+			query.setBoolean(3, c.getVisibilita());
+			query.setInt(1, c.getID_collezionista());
+			query.execute();
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Inserimento fallito", e);
+		}
+	}
+
+	// Query 3_1
+	public void insertCondivisione(Integer idColl, Collector c) throws DatabaseConnectionException {
+		if (!this.supports_procedures) {
+			throw new DatabaseConnectionException("Non si puo inserire senza procedure");
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call inserisci_condivisione(?,?,?)}");) {
+			query.setString(1, c.nickname);
+			query.setString(2, c.email);
+			query.setInt(3, idColl);
+			query.execute();
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Condivisione Fallita", e);
+		}
+	}
+
+	// Query 3_2
+	public boolean switchVisibilita() {
+		return false;
+	}
+
 	/*
 	 * ESEMPIO 1: esecuzione diretta di query e lettura dei risultati public void
 	 * classifica_marcatori(int anno) throws ApplicationException {
