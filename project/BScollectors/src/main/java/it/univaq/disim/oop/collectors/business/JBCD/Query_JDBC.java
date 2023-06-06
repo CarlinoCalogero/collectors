@@ -111,8 +111,8 @@ public class Query_JDBC {
 		}
 		// Altrimenti si esegue la procedura creata e salvata nel db
 		try (CallableStatement query = connection.prepareCall("{call inserisci_condivisione(?,?,?)}");) {
-			query.setString(1, c.nickname);
-			query.setString(2, c.email);
+			query.setString(1, c.getNickname());
+			query.setString(2, c.getEmail());
 			query.setInt(3, idColl);
 			query.execute();
 		} catch (SQLException e) {
@@ -195,6 +195,48 @@ public class Query_JDBC {
 			query.execute();
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Rimozione Fallita", e);
+		}
+	}
+	
+	//Query 6
+	
+	public void getDischiInCollezione(Integer idCollection) throws DatabaseConnectionException{
+		if (!this.supports_procedures) {
+			String queryString = "SELECT d.id as \"ID\","
+					+ "		   d.titolo as \"Titolo\","
+					+ "		   d.anno_di_uscita as \"Anno di uscita\","
+					+ "		   d.nome_stato as \"Stato\","
+					+ "		   d.nome_formato as \"Formato\","
+					+ "		   e.nome as \"Etichetta\","
+					+ "           generi_disco(d.id) as \"Generi\""
+					+ "	from disco d"
+					+ "    join etichetta e on d.id_etichetta = e.id"
+					+ "    where d.id_collezione_di_dischi = ?;";
+			
+			try (PreparedStatement query = connection.prepareStatement(queryString);) {
+				query.setInt(1, idCollection);
+				ResultSet result = query.executeQuery();
+				while(result.next()) {
+					System.out.printf("ID:%d,Titolo:%s,Anno:%s,Stato:%s,Formato:%s,Etichetta:%s,Generi:%s\n",
+							result.getInt("ID"),result.getString("Titolo"),result.getDate("Anno di uscita").toString(),
+							result.getString("Stato"),result.getString("Formato"),result.getString("Etichetta"), result.getString("Generi"));
+				}
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
+			}
+			return;
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call dischi_in_collezione(?)}");) {
+			query.setInt(1, idCollection);
+			ResultSet result = query.executeQuery();
+			while(result.next()) {
+				System.out.printf("ID:%d,Titolo:%s,Anno:%s,Stato:%s,Formato:%s,Etichetta:%s,Generi:%s\n",
+						result.getInt("ID"),result.getString("Titolo"),result.getDate("Anno di uscita").toString(),
+						result.getString("Stato"),result.getString("Formato"),result.getString("Etichetta"), result.getString("Generi"));
+			}
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
 		}
 	}
 	/*

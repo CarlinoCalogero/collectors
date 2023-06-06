@@ -14,7 +14,7 @@ public class CollectorsApplication extends Application {
 	public void start(Stage stage) throws Exception {
 		try {
 			BusinessFactory.getImplementation();
-			BusinessFactory.getImplementation().deleteCollezione(10);
+			BusinessFactory.getImplementation().getDischiInCollezione(5);;
 			ViewDispatcher.getInstance().login(stage);
 		} catch (Exception e) {
 			e.printStackTrace();
