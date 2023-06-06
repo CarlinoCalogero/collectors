@@ -11,7 +11,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.LoginController">
    <center>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="406.0">
          <children>
             <Label alignment="CENTER" prefHeight="154.0" prefWidth="675.0" text="Collectors">
                <font>
@@ -23,12 +23,12 @@
             </Label>
             <TextField fx:id="nickname" promptText="Nickname">
                <VBox.margin>
-                  <Insets left="200.0" right="200.0" />
+                  <Insets left="70.0" right="70.0" />
                </VBox.margin>
             </TextField>
             <TextField fx:id="email" promptText="Email">
                <VBox.margin>
-                  <Insets left="200.0" right="200.0" top="5.0" />
+                  <Insets left="70.0" right="70.0" top="5.0" />
                </VBox.margin>
             </TextField>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">

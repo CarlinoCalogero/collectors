@@ -37,6 +37,6 @@ public class LoginController<T> implements Initializable, DataInitalizable<T>{
 	public void login() throws SQLException {
 		Collector collector = implementation.login(nickname.getText(), email.getText());
 		//System.out.println(collectorID);
-		dispatcher.renderHome("home", collector);
+		dispatcher.renderHome(collector);
 	}
 }

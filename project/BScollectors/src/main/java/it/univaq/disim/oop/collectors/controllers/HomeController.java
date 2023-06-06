@@ -10,6 +10,7 @@ import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
+import it.univaq.disim.oop.collectors.domain.Couple;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -34,6 +35,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
 	
 	private Collector collector;
+	private ObservableList<Collection> collectionsData;
 	
 	@FXML
 	private Button logoutButton;
@@ -83,7 +85,12 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		deleteTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
 			final Button modifyButton = new Button("Cancella");
 			modifyButton.setOnAction((ActionEvent event) -> {
-				System.out.println("Cancellando...");
+				try {
+					implementation.deleteCollezione(param.getValue().getID());
+					collectionsData.remove(param.getValue());
+				} catch (DatabaseConnectionException e) {
+					e.printStackTrace();
+				}
 			});
 			return new SimpleObjectProperty<Button>(modifyButton);
 		});
@@ -91,7 +98,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		modifyTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
 			final Button modifyButton = new Button("Modifica");
 			modifyButton.setOnAction((ActionEvent event) -> {
-				System.out.println("Modificando...");
+				dispatcher.renderView("modify_collection", new Couple<Collector, Collection>(collector, param.getValue()));
 			});
 			return new SimpleObjectProperty<Button>(modifyButton);
 		});
@@ -102,8 +109,8 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		this.collector = collector;
 		try {
 			List<Collection> collections = implementation.getCollections(collector.getID());
-			ObservableList<Collection> songsData = FXCollections.observableArrayList(collections);
-			collectionsTableView.setItems((ObservableList<Collection>) songsData);
+			collectionsData = FXCollections.observableArrayList(collections);
+			collectionsTableView.setItems((ObservableList<Collection>) collectionsData);
 		} catch(DatabaseConnectionException e) {
 			System.err.println(e.getMessage());
 		}
@@ -111,7 +118,6 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	
 	@FXML
 	private void logout() {
-		System.out.println("OK");
 		dispatcher.logout();
 	}
 	

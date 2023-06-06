@@ -60,9 +60,9 @@ public class ViewDispatcher {
 		}
 	}
 	
-	public<T> void renderHome(String nomeVista,T dato){
+	public<T> void renderHome(T dato){
 		try {
-			View<T> homeView = loadView(nomeVista);
+			View<T> homeView = loadView("home");
 			DataInitalizable<T> controller = homeView.getController();
 			controller.initializeData(dato);
 			this.pane = (BorderPane) homeView.getView();

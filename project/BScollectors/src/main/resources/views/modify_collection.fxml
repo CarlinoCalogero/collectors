@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.InsertCollectionController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.ModifyCollectionController">
    <children>
       <HBox>
          <children>
-            <Label text="Inserisci collezione:">
+            <Label text="Modifica collezione:">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -56,9 +56,9 @@
             </Label>
             <VBox>
                <children>
-                  <RadioButton fx:id="privateRadioButton" mnemonicParsing="false" text="Privata">
+                  <RadioButton fx:id="privateRadioButton" mnemonicParsing="false" prefHeight="20.0" prefWidth="80.0" text="Privata">
                      <font>
-                        <Font size="14.0" />
+                        <Font size="15.0" />
                      </font>
                      <VBox.margin>
                         <Insets bottom="5.0" />
