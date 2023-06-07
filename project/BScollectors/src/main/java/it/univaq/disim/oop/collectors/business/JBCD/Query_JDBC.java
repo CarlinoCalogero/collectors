@@ -19,6 +19,8 @@ import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.domain.Etichetta;
+import it.univaq.disim.oop.collectors.domain.NumeroCollezioniDiCollezionista;
+import it.univaq.disim.oop.collectors.domain.NumeroDischiPerGenere;
 import it.univaq.disim.oop.collectors.domain.Track;
 
 public class Query_JDBC {
@@ -586,6 +588,92 @@ public class Query_JDBC {
 		}
 		return 0;
 	}
+
+	// Query 12_1
+	public List<NumeroCollezioniDiCollezionista> contaCollezioni() throws DatabaseConnectionException {
+
+		List<NumeroCollezioniDiCollezionista> listaCollezioni = new ArrayList<NumeroCollezioniDiCollezionista>();
+
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection.prepareStatement("SELECT c.nickname as \"Collezionista\" , \r\n"
+					+ "		   count(cd.id) as \"Numero di Collezioni\"\r\n" + "    FROM collezione_di_dischi cd\r\n"
+					+ "	RIGHT JOIN collezionista c ON cd.id_collezionista=c.id\r\n" + "    GROUP BY c.nickname\r\n"
+					+ "    ORDER BY Collezionista ASC;")) {
+
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					listaCollezioni.add(new NumeroCollezioniDiCollezionista(result.getString("Collezionista"),
+							result.getInt("Numero di Collezioni")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call conta_collezioni()}");) {
+
+			ResultSet result = query.executeQuery();
+
+			while (result.next()) {
+				listaCollezioni.add(new NumeroCollezioniDiCollezionista(result.getString("Collezionista"),
+						result.getInt("Numero di Collezioni")));
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Inserimento fallito", e);
+		}
+
+		return listaCollezioni;
+
+	}
+
+	// Query 12_2
+	public List<NumeroDischiPerGenere> contaDischiPerGenere() throws DatabaseConnectionException {
+
+		List<NumeroDischiPerGenere> numeroDischi = new ArrayList<NumeroDischiPerGenere>();
+
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection.prepareStatement("SELECT c.nome_genere as \"Genere\" , \r\n"
+					+ "		   count(c.id_disco) as \"Numero di Dischi\"\r\n" + "    FROM classificazione c\r\n"
+					+ "    GROUP BY c.nome_genere;")) {
+
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					numeroDischi.add(
+							new NumeroDischiPerGenere(result.getString("Genere"), result.getInt("Numero di Dischi")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call conta_dischi_per_genere()}");) {
+
+			ResultSet result = query.executeQuery();
+
+			while (result.next()) {
+				numeroDischi
+						.add(new NumeroDischiPerGenere(result.getString("Genere"), result.getInt("Numero di Dischi")));
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Inserimento fallito", e);
+		}
+
+		return numeroDischi;
+
+	}
+
 	/*
 	 * ESEMPIO 1: esecuzione diretta di query e lettura dei risultati public void
 	 * classifica_marcatori(int anno) throws ApplicationException {
