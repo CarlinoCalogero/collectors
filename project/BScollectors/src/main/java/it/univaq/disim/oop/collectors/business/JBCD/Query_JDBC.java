@@ -10,6 +10,8 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -728,131 +730,167 @@ public class Query_JDBC {
 
 	}
 
-	/*
-	 * ESEMPIO 1: esecuzione diretta di query e lettura dei risultati public void
-	 * classifica_marcatori(int anno) throws ApplicationException {
-	 * System.out.println("CLASSIFICA MARCATORI " + anno +
-	 * "-----------------------"); //eseguiamo la query //notare che creiamo lo
-	 * statement e il resultset in un try-with-resources try ( Statement s =
-	 * connection.createStatement(); //attenzione: in generale sarebbe meglio
-	 * scrivere le stringhe di SQL //sotto forma di costanti (ad esempio a livello
-	 * classe) e riferirvisi //solo nel codice, per una migliore mantenibilità dei
-	 * sorgenti ResultSet rs = s.
-	 * executeQuery("select g.cognome,g.nome, s.nome as squadra, count(*) as punti from\n"
-	 * + "giocatore g \n" + "	join segna m on (m.ID_giocatore=g.ID)\n" +
-	 * "	join partita p on (p.ID=m.ID_partita) \n" +
-	 * "	join campionato c on (p.ID_campionato=c.ID)\n" +
-	 * "	join formazione f on (f.ID_giocatore=g.ID)\n" +
-	 * "	join squadra s on (s.ID=f.ID_squadra)\n" +
-	 * "where (c.anno=f.anno) and c.anno=" + anno + " \n" +
-	 * "group by g.cognome,g.nome, s.nome\n" + "order by punti desc;");
-	 * //PERICOLOSO! Usiamo sempre i PreparedStatement! ) { //iteriamo nella lista
-	 * di record risultanti while (rs.next()) { //stampiamo le varie colonne di
-	 * ciascun record, prelevandole col tipo corretto
-	 * System.out.print(rs.getString("nome")); System.out.print("\t" +
-	 * rs.getString("cognome")); System.out.print("\t" + rs.getString("squadra"));
-	 * System.out.println("\t" + rs.getInt("punti")); } } catch (SQLException ex) {
-	 * throw new ApplicationException("Errore di esecuzione della query", ex); } //s
-	 * e rs vengono chiusi automaticamente dal try-with-resources }
-	 * 
-	 * //ESEMPIO 2: esecuzione di query precompilata con passaggio parametri public
-	 * void calendario_campionato(int anno) throws ApplicationException {
-	 * System.out.println("CALENDARIO CAMPIONATO " + anno +
-	 * "----------------------"); //un oggetto-formattatore per le date DateFormat
-	 * df = new SimpleDateFormat("dd/MM/yyyy"); //precompiliamo la query try (
-	 * PreparedStatement s = connection.
-	 * prepareStatement("select s1.nome as squadra1,s2.nome as squadra2,p.data\n" +
-	 * "from campionato c join partita p on (p.ID_campionato=c.ID) join squadra s1 on (p.ID_squadra_1 = s1.ID) join squadra s2 on (p.ID_squadra_2 = s2.ID)\n"
-	 * + "where c.anno=?\n" + "order by p.data asc;")) { //impostiamo i parametri
-	 * della query s.setInt(1, anno); //eseguiamo la query //questo
-	 * try-with-resources senza catch garantisce la chisura di rs al termine del suo
-	 * uso try ( ResultSet rs = s.executeQuery()) { //iteriamo nella lista di record
-	 * risultanti while (rs.next()) { //stampiamo le varie colonne di ciascun
-	 * record, prelevandole col tipo corretto
-	 * System.out.print(rs.getString("squadra1")); System.out.print("\t" +
-	 * rs.getString("squadra2")); //una colonna DATE viene estratta con il tipo Java
-	 * java.sql.Date, una sottoclasse di java.util.Date System.out.println("\t" +
-	 * df.format(rs.getDate("data"))); } } } catch (SQLException ex) { throw new
-	 * ApplicationException("Errore di esecuzione della query", ex); } }
-	 * 
-	 * //ESEMPIO 3: esecuzione di query di inserimento public void
-	 * inserisci_partita(Date data, int ID_campionato, int ID_squadra_1, int
-	 * ID_squadra_2, int ID_luogo) throws ApplicationException {
-	 * System.out.println("INSERIMENTO PARTITA " + ID_squadra_1 + "-" + ID_squadra_2
-	 * + "---------------------------"); //precompiliamo la query //il parametro
-	 * extra dice al driver dove trovare la chiave auto-generata del nuovo record
-	 * try ( PreparedStatement s = connection.
-	 * prepareStatement("insert into partita(ID_campionato, data,ID_squadra_1,ID_squadra_2,ID_luogo) values(?,?,?,?,?)"
-	 * , new String[]{"ID"})) { //impostiamo i parametri della query s.setInt(1,
-	 * ID_campionato); //la java.util.Date va convertita in java.sql.Timestamp
-	 * (data+ora) o java.sql.Date (solo data) s.setTimestamp(2, new
-	 * java.sql.Timestamp(data.getTime())); s.setInt(3, ID_squadra_1); s.setInt(4,
-	 * ID_squadra_2); s.setInt(5, ID_luogo); //eseguiamo la query int affected =
-	 * s.executeUpdate(); //stampiamo il numero di record inseriti
-	 * System.out.println("record inseriti: " + affected); //volendo estrarre la
-	 * chiave auto-generata per i record inseriti... try ( ResultSet rs =
-	 * s.getGeneratedKeys()) { while (rs.next()) { //stampiamo le chiavi (i record
-	 * hanno tante colonne quante sono //le colonne specificate nel secondo
-	 * parametro della prepareStatement) System.out.println("chiave generata: " +
-	 * rs.getInt(1)); } } } catch (SQLException ex) { throw new
-	 * ApplicationException("Errore di esecuzione della query", ex); } }
-	 * 
-	 * //ESEMPIO 4: esecuzione di query di aggiornamento public void
-	 * aggiorna_partita(int ID_partita, int punti_squadra_1, int punti_squadra_2)
-	 * throws ApplicationException { System.out.println("AGGIORNAMENTO PARTITA " +
-	 * ID_partita + "-------------------------"); //precompiliamo la query try (
-	 * PreparedStatement s = connection.
-	 * prepareStatement("update partita set punti_squadra_1=?, punti_squadra_2=? where ID=?"
-	 * )) { //impostiamo i parametri della query s.setInt(1, punti_squadra_1);
-	 * s.setInt(2, punti_squadra_2); s.setInt(3, ID_partita); //eseguiamo la query
-	 * int affected = s.executeUpdate(); //stampiamo il numero di record modificati
-	 * System.out.println("record modificati: " + affected); } catch (SQLException
-	 * ex) { throw new ApplicationException("Errore di esecuzione della query", ex);
-	 * } }
-	 * 
-	 * //ESEMPIO 5: chiamata a procedura con parametri IN e generazione di un
-	 * ResultSet public void formazione(int ID_squadra, int anno) throws
-	 * ApplicationException { System.out.println("FORMAZIONE " + anno + " SQUADRA "
-	 * + ID_squadra + "-----------------------"); //precompiliamo la chiamata a
-	 * procedura (con parametro) //notare la sintassi speciale da usare per le
-	 * chiamate a procedura if (supports_procedures) { try ( CallableStatement s =
-	 * connection.prepareCall("{call formazione(?,?)}")) { //impostiamo i parametri
-	 * della chiamata s.setInt(1, ID_squadra); s.setInt(2, anno); //eseguiamo la
-	 * chiamata s.execute(); //leggiamo la tabella generata dalla chiamata try (
-	 * ResultSet rs = s.getResultSet()) { while (rs.next()) {
-	 * System.out.print(rs.getString(1)); System.out.print("\t" + rs.getString(2));
-	 * System.out.println("\t" + rs.getString(3)); } } } catch (SQLException ex) {
-	 * throw new ApplicationException("Errore di esecuzione della query", ex); } }
-	 * else { System.out.println("** NON SUPPORTATO **"); } }
-	 * 
-	 * //ESEMPIO 6: chimata a procedura con parametri IN e OUT public void
-	 * squadra_appartenenza(int ID_giocatore, int anno) throws ApplicationException
-	 * { System.out.println("SQUADRA GIOCATORE " + ID_giocatore + " NEL " + anno +
-	 * "--------------------"); //precompiliamo la chiamata a procedura (con
-	 * parametri) if (supports_procedures) { try ( CallableStatement s =
-	 * connection.prepareCall("{call squadra_appartenenza(?,?,?)}")) { //impostiamo
-	 * i parametri IN della chiamata s.setInt(1, ID_giocatore); s.setInt(2, anno);
-	 * //registriamo i parametri OUT della chiamata (con tipo)
-	 * s.registerOutParameter(3, Types.VARCHAR); //eseguiamo la chiamata
-	 * s.execute(); //leggiamo il valore del parametro OUT
-	 * System.out.println(s.getString(3)); } catch (SQLException ex) { throw new
-	 * ApplicationException("Errore di esecuzione della query", ex); } } else {
-	 * System.out.println("** NON SUPPORTATO **"); } }
-	 * 
-	 * //ESEMPIO 7: chimata a funzione public void controlla_partita(int ID_partita)
-	 * throws ApplicationException {
-	 * 
-	 * System.out.println("CONTROLLO PARTITA " + ID_partita +
-	 * "-----------------------------"); if (supports_procedures &&
-	 * supports_function_calls) { //precompiliamo la chiamata a funzione try (
-	 * CallableStatement s =
-	 * connection.prepareCall("{?  = call controlla_partita(?)}")) { //impostiamo i
-	 * parametri della chiamata s.setInt(2, ID_partita); //registriamo il valore
-	 * della funzione come fosse un parametro OUT della chiamata (con tipo)
-	 * s.registerOutParameter(1, Types.VARCHAR); //eseguiamo la chiamata
-	 * s.execute(); //leggiamo il valore del parametro OUT
-	 * System.out.println(s.getString(1)); } catch (SQLException ex) { throw new
-	 * ApplicationException("Errore di esecuzione della query", ex); } } else {
-	 * System.out.println("** NON SUPPORTATO **"); } }
-	 */
+	// Query 12_2
+	public List<DiscoInCollezione> cercaDischiInCollezioni(String barcode, String titolo, String nomeDArte)
+			throws DatabaseConnectionException {
+
+		List<DiscoInCollezione> dischiInCollezione = new ArrayList<DiscoInCollezione>();
+
+		if (barcode != null) {
+
+			try (PreparedStatement query = connection.prepareStatement(
+					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
+							+ "from info_disco as i \r\n" + "	join disco as d on d.id=i.id_disco \r\n"
+							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+							+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+							+ "where i.barcode=?;")) {
+
+				query.setString(1, barcode);
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					dischiInCollezione.add(new DiscoInCollezione(result.getString("titolo"),
+							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+
+		} else {
+
+			List<DiscoInCollezione> dischiInCollezioneByTitolo = new ArrayList<DiscoInCollezione>();
+			try (PreparedStatement query = connection.prepareStatement(
+					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
+							+ "from disco as d\r\n"
+							+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+							+ "	join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+							+ "where d.titolo like concat(?,'%');")) {
+
+				query.setString(1, titolo);
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					dischiInCollezioneByTitolo.add(new DiscoInCollezione(result.getString("titolo"),
+							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+				}
+
+				Collections.sort(dischiInCollezioneByTitolo, new StringByLengthComparator(titolo, null));
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+
+			List<DiscoInCollezione> dischiInCollezioneByAutore = new ArrayList<DiscoInCollezione>();
+			try (PreparedStatement query = connection.prepareStatement(
+					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
+							+ "from incide as i\r\n" + "	join disco as d on i.id_disco=d.id\r\n"
+							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+							+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+							+ "	join autore as a on i.id_autore=a.id\r\n" + "where a.nome_darte like concat(?,'%');")) {
+
+				query.setString(1, nomeDArte);
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					dischiInCollezioneByAutore.add(new DiscoInCollezione(result.getString("titolo"),
+							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+				}
+
+				Collections.sort(dischiInCollezioneByAutore, new StringByLengthComparator(null, nomeDArte));
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+
+			List<DiscoInCollezione> dischiInCollezioneByTitoloAndByAutore = new ArrayList<DiscoInCollezione>();
+			try (PreparedStatement query = connection.prepareStatement(
+					"select *\r\n" + "from incide as i\r\n" + "	join disco as d on i.id_disco=d.id\r\n"
+							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+							+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+							+ "	join autore as a on i.id_autore=a.id\r\n" + "where a.nome_darte like concat(?,'%')\r\n"
+							+ "	and d.titolo like concat(?,'%');")) {
+
+				query.setString(1, titolo);
+				query.setString(2, nomeDArte);
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					dischiInCollezioneByTitoloAndByAutore.add(new DiscoInCollezione(result.getString("titolo"),
+							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+				}
+
+				Collections.sort(dischiInCollezioneByTitoloAndByAutore,
+						new StringByLengthComparator(titolo, nomeDArte));
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+
+			dischiInCollezione.addAll(dischiInCollezioneByTitoloAndByAutore);
+			dischiInCollezione.addAll(dischiInCollezioneByTitolo);
+			dischiInCollezione.addAll(dischiInCollezioneByAutore);
+
+		}
+
+		return dischiInCollezione;
+	}
+
+	// Comparator class for query 13
+	private class StringByLengthComparator implements Comparator<DiscoInCollezione> {
+
+		private Integer referenceLengthTitolo;
+		private Integer referenceLengthNomeDarte;
+
+		public StringByLengthComparator(String referenceTitolo, String referenceNomeDArte) {
+			super();
+			this.referenceLengthTitolo = referenceTitolo.length();
+			this.referenceLengthNomeDarte = referenceNomeDArte.length();
+		}
+
+		private int customCompare(DiscoInCollezione s1, DiscoInCollezione s2, int referenceLength) {
+			int dist1 = Math.abs(s1.getTitolo().length() - referenceLength);
+			int dist2 = Math.abs(s2.getTitolo().length() - referenceLength);
+
+			return dist1 - dist2;
+		}
+
+		public int compare(DiscoInCollezione s1, DiscoInCollezione s2) {
+
+			if (this.referenceLengthTitolo != null && referenceLengthNomeDarte == null) {
+				return customCompare(s1, s2, this.referenceLengthTitolo);
+			}
+
+			if (this.referenceLengthTitolo == null && referenceLengthNomeDarte != null) {
+				return customCompare(s1, s2, this.referenceLengthNomeDarte);
+			}
+
+			if (this.referenceLengthTitolo != null && referenceLengthNomeDarte != null) {
+				int diffTitolo = customCompare(s1, s2, this.referenceLengthTitolo);
+				int diffAutore = customCompare(s1, s2, this.referenceLengthNomeDarte);
+
+				if (diffTitolo >= diffAutore) {
+					return diffAutore;
+				} else {
+					return diffTitolo;
+				}
+			}
+
+			// this.referenceLengthTitolo == null && referenceLengthNomeDarte == null
+			if (s1.getTitolo().length() > s2.getTitolo().length()) {
+				return 1;
+			} else if (s1.getTitolo().length() < s2.getTitolo().length()) {
+				return -1;
+			}
+			// s1.getTitolo().length() == s2.getTitolo().length()
+			return 0;
+
+		}
+
+	}
+
 }
