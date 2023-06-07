@@ -29,7 +29,7 @@
          <children>
             <VBox prefHeight="341.0" prefWidth="770.0">
                <children>
-                  <TableView fx:id="discoTableView" editable="true" prefHeight="431.0" prefWidth="726.0">
+                  <TableView fx:id="discoTableView" editable="true" prefHeight="431.0" prefWidth="726.0" stylesheets="@../style/style.css">
                     <columns>
                       <TableColumn fx:id="titoloTableColumn" prefWidth="133.6000002026558" text="Titolo" />
                       <TableColumn fx:id="dataTableColumn" prefWidth="92.0" text="Anno" />

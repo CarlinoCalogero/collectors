@@ -46,4 +46,12 @@ public class DiscoInCollezione {
 		return proprietario;
 	}
 
+	@Override
+	public String toString() {
+		return "DiscoInCollezione [titolo=" + titolo + ", annoDiUscita=" + annoDiUscita + ", formato=" + formato
+				+ ", condizioni=" + condizioni + ", collezione=" + collezione + ", proprietario=" + proprietario + "]";
+	}
+	
+	
+
 }

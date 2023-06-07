@@ -17,6 +17,7 @@ import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Couple;
 import it.univaq.disim.oop.collectors.domain.Disco;
+import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -209,14 +210,19 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 			popOver.show(searchImageView);
 		});
 		button.setOnMouseClicked(event -> {
-			List<Disco> discos = implementation.ricercaDiDischiConAutoreEOTitolo(
-					nomedarteTextField.getText(), 
-					titoloTextField.getText(), 
-					collector, 
-					personali.isSelected(), 
-					condivise.isSelected(),
-					pubbliche.isSelected());
-			dispatcher.renderView("visible_disco", discos);
+			try {
+				List<DiscoInCollezione> discos = implementation.ricercaDiDischiConAutoreEOTitolo(
+						nomedarteTextField.getText(), 
+						titoloTextField.getText(), 
+						collector, 
+						personali.isSelected(), 
+						condivise.isSelected(),
+						pubbliche.isSelected());
+				dispatcher.renderView("visible_disco", discos);
+			} catch (DatabaseConnectionException e1) {
+				e1.printStackTrace();
+			}
+			
 		});
 	}
 	
