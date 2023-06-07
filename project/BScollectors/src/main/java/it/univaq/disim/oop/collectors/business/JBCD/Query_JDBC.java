@@ -519,7 +519,7 @@ public class Query_JDBC {
 	public boolean verifica_visibilita_collezione(Collection collezione, Collector collezionista)
 			throws DatabaseConnectionException {
 
-		Boolean isVisible = null;
+		Boolean isVisible = false;
 
 		// Se il db non supporta le procedure allora si esegue una semplice query di
 		// inserimento
@@ -544,13 +544,9 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					if (result.getInt("Visibilità") > 0) {
+					if (result.getInt("Visibilità") > 0)
 						isVisible = true;
-					} else {
-						isVisible = false;
-					}
 				}
-
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
@@ -562,11 +558,8 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					if (result.getInt("Visibilità") > 0) {
+					if (result.getInt("Visibilità") > 0)
 						isVisible = true;
-					} else {
-						isVisible = false;
-					}
 				}
 
 			} catch (SQLException e) {
