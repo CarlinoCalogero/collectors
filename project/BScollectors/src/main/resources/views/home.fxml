@@ -37,28 +37,38 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="514.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.HomeController">
+<BorderPane prefHeight="456.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.HomeController">
    <center>
-      <VBox>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4">
         <children>
             <HBox fx:id="parentHBox" prefHeight="26.0" prefWidth="587.0">
                <children>
                   <Button fx:id="inserisciCollezioneButton" mnemonicParsing="false" onAction="#inserisciCollezione" prefHeight="26.0" prefWidth="148.0" text="Inserisci collezione">
                      <HBox.margin>
-                        <Insets right="330.0" />
+                        <Insets right="295.0" />
                      </HBox.margin>
                   </Button>
+                  <ImageView fx:id="searchImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                     <image>
+                        <Image url="@../images/search.png" />
+                     </image>
+                  </ImageView>
                </children>
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </HBox>
-            <TableView fx:id="collectionsTableView" editable="true" prefHeight="466.0" prefWidth="734.0">
+            <TableView fx:id="collectionsTableView" editable="true" prefHeight="577.0" prefWidth="734.0">
               <columns>
                 <TableColumn fx:id="nameTableColumn" prefWidth="232.800048828125" text="Nome collezione" />
                 <TableColumn fx:id="visibilityTableColumn" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Visibilità" />
