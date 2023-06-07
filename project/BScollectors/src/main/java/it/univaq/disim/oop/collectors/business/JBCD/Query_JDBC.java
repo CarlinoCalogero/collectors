@@ -361,6 +361,15 @@ public class Query_JDBC {
 		return tracks;
 	}
 
+	// Query 8
+	public List<Disco> ricercaDiDischiConAutoreEOTitolo(String nomeDArte, String titolo, Collection collezione,
+			boolean collezioni, boolean condivise, boolean pubbliche) {
+
+		List<Disco> dischi = new ArrayList<>();
+
+		return dischi;
+	}
+
 	// Query 10
 	public int getNumberOfTracks(String nomeArte) throws DatabaseConnectionException {
 		String queryString = "SELECT count(distinct t.id) as 'conta'" + "		FROM autore a"
