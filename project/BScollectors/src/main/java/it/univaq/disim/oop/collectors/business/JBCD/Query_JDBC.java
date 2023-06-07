@@ -2,9 +2,11 @@ package it.univaq.disim.oop.collectors.business.JBCD;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -107,33 +109,78 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Inserimento fallito", e);
 		}
 	}
-	
+
 	// Query 2_1
-	public void insertDiscoACollezione(String titolo, LocalDate annoDiUscita, String nomeFormato, String nomeStato,
-				int idEtichetta, int idCollezioneDiDischi, int Barcode, String note, int numeroCopie)
-				throws DatabaseConnectionException {
-			// Se il db non supporta le procedure allora si esegue una semplice query di
-			// inserimento
-			if (!this.supports_procedures) {
-				try (PreparedStatement query = connection.prepareStatement(
-						"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
-								+ "        VALUES (?,?,?,?,?,?);")) {
-					if (annoDiUscita.isAfter(LocalDate.now())) {
-						throw new DateTimeException("Errore! Data invalida");
-					}
-					query.setString(1, titolo);
+	public void insertDiscoACollezione(Disco disco, int idCollezioneDiDischi) throws DatabaseConnectionException {
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection.prepareStatement(
+					"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
+							+ "        VALUES (?,?,?,?,?,?);")) {
+				if (disco.getAnnoDiUscita().isAfter(LocalDate.now())) {
+					throw new DateTimeException("Errore! Data invalida");
+				}
+				query.setString(1, disco.getTitolo());
+				query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
+				query.setString(3, disco.getFormato());
+				query.setString(4, disco.getStato());
+				query.setInt(5, disco.getEtichetta().getId());
+				query.setInt(6, idCollezioneDiDischi);
+
+				try {
+					query.execute();
+				} catch (SQLIntegrityConstraintViolationException e) {
+					throw new SQLIntegrityConstraintViolationException(
+							"Il disco risulta essere già inserito nella collezione", e);
+				}
+
+				try (PreparedStatement query2 = connection
+						.prepareStatement("INSERT INTO info_disco VALUES (?,?,?,?);")) {
+
+					ResultSet rs = query.getGeneratedKeys();
+					// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
+					// significa che l'inserimento è andato a buon fine
+					rs.next();
+					int lastInsertedId = rs.getInt(1);
+					query2.setInt(1, lastInsertedId);
+					query2.setString(2, disco.getBarcode());
+					query2.setString(3, disco.getNote());
+					query2.setInt(4, disco.getNumeroCopie());
+					query2.execute();
 				} catch (SQLException e) {
 					throw new DatabaseConnectionException("Inserimento fallito", e);
 				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
 		}
-	
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection
+				.prepareCall("{call aggiungi_disco_a_collezione(?,?,?,?,?,?,?,?,?)}");) {
+			query.setString(1, disco.getTitolo());
+			query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
+			query.setString(3, disco.getFormato());
+			query.setString(4, disco.getStato());
+			query.setInt(5, disco.getEtichetta().getId());
+			query.setInt(6, idCollezioneDiDischi);
+			query.setString(7, disco.getBarcode());
+			query.setString(8, disco.getNote());
+			query.setInt(9, disco.getNumeroCopie());
+			query.execute();
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Inserimento fallito", e);
+		}
+	}
+
 	public List<Collector> getCollectors() throws DatabaseConnectionException {
 		List<Collector> collectors = new ArrayList<>();
 		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM collezionista");) {
 			try (ResultSet rs = query.executeQuery()) {
 				while (rs.next()) {
-					collectors.add(new Collector(rs.getInt("id"),rs.getString("nickname"),rs.getString("email")));
+					collectors.add(new Collector(rs.getInt("id"), rs.getString("nickname"), rs.getString("email")));
 				}
 				return collectors;
 			}
@@ -141,24 +188,23 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Condivisione Fallita", e);
 		}
 	}
-	
+
 	public List<Collector> getSharingOf(Collection collection) throws DatabaseConnectionException {
-		
+
 		List<Collector> sharingCollectors = new ArrayList<>();
-		
-		try (PreparedStatement query = connection.prepareStatement(""
-				+ "SELECT c.id,c.nickname,c.email \r\n"
-				+ "FROM condivisa con \r\n"
-				+ "JOIN collezionista c on c.id=con.id_collezionista\r\n"
-				+ "WHERE id_collezione=?;");) {
+
+		try (PreparedStatement query = connection
+				.prepareStatement("" + "SELECT c.id,c.nickname,c.email \r\n" + "FROM condivisa con \r\n"
+						+ "JOIN collezionista c on c.id=con.id_collezionista\r\n" + "WHERE id_collezione=?;");) {
 			query.setInt(1, collection.getID());
 			try (ResultSet rs = query.executeQuery()) {
 				while (rs.next()) {
-					sharingCollectors.add(new Collector(rs.getInt("id"),rs.getString("nickname"),rs.getString("email")));
+					sharingCollectors
+							.add(new Collector(rs.getInt("id"), rs.getString("nickname"), rs.getString("email")));
 				}
 				return sharingCollectors;
 			}
-			
+
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Condivisione Fallita", e);
 		}
@@ -300,12 +346,12 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
 		}
 	}
-	
-	//Query 7
+
+	// Query 7
 	public List<Track> getTrackList(Disco d) {
-		
+
 		List<Track> tracks = new ArrayList<>();
-		
+
 		return tracks;
 	}
 
