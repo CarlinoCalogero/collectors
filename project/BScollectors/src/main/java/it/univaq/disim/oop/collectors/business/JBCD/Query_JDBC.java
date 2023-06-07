@@ -362,7 +362,7 @@ public class Query_JDBC {
 	}
 
 	// Query 8
-	public List<Disco> ricercaDiDischiConAutoreEOTitolo(String nomeDArte, String titolo, Collection collezione,
+	public List<Disco> ricercaDiDischiConAutoreEOTitolo(String nomeDArte, String titolo, Collector collezionista,
 			boolean collezioni, boolean condivise, boolean pubbliche) {
 
 		List<Disco> dischi = new ArrayList<>();
