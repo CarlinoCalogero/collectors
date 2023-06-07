@@ -1,19 +1,19 @@
 package it.univaq.disim.oop.collectors.domain;
 
 public class Track {
-	
+
 	private final Integer ID;
 	private final String titolo;
 	private final Float durata;
-	private final Integer ID_disco;
-	private final Integer ID_etichetta;
-	
-	public Track(Integer iD, String titolo, Float durata, Integer iD_disco, Integer iD_etichetta) {
+	private final Disco disco;
+	private final Etichetta etichetta;
+
+	public Track(Integer iD, String titolo, Float durata, Disco disco, Etichetta etichetta) {
 		this.ID = iD;
 		this.titolo = titolo;
 		this.durata = durata;
-		this.ID_disco = iD_disco;
-		this.ID_etichetta = iD_etichetta;
+		this.disco = disco;
+		this.etichetta = etichetta;
 	}
 
 	public Integer getID() {
@@ -28,11 +28,12 @@ public class Track {
 		return durata;
 	}
 
-	public Integer getID_disco() {
-		return ID_disco;
+	public Disco getDisco() {
+		return disco;
 	}
 
-	public Integer getID_etichetta() {
-		return ID_etichetta;
+	public Etichetta getEtichetta() {
+		return etichetta;
 	}
+
 }
