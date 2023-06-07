@@ -1,6 +1,6 @@
 DROP VIEW IF EXISTS condivisione_collezioni;
 CREATE VIEW condivisione_collezioni as
-SELECT cd.id, coll2.nickname as proprietario, cd.nome, c.nickname as condivisa_con 
+SELECT cd.id, coll2.nickname as proprietario, cd.nome, c.nickname as 'condivisa con' 
 	FROM collectors.condivisa con
 	JOIN collezionista c on c.id=con.id_collezionista
     JOIN collezione_di_dischi cd on cd.id=con.id_collezione
