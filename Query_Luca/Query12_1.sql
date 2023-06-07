@@ -3,10 +3,10 @@
 #numero di dischi per genere nel sistema.
 drop procedure if exists numero_collezioni_di;
 delimiter $
-create procedure numero_collezioni_di(in id_collezionista integer unsigned)
+create procedure numero_collezioni_di()
 begin
 select count(coll.id)
 from collezione_di_dischi coll
-where coll.id_collezionista = id_collezionista;
+group by(coll.id_collezionista)
 end$
 delimiter ;

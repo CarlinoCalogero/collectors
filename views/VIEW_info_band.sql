@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS info_band;
 CREATE VIEW info_band as
 SELECT b.id, ak.nome_darte, 
 	b.data_fondazione,
