@@ -19,6 +19,8 @@ import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.domain.Etichetta;
+import it.univaq.disim.oop.collectors.domain.NumeroCollezioniDiCollezionista;
+import it.univaq.disim.oop.collectors.domain.NumeroDischiPerGenere;
 import it.univaq.disim.oop.collectors.domain.Track;
 
 public class Query_JDBC {
@@ -158,27 +160,28 @@ public class Query_JDBC {
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
-		}
-		// Altrimenti si esegue la procedura creata e salvata nel db
-		try (CallableStatement query = connection
-				.prepareCall("{call aggiungi_disco_a_collezione(?,?,?,?,?,?,?,?,?)}");) {
-			query.setString(1, disco.getTitolo());
-			query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
-			query.setString(3, disco.getFormato());
-			query.setString(4, disco.getStato());
-			query.setInt(5, disco.getEtichetta().getId());
-			query.setInt(6, idCollezioneDiDischi);
-			query.setString(7, disco.getBarcode());
-			query.setString(8, disco.getNote());
-			query.setInt(9, disco.getNumeroCopie());
-			query.execute();
-		} catch (SQLException e) {
-			throw new DatabaseConnectionException("Inserimento fallito", e);
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (CallableStatement query = connection
+					.prepareCall("{call aggiungi_disco_a_collezione(?,?,?,?,?,?,?,?,?)}");) {
+				query.setString(1, disco.getTitolo());
+				query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
+				query.setString(3, disco.getFormato());
+				query.setString(4, disco.getStato());
+				query.setInt(5, disco.getEtichetta().getId());
+				query.setInt(6, idCollezioneDiDischi);
+				query.setString(7, disco.getBarcode());
+				query.setString(8, disco.getNote());
+				query.setInt(9, disco.getNumeroCopie());
+				query.execute();
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
 		}
 	}
 
 	// Query 2_2
-	public void aggiungiTracciaADisco(Track traccia, Disco disco) throws DatabaseConnectionException {
+	public void aggiungiTracciaADisco(Track traccia) throws DatabaseConnectionException {
 		// Se il db non supporta le procedure allora si esegue una semplice query di
 		// inserimento
 		if (!this.supports_procedures) {
@@ -195,16 +198,17 @@ public class Query_JDBC {
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
-		}
-		// Altrimenti si esegue la procedura creata e salvata nel db
-		try (CallableStatement query = connection.prepareCall("{call aggiungi_traccia_a_disco(?,?,?,?)}");) {
-			query.setString(1, traccia.getTitolo());
-			query.setFloat(2, traccia.getDurata());
-			query.setInt(3, traccia.getEtichetta().getId());
-			query.setInt(4, traccia.getDisco().getId());
-			query.execute();
-		} catch (SQLException e) {
-			throw new DatabaseConnectionException("Inserimento fallito", e);
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (CallableStatement query = connection.prepareCall("{call aggiungi_traccia_a_disco(?,?,?,?)}");) {
+				query.setString(1, traccia.getTitolo());
+				query.setFloat(2, traccia.getDurata());
+				query.setInt(3, traccia.getEtichetta().getId());
+				query.setInt(4, traccia.getDisco().getId());
+				query.execute();
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
 		}
 	}
 
@@ -427,38 +431,40 @@ public class Query_JDBC {
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
-		}
-		// Altrimenti si esegue la procedura creata e salvata nel db
-		try (CallableStatement query = connection.prepareCall("{call track_list_disco(?)}");) {
-			query.setInt(1, disco.getId());
-			ResultSet result = query.executeQuery();
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (CallableStatement query = connection.prepareCall("{call track_list_disco(?)}");) {
+				query.setInt(1, disco.getId());
+				ResultSet result = query.executeQuery();
 
-			while (result.next()) {
-				int idEtichetta = result.getInt("id_etichetta");
+				while (result.next()) {
+					int idEtichetta = result.getInt("id_etichetta");
 
-				Etichetta dummyEtichetta = null;
+					Etichetta dummyEtichetta = null;
 
-				try (PreparedStatement query2 = connection.prepareStatement("Select * from etichetta where id = ?;")) {
+					try (PreparedStatement query2 = connection
+							.prepareStatement("Select * from etichetta where id = ?;")) {
 
-					query.setInt(1, idEtichetta);
-					ResultSet result2 = query.executeQuery();
+						query.setInt(1, idEtichetta);
+						ResultSet result2 = query.executeQuery();
 
-					while (result2.next()) {
-						dummyEtichetta = new Etichetta(result2.getInt("id"), result2.getString("nome"),
-								result2.getString("partitaIVA"));
+						while (result2.next()) {
+							dummyEtichetta = new Etichetta(result2.getInt("id"), result2.getString("nome"),
+									result2.getString("partitaIVA"));
+						}
+
+					} catch (SQLException e) {
+						throw new DatabaseConnectionException("Inserimento fallito", e);
 					}
 
-				} catch (SQLException e) {
-					throw new DatabaseConnectionException("Inserimento fallito", e);
+					Track dummyTrack = new Track(null, result.getString("Titolo traccia"), result.getFloat("Durata"),
+							disco, dummyEtichetta);
+					tracce.add(dummyTrack);
 				}
 
-				Track dummyTrack = new Track(null, result.getString("Titolo traccia"), result.getFloat("Durata"), disco,
-						dummyEtichetta);
-				tracce.add(dummyTrack);
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
-
-		} catch (SQLException e) {
-			throw new DatabaseConnectionException("Inserimento fallito", e);
 		}
 
 		return tracce;
@@ -481,8 +487,10 @@ public class Query_JDBC {
 		try (CallableStatement query = connection
 				.prepareCall("{call ricerca_di_dischi_con_autore_eo_titolo(?,?,?,?,?,?)}");) {
 			query.setString(1, nomeDArte);
-			if(titolo.equals("")) query.setString(2, null);
-			else query.setString(2, titolo);
+			if (titolo.equals(""))
+				query.setString(2, null);
+			else
+				query.setString(2, titolo);
 			query.setInt(3, collezionista.getID());
 			query.setBoolean(4, collezioni);
 			query.setBoolean(5, condivise);
@@ -544,23 +552,24 @@ public class Query_JDBC {
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
-		}
-		// Altrimenti si esegue la procedura creata e salvata nel db
-		try (CallableStatement query = connection.prepareCall("{call verifica_visibilita_collezione(?,?)}");) {
-			query.setInt(1, collezione.getID());
-			query.setInt(2, collezionista.getID());
-			ResultSet result = query.executeQuery();
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (CallableStatement query = connection.prepareCall("{call verifica_visibilita_collezione(?,?)}");) {
+				query.setInt(1, collezione.getID());
+				query.setInt(2, collezionista.getID());
+				ResultSet result = query.executeQuery();
 
-			while (result.next()) {
-				if (result.getInt("Visibilità") > 0) {
-					isVisible = true;
-				} else {
-					isVisible = false;
+				while (result.next()) {
+					if (result.getInt("Visibilità") > 0) {
+						isVisible = true;
+					} else {
+						isVisible = false;
+					}
 				}
-			}
 
-		} catch (SQLException e) {
-			throw new DatabaseConnectionException("Inserimento fallito", e);
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
 		}
 
 		return isVisible;
@@ -586,6 +595,139 @@ public class Query_JDBC {
 		}
 		return 0;
 	}
+
+	// Query 11
+	public float contaMinutiAutore(String nomeDArte) throws DatabaseConnectionException {
+
+		float minutiTotaliAutore = 0;
+
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection.prepareStatement("SELECT sum(t.durata)\r\n"
+					+ "		FROM autore a\r\n" + "		JOIN produce p ON p.id_autore=a.id\r\n"
+					+ "		JOIN traccia t ON t.id=p.id_traccia\r\n" + "		JOIN disco d ON d.id=t.id_disco\r\n"
+					+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi\r\n"
+					+ "		WHERE c.visibilita=true \r\n" + "		AND a.nome_darte=?\r\n" + "		GROUP BY a.id);")) {
+
+				query.setString(1, nomeDArte);
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					minutiTotaliAutore = result.getFloat("conta_minuti_autore(\"" + nomeDArte + "\")");
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (PreparedStatement query = connection.prepareStatement("select conta_minuti_autore(?);")) {
+
+				query.setString(1, nomeDArte);
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					minutiTotaliAutore = result.getFloat("conta_minuti_autore(\"" + nomeDArte + "\")");
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		}
+
+		return minutiTotaliAutore;
+
+	}
+
+	// Query 12_1
+	public List<NumeroCollezioniDiCollezionista> contaCollezioni() throws DatabaseConnectionException {
+
+		List<NumeroCollezioniDiCollezionista> listaCollezioni = new ArrayList<NumeroCollezioniDiCollezionista>();
+
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection.prepareStatement("SELECT c.nickname as \"Collezionista\" , \r\n"
+					+ "		   count(cd.id) as \"Numero di Collezioni\"\r\n" + "    FROM collezione_di_dischi cd\r\n"
+					+ "	RIGHT JOIN collezionista c ON cd.id_collezionista=c.id\r\n" + "    GROUP BY c.nickname\r\n"
+					+ "    ORDER BY Collezionista ASC;")) {
+
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					listaCollezioni.add(new NumeroCollezioniDiCollezionista(result.getString("Collezionista"),
+							result.getInt("Numero di Collezioni")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (CallableStatement query = connection.prepareCall("{call conta_collezioni()}");) {
+
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					listaCollezioni.add(new NumeroCollezioniDiCollezionista(result.getString("Collezionista"),
+							result.getInt("Numero di Collezioni")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		}
+
+		return listaCollezioni;
+
+	}
+
+	// Query 12_2
+	public List<NumeroDischiPerGenere> contaDischiPerGenere() throws DatabaseConnectionException {
+
+		List<NumeroDischiPerGenere> numeroDischi = new ArrayList<NumeroDischiPerGenere>();
+
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection.prepareStatement("SELECT c.nome_genere as \"Genere\" , \r\n"
+					+ "		   count(c.id_disco) as \"Numero di Dischi\"\r\n" + "    FROM classificazione c\r\n"
+					+ "    GROUP BY c.nome_genere;")) {
+
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					numeroDischi.add(
+							new NumeroDischiPerGenere(result.getString("Genere"), result.getInt("Numero di Dischi")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		} else {
+			// Altrimenti si esegue la procedura creata e salvata nel db
+			try (CallableStatement query = connection.prepareCall("{call conta_dischi_per_genere()}");) {
+
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					numeroDischi.add(
+							new NumeroDischiPerGenere(result.getString("Genere"), result.getInt("Numero di Dischi")));
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		}
+
+		return numeroDischi;
+
+	}
+
 	/*
 	 * ESEMPIO 1: esecuzione diretta di query e lettura dei risultati public void
 	 * classifica_marcatori(int anno) throws ApplicationException {
