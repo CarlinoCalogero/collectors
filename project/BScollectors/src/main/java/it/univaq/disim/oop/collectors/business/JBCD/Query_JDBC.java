@@ -730,7 +730,7 @@ public class Query_JDBC {
 
 	}
 
-	// Query 12_2
+	// Query 13
 	public List<DiscoInCollezione> cercaDischiInCollezioni(String barcode, String titolo, String nomeDArte)
 			throws DatabaseConnectionException {
 
