@@ -13,9 +13,13 @@ BEGIN
 		   d.nome_stato as "Stato",
 		   d.nome_formato as "Formato",
 		   e.nome as "Etichetta",
-           generi_disco(d.id) as "Generi" # Funzione per ricavare tutti i generi in un unica riga
+           generi_disco(d.id) as "Generi", # Funzione per ricavare tutti i generi in un unica riga
+           inf.barcode as "Barcode",
+           inf.note as "Note",
+           inf.numero_copie as "Copie"
 	from disco d
     join etichetta e on d.id_etichetta = e.id
+    join info_disco inf on inf.id_disco = d.id
     where d.id_collezione_di_dischi = id_collezione;
 END$
 
