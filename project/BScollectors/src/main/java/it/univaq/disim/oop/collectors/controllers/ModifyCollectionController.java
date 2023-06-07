@@ -49,7 +49,7 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 	private TableColumn<Collector,Button> condividiTableColumn;
 	
 	@FXML
-	private Button saveButton;
+	private Button saveButton, inserisciDisco;
 	
 	@FXML
 	private TextField nameTextField;
@@ -127,6 +127,10 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 		}
 	}
 	
+	@FXML
+	private void goToInserimentoDisco() {
+		System.out.println("Inserendo un disco...");
+	}
 	@FXML
 	private void save() throws DatabaseConnectionException {
 		dispatcher.renderHome(collector);

@@ -39,8 +39,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 
 public class HomeController implements Initializable, DataInitalizable<Collector>{
 	
@@ -99,16 +101,18 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		visibilityTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, Boolean>("visibilita"));
 		seeTableColumn.setStyle("-fx-alignment: CENTER;");
 		seeTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
-			final Button modifyButton = new Button("Visualizza");
-			modifyButton.setOnAction((ActionEvent event) -> {
+			final Button seeButton = new Button("Visualizza");
+			seeButton.setStyle("-fx-background-color:#bacad7; -fx-background-radius: 15px; -fx-text-fill: #5f6569; -fx-font-weight: bold;");
+			seeButton.setOnAction((ActionEvent event) -> {
 				dispatcher.renderView("see_collection", new Couple<Collection,Collector>(param.getValue(),collector));
 			});
-			return new SimpleObjectProperty<Button>(modifyButton);
+			return new SimpleObjectProperty<Button>(seeButton);
 		});
 		deleteTableColumn.setStyle("-fx-alignment: CENTER;");
 		deleteTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
-			final Button modifyButton = new Button("Cancella");
-			modifyButton.setOnAction((ActionEvent event) -> {
+			final Button deleteButton = new Button("Cancella");
+			deleteButton.setStyle("-fx-background-color: red; -fx-background-radius: 15px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
+			deleteButton.setOnAction((ActionEvent event) -> {
 				try {
 					implementation.deleteCollezione(param.getValue().getID());
 					collectionsData.remove(param.getValue());
@@ -116,11 +120,12 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 					e.printStackTrace();
 				}
 			});
-			return new SimpleObjectProperty<Button>(modifyButton);
+			return new SimpleObjectProperty<Button>(deleteButton);
 		});
 		modifyTableColumn.setStyle("-fx-alignment: CENTER;");
 		modifyTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
 			final Button modifyButton = new Button("Modifica");
+			modifyButton.setStyle("-fx-background-color: green; -fx-background-radius: 15px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
 			modifyButton.setOnAction((ActionEvent event) -> {
 				dispatcher.renderView("modify_collection", new Couple<Collector, Collection>(collector, param.getValue()));
 			});

@@ -50,7 +50,7 @@
         <children>
             <HBox fx:id="parentHBox" prefHeight="26.0" prefWidth="587.0">
                <children>
-                  <Button fx:id="inserisciCollezioneButton" mnemonicParsing="false" onAction="#inserisciCollezione" prefHeight="26.0" prefWidth="148.0" text="Inserisci collezione">
+                  <Button fx:id="inserisciCollezioneButton" mnemonicParsing="false" onAction="#inserisciCollezione" prefHeight="26.0" prefWidth="148.0" styleClass="filter-button" stylesheets="@../style/style.css" text="Inserisci collezione">
                      <HBox.margin>
                         <Insets right="295.0" />
                      </HBox.margin>
@@ -68,7 +68,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </HBox>
-            <TableView fx:id="collectionsTableView" editable="true" prefHeight="577.0" prefWidth="734.0">
+            <TableView fx:id="collectionsTableView" editable="true" prefHeight="577.0" prefWidth="734.0" stylesheets="@../style/style.css">
               <columns>
                 <TableColumn fx:id="nameTableColumn" prefWidth="232.800048828125" text="Nome collezione" />
                 <TableColumn fx:id="visibilityTableColumn" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Visibilità" />
@@ -79,16 +79,19 @@
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
+               <VBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </VBox.margin>
             </TableView>
         </children>
       </VBox>
    </center>
    <top>
-      <VBox BorderPane.alignment="CENTER">
+      <VBox style="-fx-background-color: #e0e0e0;" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="27.0" prefWidth="734.0" style="-fx-background-color: #d3d3d3;">
+            <HBox prefHeight="27.0" prefWidth="734.0">
                <children>
-                  <Button fx:id="homeButton" layoutX="682.0" layoutY="15.0" mnemonicParsing="false" onAction="#home" text="Home">
+                  <Button fx:id="homeButton" layoutX="682.0" layoutY="15.0" mnemonicParsing="false" onAction="#home" styleClass="richiedi-button" stylesheets="@../style/style.css" text="Home">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -101,7 +104,7 @@
                         <Insets left="5.0" top="5.0" />
                      </HBox.margin>
                   </Label>
-                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" text="Logout">
+                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" styleClass="exit-button" stylesheets="@../style/style.css" text="Logout">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
