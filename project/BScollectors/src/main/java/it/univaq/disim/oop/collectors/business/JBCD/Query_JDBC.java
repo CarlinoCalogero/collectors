@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
+import it.univaq.disim.oop.collectors.domain.Track;
 
 public class Query_JDBC {
 
@@ -298,6 +299,14 @@ public class Query_JDBC {
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Selezione Dei dischi Fallita", e);
 		}
+	}
+	
+	//Query 7
+	public List<Track> getTrackList(Disco d) {
+		
+		List<Track> tracks = new ArrayList<>();
+		
+		return tracks;
 	}
 
 	// Query 10

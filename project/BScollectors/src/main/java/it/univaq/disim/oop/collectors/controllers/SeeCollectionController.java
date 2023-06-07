@@ -12,6 +12,7 @@ import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Couple;
 import it.univaq.disim.oop.collectors.domain.Disco;
+import it.univaq.disim.oop.collectors.domain.Triple;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -63,7 +64,8 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 		seeTableColumn.setCellValueFactory((CellDataFeatures<Disco, Button> param) -> {
 			final Button seeButton = new Button("Visualizza");
 			seeButton.setOnAction((ActionEvent event) -> {
-				System.out.println("Visualizzando...");
+				dispatcher.renderView("see_disco", 
+						new Triple<Collector,Collection,Disco>(collector, collection, param.getValue()));
 			});
 			return new SimpleObjectProperty<Button>(seeButton);
 		});
