@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.SeeDscoController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.SeeDiscoController">
    <children>
       <HBox>
          <children>
-            <Label text="Modifica collezione:">
+            <Label text="Visualizza Disco:">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -56,7 +56,7 @@
                         </Label>
                         <Label fx:id="dateLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="System Italic" size="13.0" />
                            </font>
                         </Label>
                      </children>
@@ -75,7 +75,7 @@
                               </Label>
                               <Label fx:id="stateLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font name="System Italic" size="13.0" />
                                  </font>
                               </Label>
                            </children>
@@ -89,7 +89,7 @@
                               </Label>
                               <Label fx:id="formatLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font name="System Italic" size="13.0" />
                                  </font>
                               </Label>
                            </children>
@@ -105,7 +105,7 @@
                         </Label>
                         <Label fx:id="etichettaLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
                            <font>
-                              <Font size="13.0" />
+                              <Font name="System Italic" size="13.0" />
                            </font>
                         </Label>
                      </children>

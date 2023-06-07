@@ -1,12 +1,13 @@
 package it.univaq.disim.oop.collectors.controllers;
 
+import java.awt.Checkbox;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.PopOver;
 import org.controlsfx.control.SearchableComboBox;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
@@ -23,14 +24,21 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class HomeController implements Initializable, DataInitalizable<Collector>{
 	
@@ -56,6 +64,9 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	private TextField searchTextField;
 	
 	@FXML
+	private ImageView searchImageView;
+	
+	@FXML
 	private TableView<Collection> collectionsTableView;
 	
 	@FXML
@@ -75,6 +86,8 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		buildPopOver();
 				
 		nameTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("nome"));
 		visibilityTableColumn.setStyle("-fx-alignment: CENTER;");
@@ -147,6 +160,51 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		} catch(DatabaseConnectionException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	private void buildPopOver() {
+		VBox v = new VBox();
+		Label l = new Label("Cerca disco:");
+		TextField nomedarteTextField = new TextField();
+		TextField titoloTextField = new TextField();
+		
+		
+		CheckBox personali = new CheckBox("Private");
+		CheckBox pubbliche = new CheckBox("Pubbliche");
+		CheckBox condivise = new CheckBox("Condivise");
+		HBox h = new HBox();
+		h.getChildren().add(personali);
+		h.getChildren().add(pubbliche);
+		h.getChildren().add(condivise);
+		HBox.setMargin(personali, new Insets(5,5,0,0));
+		HBox.setMargin(pubbliche, new Insets(5,5,0,0));
+		HBox.setMargin(condivise, new Insets(5,0,0,0));
+		nomedarteTextField.setPromptText("Nome d'arte...");
+		nomedarteTextField.setMinWidth(100);
+		titoloTextField.setPromptText("Titolo...");
+		titoloTextField.setMinWidth(100);
+		v.getChildren().add(l);
+		v.getChildren().add(nomedarteTextField);
+		v.getChildren().add(titoloTextField);
+		v.setPadding(new Insets(5,5,5,5));
+		v.getChildren().add(h);
+		Button button = new Button("Cerca");
+		HBox hb = new HBox();
+		hb.getChildren().add(button);
+		hb.setAlignment(Pos.CENTER);
+		PopOver popOver = new PopOver(v);
+		popOver.setAutoFix(true);
+		popOver.setHideOnEscape(true);
+		popOver.setDetachable(true);
+		popOver.setDetached(false);
+		v.getChildren().add(hb);
+		popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+		searchImageView.setOnMouseEntered(e -> {
+			popOver.show(searchImageView);
+		});
+		button.setOnMouseClicked(event -> {
+			//dispatcher.renderView("tabella dei dischi", null);
+		});
 	}
 	
 	@FXML
