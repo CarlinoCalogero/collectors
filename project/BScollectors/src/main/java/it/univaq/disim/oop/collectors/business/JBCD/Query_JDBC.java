@@ -761,79 +761,97 @@ public class Query_JDBC {
 		} else {
 
 			List<DiscoInCollezione> dischiInCollezioneByTitolo = new ArrayList<DiscoInCollezione>();
-			try (PreparedStatement query = connection.prepareStatement(
-					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
-							+ "from disco as d\r\n"
-							+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-							+ "	join collezionista as ca on cd.id_collezionista = ca.id\r\n"
-							+ "where d.titolo like concat(?,'%');")) {
 
-				query.setString(1, titolo);
-				ResultSet result = query.executeQuery();
+			if (titolo != null) {
+				try (PreparedStatement query = connection.prepareStatement(
+						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
+								+ "from disco as d\r\n"
+								+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+								+ "	join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+								+ "where d.titolo like concat(?,'%');")) {
 
-				while (result.next()) {
-					dischiInCollezioneByTitolo.add(new DiscoInCollezione(result.getString("titolo"),
-							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+					query.setString(1, titolo);
+					ResultSet result = query.executeQuery();
+
+					while (result.next()) {
+						dischiInCollezioneByTitolo.add(new DiscoInCollezione(result.getString("titolo"),
+								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+								result.getString("nome_stato"), result.getString("nome"),
+								result.getString("nickname")));
+					}
+
+					Collections.sort(dischiInCollezioneByTitolo, new StringByLengthComparator(titolo, null));
+
+				} catch (SQLException e) {
+					throw new DatabaseConnectionException("Inserimento fallito", e);
 				}
 
-				Collections.sort(dischiInCollezioneByTitolo, new StringByLengthComparator(titolo, null));
-
-			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
 
 			List<DiscoInCollezione> dischiInCollezioneByAutore = new ArrayList<DiscoInCollezione>();
-			try (PreparedStatement query = connection.prepareStatement(
-					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
-							+ "from incide as i\r\n" + "	join disco as d on i.id_disco=d.id\r\n"
-							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-							+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
-							+ "	join autore as a on i.id_autore=a.id\r\n" + "where a.nome_darte like concat(?,'%');")) {
+			if (nomeDArte != null) {
+				try (PreparedStatement query = connection.prepareStatement(
+						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
+								+ "from incide as i\r\n" + "	join disco as d on i.id_disco=d.id\r\n"
+								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+								+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+								+ "	join autore as a on i.id_autore=a.id\r\n"
+								+ "where a.nome_darte like concat(?,'%');")) {
 
-				query.setString(1, nomeDArte);
-				ResultSet result = query.executeQuery();
+					query.setString(1, nomeDArte);
+					ResultSet result = query.executeQuery();
 
-				while (result.next()) {
-					dischiInCollezioneByAutore.add(new DiscoInCollezione(result.getString("titolo"),
-							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+					while (result.next()) {
+						dischiInCollezioneByAutore.add(new DiscoInCollezione(result.getString("titolo"),
+								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+								result.getString("nome_stato"), result.getString("nome"),
+								result.getString("nickname")));
+					}
+
+					Collections.sort(dischiInCollezioneByAutore, new StringByLengthComparator(null, nomeDArte));
+
+				} catch (SQLException e) {
+					throw new DatabaseConnectionException("Inserimento fallito", e);
 				}
 
-				Collections.sort(dischiInCollezioneByAutore, new StringByLengthComparator(null, nomeDArte));
-
-			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
 
 			List<DiscoInCollezione> dischiInCollezioneByTitoloAndByAutore = new ArrayList<DiscoInCollezione>();
-			try (PreparedStatement query = connection.prepareStatement(
-					"select *\r\n" + "from incide as i\r\n" + "	join disco as d on i.id_disco=d.id\r\n"
-							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-							+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
-							+ "	join autore as a on i.id_autore=a.id\r\n" + "where a.nome_darte like concat(?,'%')\r\n"
-							+ "	and d.titolo like concat(?,'%');")) {
+			if (titolo != null & nomeDArte != null) {
 
-				query.setString(1, titolo);
-				query.setString(2, nomeDArte);
-				ResultSet result = query.executeQuery();
+				try (PreparedStatement query = connection.prepareStatement("select *\r\n" + "from incide as i\r\n"
+						+ "	join disco as d on i.id_disco=d.id\r\n"
+						+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
+						+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+						+ "	join autore as a on i.id_autore=a.id\r\n" + "where a.nome_darte like concat(?,'%')\r\n"
+						+ "	and d.titolo like concat(?,'%');")) {
 
-				while (result.next()) {
-					dischiInCollezioneByTitoloAndByAutore.add(new DiscoInCollezione(result.getString("titolo"),
-							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+					query.setString(1, titolo);
+					query.setString(2, nomeDArte);
+					ResultSet result = query.executeQuery();
+
+					while (result.next()) {
+						dischiInCollezioneByTitoloAndByAutore.add(new DiscoInCollezione(result.getString("titolo"),
+								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
+								result.getString("nome_stato"), result.getString("nome"),
+								result.getString("nickname")));
+					}
+
+					Collections.sort(dischiInCollezioneByTitoloAndByAutore,
+							new StringByLengthComparator(titolo, nomeDArte));
+
+				} catch (SQLException e) {
+					throw new DatabaseConnectionException("Inserimento fallito", e);
 				}
 
-				Collections.sort(dischiInCollezioneByTitoloAndByAutore,
-						new StringByLengthComparator(titolo, nomeDArte));
-
-			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
 
-			dischiInCollezione.addAll(dischiInCollezioneByTitoloAndByAutore);
-			dischiInCollezione.addAll(dischiInCollezioneByTitolo);
-			dischiInCollezione.addAll(dischiInCollezioneByAutore);
+			if (!dischiInCollezioneByTitoloAndByAutore.isEmpty())
+				dischiInCollezione.addAll(dischiInCollezioneByTitoloAndByAutore);
+			if (!dischiInCollezioneByTitolo.isEmpty())
+				dischiInCollezione.addAll(dischiInCollezioneByTitolo);
+			if (!dischiInCollezioneByAutore.isEmpty())
+				dischiInCollezione.addAll(dischiInCollezioneByAutore);
 
 		}
 
