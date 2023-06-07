@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -102,6 +104,62 @@ public class Query_JDBC {
 			query.execute();
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Inserimento fallito", e);
+		}
+	}
+	
+	// Query 2_1
+	public void insertDiscoACollezione(String titolo, LocalDate annoDiUscita, String nomeFormato, String nomeStato,
+				int idEtichetta, int idCollezioneDiDischi, int Barcode, String note, int numeroCopie)
+				throws DatabaseConnectionException {
+			// Se il db non supporta le procedure allora si esegue una semplice query di
+			// inserimento
+			if (!this.supports_procedures) {
+				try (PreparedStatement query = connection.prepareStatement(
+						"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
+								+ "        VALUES (?,?,?,?,?,?);")) {
+					if (annoDiUscita.isAfter(LocalDate.now())) {
+						throw new DateTimeException("Errore! Data invalida");
+					}
+					query.setString(1, titolo);
+				} catch (SQLException e) {
+					throw new DatabaseConnectionException("Inserimento fallito", e);
+				}
+			}
+		}
+	
+	public List<Collector> getCollectors() throws DatabaseConnectionException {
+		List<Collector> collectors = new ArrayList<>();
+		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM collezionista");) {
+			try (ResultSet rs = query.executeQuery()) {
+				while (rs.next()) {
+					collectors.add(new Collector(rs.getInt("id"),rs.getString("nickname"),rs.getString("email")));
+				}
+				return collectors;
+			}
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Condivisione Fallita", e);
+		}
+	}
+	
+	public List<Collector> getSharingOf(Collection collection) throws DatabaseConnectionException {
+		
+		List<Collector> sharingCollectors = new ArrayList<>();
+		
+		try (PreparedStatement query = connection.prepareStatement(""
+				+ "SELECT c.id,c.nickname,c.email \r\n"
+				+ "FROM condivisa con \r\n"
+				+ "JOIN collezionista c on c.id=con.id_collezionista\r\n"
+				+ "WHERE id_collezione=?;");) {
+			query.setInt(1, collection.getID());
+			try (ResultSet rs = query.executeQuery()) {
+				while (rs.next()) {
+					sharingCollectors.add(new Collector(rs.getInt("id"),rs.getString("nickname"),rs.getString("email")));
+				}
+				return sharingCollectors;
+			}
+			
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Condivisione Fallita", e);
 		}
 	}
 

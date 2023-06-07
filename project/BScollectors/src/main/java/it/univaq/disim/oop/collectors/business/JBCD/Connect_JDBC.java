@@ -42,6 +42,7 @@ public class Connect_JDBC {
 			} else {
 				this.connection = DriverManager.getConnection(connection_string);
 			}
+			System.out.println("Connessione stabilita con successo.");
 			return this.connection;
 		} catch (SQLException ex) {
 			System.err.println("\nTentativo di connessione fallito!");

@@ -23,4 +23,11 @@ public class Collector {
 	public String getEmail() {
 		return email;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null || !(obj instanceof Collector)) return false;
+		Collector c = (Collector)obj;
+		return this.ID == c.ID;
+	}
 }
