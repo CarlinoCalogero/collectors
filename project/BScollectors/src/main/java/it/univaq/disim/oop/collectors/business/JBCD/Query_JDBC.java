@@ -505,6 +505,68 @@ public class Query_JDBC {
 		return dischi;
 	}
 
+	// Query 9
+	public boolean verifica_visibilita_collezione(Collection collezione, Collector collezionista)
+			throws DatabaseConnectionException {
+
+		Boolean isVisible = null;
+
+		// Se il db non supporta le procedure allora si esegue una semplice query di
+		// inserimento
+		if (!this.supports_procedures) {
+
+			try (PreparedStatement query = connection
+					.prepareStatement("(/* Verifica della visibiltà per collezioni personali */\r\n"
+							+ "		SELECT cd.id as \"Visibilità\"\r\n" + "		FROM collezione_di_dischi cd\r\n"
+							+ "		WHERE cd.id=?\r\n" + "		AND cd.id_collezionista=? \r\n"
+							+ "	) UNION (/* Verifica della visibilità per collezioni pubbliche */\r\n"
+							+ "		select cd.id as \"Visibilità\"\r\n" + "		from collezione_di_dischi as cd\r\n"
+							+ "		where cd.id=?\r\n" + "			and cd.visibilita=true\r\n"
+							+ "	) UNION (/* Verifica della visibilità per collezioni condivise */\r\n"
+							+ "		SELECT c.id_collezione as \"Visibilità\"\r\n" + "		FROM condivisa c\r\n"
+							+ "		WHERE c.id_collezione=?\r\n" + "		AND c.id_collezionista=?\r\n" + "	);")) {
+
+				query.setInt(1, collezione.getID());
+				query.setInt(2, collezionista.getID());
+				query.setInt(3, collezione.getID());
+				query.setInt(4, collezione.getID());
+				query.setInt(5, collezionista.getID());
+				ResultSet result = query.executeQuery();
+
+				while (result.next()) {
+					if (result.getInt("Visibilità") > 0) {
+						isVisible = true;
+					} else {
+						isVisible = false;
+					}
+				}
+
+			} catch (SQLException e) {
+				throw new DatabaseConnectionException("Inserimento fallito", e);
+			}
+		}
+		// Altrimenti si esegue la procedura creata e salvata nel db
+		try (CallableStatement query = connection.prepareCall("{call verifica_visibilita_collezione(?,?)}");) {
+			query.setInt(1, collezione.getID());
+			query.setInt(2, collezionista.getID());
+			ResultSet result = query.executeQuery();
+
+			while (result.next()) {
+				if (result.getInt("Visibilità") > 0) {
+					isVisible = true;
+				} else {
+					isVisible = false;
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Inserimento fallito", e);
+		}
+
+		return isVisible;
+
+	}
+
 	// Query 10
 	public int getNumberOfTracks(String nomeArte) throws DatabaseConnectionException {
 		String queryString = "SELECT count(distinct t.id) as 'conta'" + "		FROM autore a"
