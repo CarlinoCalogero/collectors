@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.VisibleDiscoController">
+   <children>
+      <HBox>
+         <children>
+            <Label prefHeight="27.0" prefWidth="670.0" text="Modifica collezione:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </Label>
+            <Button fx:id="exitButton" mnemonicParsing="false" onAction="#exit" prefHeight="26.0" prefWidth="53.0" text="Exit">
+               <HBox.margin>
+                  <Insets bottom="3.0" right="5.0" top="3.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+      <HBox prefHeight="416.0" prefWidth="734.0">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <children>
+            <VBox prefHeight="341.0" prefWidth="770.0">
+               <children>
+                  <TableView fx:id="discoTableView" prefHeight="431.0" prefWidth="726.0">
+                    <columns>
+                      <TableColumn fx:id="titoloTableColumn" prefWidth="133.6000002026558" text="Titolo" />
+                      <TableColumn fx:id="dataTableColumn" prefWidth="63.199951171875" text="Anno" />
+                        <TableColumn fx:id="statoTableColumn" prefWidth="112.80007934570312" text="Stato" />
+                        <TableColumn fx:id="formatoTableColumn" prefWidth="96.800048828125" text="Formato" />
+                        <TableColumn fx:id="etichettaTableColumn" prefWidth="120.0" text="Etichetta" />
+                        <TableColumn fx:id="barcodeTableColumn" prefWidth="100.0" text="Barcode" />
+                        <TableColumn fx:id="generiTableColumn" prefWidth="96.79995117187502" text="Generi" />
+                    </columns>
+                  </TableView>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
