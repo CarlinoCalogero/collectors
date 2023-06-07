@@ -10,18 +10,27 @@ public class Disco {
 	private final LocalDate annoDiUscita;
 	private final String stato;
 	private final String formato;
-	private final String etichetta;
+	private final Etichetta etichetta;
 	private final Set<String> generi = new HashSet<String>();
-	
-	public Disco(Integer id, String titolo, LocalDate annoDiUscita, String stato, String formato, String etichetta,String[] generi) {
+	private final String barcode;
+	private final String note;
+	private Integer numeroCopie = 1;
+
+	public Disco(Integer id, String titolo, LocalDate annoDiUscita, String stato, String formato, Etichetta etichetta,
+			String[] generi, String barcode, String note, Integer numeroCopie) {
 		this.id = id;
 		this.titolo = titolo;
 		this.annoDiUscita = annoDiUscita;
 		this.stato = stato;
 		this.formato = formato;
 		this.etichetta = etichetta;
-		for(String s: generi)
+		for (String s : generi)
 			this.generi.add(s);
+		this.barcode = barcode;
+		this.note = note;
+		if (numeroCopie != null) {
+			this.numeroCopie = numeroCopie;
+		}
 	}
 
 	public Integer getId() {
@@ -44,7 +53,7 @@ public class Disco {
 		return formato;
 	}
 
-	public String getEtichetta() {
+	public Etichetta getEtichetta() {
 		return etichetta;
 	}
 
@@ -52,10 +61,22 @@ public class Disco {
 		return new HashSet<String>(generi);
 	}
 
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public Integer getNumeroCopie() {
+		return numeroCopie;
+	}
+
 	@Override
 	public String toString() {
 		return "Disco [id=" + id + ", titolo=" + titolo + ", annoDiUscita=" + annoDiUscita + ", stato=" + stato
 				+ ", formato=" + formato + ", etichetta=" + etichetta + ", generi=" + generi + "]";
 	}
-	
+
 }

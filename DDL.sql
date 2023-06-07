@@ -181,3 +181,7 @@ constraint primary_raggruppamento primary key(id_disco,id_autore),
 constraint incide_disco foreign key(id_disco) references disco(id) on delete cascade,
 constraint incide_autore foreign key(id_autore) references autore(id) on delete restrict
 );
+
+DROP USER IF EXISTS 'application'@'localhost';
+CREATE USER 'application'@'localhost' IDENTIFIED BY "$app!";
+GRANT select,insert,update,execute,delete,show view,create temporary tables ON collectors.* TO 'application'@'localhost';
