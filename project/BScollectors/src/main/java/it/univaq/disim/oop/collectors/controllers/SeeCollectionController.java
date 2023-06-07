@@ -51,9 +51,6 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 	@FXML
 	private TableColumn<Disco,LocalDate> dateTableColumn;
 	
-	@FXML
-	private Button exitButton;
-	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		titleTableColumn.setCellValueFactory(new PropertyValueFactory<Disco, String>("titolo"));
@@ -89,10 +86,5 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@FXML
-	private void exit() {
-		dispatcher.renderHome(collector);
 	}
 }

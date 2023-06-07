@@ -50,6 +50,9 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	private ObservableList<Collection> collectionsData;
 	
 	@FXML
+	private Button homeButton;
+	
+	@FXML
 	private HBox parentHBox;
 	
 	@FXML
@@ -168,7 +171,8 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		Label l = new Label("Cerca disco:");
 		TextField nomedarteTextField = new TextField();
 		TextField titoloTextField = new TextField();
-		
+		HBox space = new HBox();
+		space.setMinHeight(5);
 		
 		CheckBox personali = new CheckBox("Private");
 		CheckBox pubbliche = new CheckBox("Pubbliche");
@@ -186,6 +190,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		titoloTextField.setMinWidth(100);
 		v.getChildren().add(l);
 		v.getChildren().add(nomedarteTextField);
+		v.getChildren().add(space);
 		v.getChildren().add(titoloTextField);
 		v.setPadding(new Insets(5,5,5,5));
 		v.getChildren().add(h);
@@ -196,7 +201,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		PopOver popOver = new PopOver(v);
 		popOver.setAutoFix(true);
 		popOver.setHideOnEscape(true);
-		popOver.setDetachable(true);
+		popOver.setDetachable(false);
 		popOver.setDetached(false);
 		v.getChildren().add(hb);
 		popOver.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
@@ -211,13 +216,18 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 					personali.isSelected(), 
 					condivise.isSelected(),
 					pubbliche.isSelected());
-			dispatcher.renderView("visible_disco", new Couple<Collector,List<Disco>>(collector,discos));
+			dispatcher.renderView("visible_disco", discos);
 		});
 	}
 	
 	@FXML
 	private void logout() {
 		dispatcher.logout();
+	}
+	
+	@FXML
+	private void home() {
+		dispatcher.renderHome(this.collector);
 	}
 	
 	@FXML

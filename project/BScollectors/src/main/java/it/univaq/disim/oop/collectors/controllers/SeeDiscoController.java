@@ -40,9 +40,6 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 	private Label titleLabel,dateLabel,stateLabel,formatLabel,etichettaLabel;
 	
 	@FXML
-	private Button button;
-	
-	@FXML
 	private TableView<Track> trackTableView;
 	
 	@FXML
@@ -83,10 +80,5 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 		
 		List<Track> tracks = implementation.getTrackList(disco);
 		trackTableView.setItems(FXCollections.observableArrayList(tracks));
-	}
-	
-	@FXML
-	private void exit() {
-		dispatcher.renderHome(collector);
 	}
 }

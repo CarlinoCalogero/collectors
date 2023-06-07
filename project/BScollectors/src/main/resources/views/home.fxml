@@ -88,7 +88,12 @@
          <children>
             <HBox prefHeight="27.0" prefWidth="734.0" style="-fx-background-color: #d3d3d3;">
                <children>
-                  <Label fx:id="benvenutoLabel" prefHeight="28.0" prefWidth="662.0" text="Benvenuto">
+                  <Button fx:id="homeButton" layoutX="682.0" layoutY="15.0" mnemonicParsing="false" onAction="#home" text="Home">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Label fx:id="benvenutoLabel" prefHeight="28.0" prefWidth="597.0" text="Benvenuto">
                      <font>
                         <Font size="19.0" />
                      </font>
