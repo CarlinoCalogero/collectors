@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
+import it.univaq.disim.oop.collectors.domain.Etichetta;
 import it.univaq.disim.oop.collectors.domain.Track;
 
 public class Query_JDBC {
@@ -310,8 +311,11 @@ public class Query_JDBC {
 			String queryString = "SELECT d.id as \"ID\"," + "		   d.titolo as \"Titolo\","
 					+ "		   d.anno_di_uscita as \"Anno di uscita\"," + "		   d.nome_stato as \"Stato\","
 					+ "		   d.nome_formato as \"Formato\"," + "		   e.nome as \"Etichetta\","
-					+ "           generi_disco(d.id) as \"Generi\"" + "	from disco d"
-					+ "    join etichetta e on d.id_etichetta = e.id" + "    where d.id_collezione_di_dischi = ?;";
+					+ "           generi_disco(d.id) as \"Generi\"," + "           inf.barcode as \"Barcode\","
+					+ "           inf.note as \"Note\"," + "           inf.numero_copie as \"Copie\""
+					+ "	from disco d" + "    join etichetta e on d.id_etichetta = e.id"
+					+ "    join info_disco inf on inf.id_disco = d.id"
+					+ "    where d.id_collezione_di_dischi = id_collezione;";
 
 			try (PreparedStatement query = connection.prepareStatement(queryString);) {
 				query.setInt(1, idCollection);
@@ -320,8 +324,9 @@ public class Query_JDBC {
 				while (result.next()) {
 					Disco d = new Disco(result.getInt("ID"), result.getString("Titolo"),
 							result.getDate("Anno di uscita").toLocalDate(), result.getString("Stato"),
-							result.getString("Formato"), result.getString("Etichetta"),
-							result.getString("Generi").split(","));
+							result.getString("Formato"), new Etichetta(null, null, result.getString("Etichetta")),
+							result.getString("Generi").split(","), result.getString("Barcode"),
+							result.getString("Note"), result.getInt("Copie"));
 					dischi.add(d);
 				}
 				return dischi;
@@ -337,8 +342,9 @@ public class Query_JDBC {
 			while (result.next()) {
 				Disco d = new Disco(result.getInt("ID"), result.getString("Titolo"),
 						result.getDate("Anno di uscita").toLocalDate(), result.getString("Stato"),
-						result.getString("Formato"), result.getString("Etichetta"),
-						result.getString("Generi").split(","));
+						result.getString("Formato"), new Etichetta(null, null, result.getString("Etichetta")),
+						result.getString("Generi").split(","), result.getString("Barcode"), result.getString("Note"),
+						result.getInt("Copie"));
 				dischi.add(d);
 			}
 			return dischi;

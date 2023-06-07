@@ -14,10 +14,10 @@ public class Disco {
 	private final Set<String> generi = new HashSet<String>();
 	private final String barcode;
 	private final String note;
-	private Integer numeroCopie = 1;
+	private int numeroCopie = 1;
 
 	public Disco(Integer id, String titolo, LocalDate annoDiUscita, String stato, String formato, Etichetta etichetta,
-			String[] generi, String barcode, String note, Integer numeroCopie) {
+			String[] generi, String barcode, String note, int numeroCopie) {
 		this.id = id;
 		this.titolo = titolo;
 		this.annoDiUscita = annoDiUscita;
