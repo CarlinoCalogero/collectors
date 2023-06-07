@@ -28,9 +28,9 @@ public class Disco {
 			this.generi.add(s);
 		this.barcode = barcode;
 		this.note = note;
-		if (numeroCopie != null) {
+		if (numeroCopie > 0) {
 			this.numeroCopie = numeroCopie;
-		}
+		} else throw new IllegalArgumentException("Non puoi inserire un numero di copie negativo o pari a 0");
 	}
 
 	public Integer getId() {
