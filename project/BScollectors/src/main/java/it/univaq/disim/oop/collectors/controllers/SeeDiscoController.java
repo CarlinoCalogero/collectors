@@ -77,8 +77,13 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 		stateLabel.setText(disco.getStato());
 		formatLabel.setText(disco.getFormato());
 		etichettaLabel.setText(disco.getEtichetta().getNome());
+		try {
+			List<Track> tracks = implementation.getTrackList(disco);
+			trackTableView.setItems(FXCollections.observableArrayList(tracks));
+			
+		} catch (DatabaseConnectionException e) {
+			e.printStackTrace();
+		}
 		
-		List<Track> tracks = implementation.getTrackList(disco);
-		trackTableView.setItems(FXCollections.observableArrayList(tracks));
 	}
 }
