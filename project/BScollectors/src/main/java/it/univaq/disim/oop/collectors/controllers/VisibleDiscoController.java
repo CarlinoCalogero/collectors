@@ -40,7 +40,7 @@ public class VisibleDiscoController implements Initializable,DataInitalizable<Li
 		
 		titoloTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("titolo"));
 		statoTableColumn.setStyle("-fx-alignment: CENTER;");
-		statoTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("stato"));
+		statoTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("condizioni"));
 		formatoTableColumn.setStyle("-fx-alignment: CENTER;");
 		formatoTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("formato"));
 		collezioneTableColumn.setStyle("-fx-alignment: CENTER;");
@@ -55,7 +55,6 @@ public class VisibleDiscoController implements Initializable,DataInitalizable<Li
 	public void initializeData(List<DiscoInCollezione> discos) {
 		
 		this.discos = discos;
-		discos.forEach(System.out::println);
 		discoTableView.setItems(FXCollections.observableArrayList(discos));
 	}
 }

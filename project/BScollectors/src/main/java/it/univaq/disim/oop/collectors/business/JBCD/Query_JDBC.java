@@ -468,7 +468,6 @@ public class Query_JDBC {
 	public List<DiscoInCollezione> ricercaDiDischiConAutoreEOTitolo(String nomeDArte, String titolo,
 			Collector collezionista, boolean collezioni, boolean condivise, boolean pubbliche)
 			throws DatabaseConnectionException {
-
 		List<DiscoInCollezione> dischi = new ArrayList<DiscoInCollezione>();
 
 		// Se il db non supporta le procedure allora si esegue una semplice query di
@@ -482,7 +481,8 @@ public class Query_JDBC {
 		try (CallableStatement query = connection
 				.prepareCall("{call ricerca_di_dischi_con_autore_eo_titolo(?,?,?,?,?,?)}");) {
 			query.setString(1, nomeDArte);
-			query.setString(2, titolo);
+			if(titolo.equals("")) query.setString(2, null);
+			else query.setString(2, titolo);
 			query.setInt(3, collezionista.getID());
 			query.setBoolean(4, collezioni);
 			query.setBoolean(5, condivise);
