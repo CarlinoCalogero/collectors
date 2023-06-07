@@ -866,8 +866,10 @@ public class Query_JDBC {
 
 		public StringByLengthComparator(String referenceTitolo, String referenceNomeDArte) {
 			super();
-			this.referenceLengthTitolo = referenceTitolo.length();
-			this.referenceLengthNomeDarte = referenceNomeDArte.length();
+			if (referenceTitolo != null)
+				this.referenceLengthTitolo = referenceTitolo.length();
+			if (referenceNomeDArte != null)
+				this.referenceLengthNomeDarte = referenceNomeDArte.length();
 		}
 
 		private int customCompare(DiscoInCollezione s1, DiscoInCollezione s2, int referenceLength) {
