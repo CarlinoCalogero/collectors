@@ -133,14 +133,12 @@ public class Query_JDBC {
 					throw new DateTimeException("Errore! Data invalida");
 				}
 				connection.setAutoCommit(false);
-				System.out.println(idCollezioneDiDischi);
 				query.setString(1, disco.getTitolo());
 				query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
 				query.setString(3, disco.getFormato());
 				query.setString(4, disco.getStato());
 				query.setInt(5, disco.getEtichetta().getId());
 				query.setInt(6, idCollezioneDiDischi);
-				System.out.println("Query 1");
 				query.execute();
 				int lastInsertedId;
 				ResultSet rs = query.getGeneratedKeys();
@@ -162,24 +160,21 @@ public class Query_JDBC {
 				for (String genere : disco.getGeneri()) {
 					query3.setString(1, genere);
 					query3.setInt(2, lastInsertedId);
-					System.out.println("Query 3");
 					query3.execute();
 				}
 				connection.commit();
-				System.out.println("Commit");
 				connection.setAutoCommit(true);
 			}catch (SQLException e) {
-				throw new DatabaseConnectionException(e);
-				/*try {
+				try {
 					String message = "Inserimento fallito";
 					System.out.println("Rollback");
 					connection.rollback();
 					if(e instanceof SQLIntegrityConstraintViolationException)
 						message = "Disco Duplicato";
-					new DatabaseConnectionException(message, e);
+					throw new DatabaseConnectionException(message, e);
 				} catch (SQLException e1) {
 					throw new DatabaseConnectionException("Errore nell'eseguire il rollback", e1);
-				}*/
+				}
 			}
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
