@@ -125,8 +125,7 @@
                   <TableView fx:id="trackTableView" editable="true" prefHeight="379.0" prefWidth="517.0">
                     <columns>
                       <TableColumn fx:id="titleTableColumn" prefWidth="336.0000122189522" text="Titolo" />
-                      <TableColumn fx:id="durataTableColumn" prefWidth="68.800048828125" text="Durata" />
-                        <TableColumn fx:id="seeTableColumn" prefWidth="110.4000244140625" text="Info" />
+                      <TableColumn fx:id="durataTableColumn" prefWidth="175.0" text="Durata" />
                     </columns>
                      <VBox.margin>
                         <Insets />
