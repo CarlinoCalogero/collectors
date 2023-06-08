@@ -38,13 +38,14 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="456.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.CollezioniCondiviseController">
+<BorderPane prefHeight="456.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.CollezioniTutteController">
    <center>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4">
         <children>
             <TableView fx:id="collectionsTableView" editable="true" prefHeight="577.0" prefWidth="734.0" stylesheets="@../style/style.css">
               <columns>
                 <TableColumn fx:id="nameTableColumn" prefWidth="232.800048828125" text="Nome collezione" />
+                <TableColumn fx:id="visibilityTableColumn" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Visibilità" />
                   <TableColumn fx:id="seeTableColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Visualizza" />
                   <TableColumn fx:id="modifyTableColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Modifica" />
                   <TableColumn fx:id="deleteTableColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Elimina" />

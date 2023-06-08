@@ -7,7 +7,6 @@ import java.util.ResourceBundle;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
-import it.univaq.disim.oop.collectors.domain.Disco;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
@@ -18,26 +17,26 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class VisibleDiscoController implements Initializable,DataInitalizable<List<DiscoInCollezione>>{
-	
+public class VisibleDiscoController implements Initializable, DataInitalizable<List<DiscoInCollezione>> {
+
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
-	
+
 	private List<DiscoInCollezione> discos;
-	
+
 	@FXML
 	private TableView<DiscoInCollezione> discoTableView;
-	
+
 	@FXML
-	private TableColumn<DiscoInCollezione,String> titoloTableColumn, statoTableColumn, 
-	formatoTableColumn, collezioneTableColumn, proprietarioTableColumn;
-	
+	private TableColumn<DiscoInCollezione, String> titoloTableColumn, statoTableColumn, formatoTableColumn,
+			collezioneTableColumn, proprietarioTableColumn;
+
 	@FXML
-	private TableColumn<DiscoInCollezione,LocalDate> dataTableColumn;
+	private TableColumn<DiscoInCollezione, LocalDate> dataTableColumn;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+
 		titoloTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("titolo"));
 		statoTableColumn.setStyle("-fx-alignment: CENTER;");
 		statoTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("condizioni"));
@@ -46,14 +45,15 @@ public class VisibleDiscoController implements Initializable,DataInitalizable<Li
 		collezioneTableColumn.setStyle("-fx-alignment: CENTER;");
 		collezioneTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("collezione"));
 		proprietarioTableColumn.setStyle("-fx-alignment: CENTER;");
-		proprietarioTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("proprietario"));
+		proprietarioTableColumn
+				.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("proprietario"));
 		dataTableColumn.setStyle("-fx-alignment: CENTER;");
 		dataTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, LocalDate>("annoDiUscita"));
-		
+
 	}
-	
+
 	public void initializeData(List<DiscoInCollezione> discos) {
-		
+
 		this.discos = discos;
 		discoTableView.setItems(FXCollections.observableArrayList(discos));
 	}

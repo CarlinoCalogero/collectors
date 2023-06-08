@@ -10,7 +10,6 @@ import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Couple;
-import it.univaq.disim.oop.collectors.domain.Visibilita;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -44,9 +43,6 @@ public class CollezioniPubblicheController implements Initializable, DataInitali
 	private TableColumn<Collection, String> nameTableColumn;
 
 	@FXML
-	private TableColumn<Collection, Visibilita> visibilityTableColumn;
-
-	@FXML
 	private TableColumn<Collection, Button> seeTableColumn;
 
 	@FXML
@@ -59,9 +55,6 @@ public class CollezioniPubblicheController implements Initializable, DataInitali
 	public void initialize(URL location, ResourceBundle resources) {
 
 		nameTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("nome"));
-
-		visibilityTableColumn.setStyle("-fx-alignment: CENTER;");
-		visibilityTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, Visibilita>("visibilita"));
 
 		seeTableColumn.setStyle("-fx-alignment: CENTER;");
 		seeTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {

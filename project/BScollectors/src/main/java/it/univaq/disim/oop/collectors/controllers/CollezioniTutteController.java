@@ -1,6 +1,7 @@
 package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -10,6 +11,7 @@ import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Couple;
+import it.univaq.disim.oop.collectors.domain.Visibilita;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,7 +27,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 
-public class CollezioniCondiviseController implements Initializable, DataInitalizable<Collector> {
+public class CollezioniTutteController implements Initializable, DataInitalizable<Collector> {
 
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
@@ -43,6 +45,9 @@ public class CollezioniCondiviseController implements Initializable, DataInitali
 	private TableColumn<Collection, String> nameTableColumn;
 
 	@FXML
+	private TableColumn<Collection, Visibilita> visibilityTableColumn;
+
+	@FXML
 	private TableColumn<Collection, Button> seeTableColumn;
 
 	@FXML
@@ -55,6 +60,9 @@ public class CollezioniCondiviseController implements Initializable, DataInitali
 	public void initialize(URL location, ResourceBundle resources) {
 
 		nameTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("nome"));
+
+		visibilityTableColumn.setStyle("-fx-alignment: CENTER;");
+		visibilityTableColumn.setCellValueFactory(new PropertyValueFactory<Collection, Visibilita>("visibilita"));
 
 		seeTableColumn.setStyle("-fx-alignment: CENTER;");
 		seeTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
@@ -102,7 +110,13 @@ public class CollezioniCondiviseController implements Initializable, DataInitali
 
 		try {
 
-			List<Collection> collections = implementation.getSharedCollectionsWithCollectors(collector.getID());
+			List<Collection> collections = new ArrayList<Collection>();
+
+			collections.addAll(implementation.getCollectorsCollections(collector.getID())); // collezioni private
+			collections.addAll(implementation.getSharedCollectionsWithCollectors(collector.getID())); // collezioni
+																										// condivise
+			collections.addAll(implementation.getPubblicCollections()); // collezioni pubbliche
+
 			collectionsData = FXCollections.observableArrayList(collections);
 			collectionsTableView.setItems((ObservableList<Collection>) collectionsData);
 

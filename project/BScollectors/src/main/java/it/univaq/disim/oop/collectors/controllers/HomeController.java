@@ -59,7 +59,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 
 	@FXML
 	private void renderCollezioniPrivate() {
-		dispatcher.renderView("collezioni_private", collector);
+		dispatcher.renderView("collezioni_mie", collector);
 	}
 
 	@FXML
