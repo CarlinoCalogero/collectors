@@ -1,6 +1,7 @@
 package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -119,7 +120,11 @@ public class InsertDiscoController implements Initializable,DataInitalizable<Cou
 								barcodeTextField.getText(),
 								noteTextArea.getText(),
 								Integer.parseInt(numeroCopieTextField.getText()));
-		implementation.aggiungiDiscoACollezione(disco, collection.getID());
+		try {
+			implementation.aggiungiDiscoACollezione(disco, collection.getID());
+		}catch(SQLIntegrityConstraintViolationException e) {
+			System.out.println("Disco Gia presente");
+		}
 		dispatcher.renderHome(collector);
 
 	}

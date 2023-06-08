@@ -117,66 +117,64 @@ public class Query_JDBC {
 	}
 
 	// Query 2_1
-	public void aggiungiDiscoACollezione(Disco disco, int idCollezioneDiDischi) throws DatabaseConnectionException {
+	public void aggiungiDiscoACollezione(Disco disco, int idCollezioneDiDischi)
+			throws DatabaseConnectionException, SQLIntegrityConstraintViolationException {
 		// Se il db non supporta le procedure allora si esegue una semplice query di
 		// inserimento
-		if (!this.supports_procedures) {
-
+		if (this.supports_procedures) {
 			try (PreparedStatement query = connection.prepareStatement(
 					"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
-							+ "        VALUES (?,?,?,?,?,?);")) {
+							+ "        VALUES (?,?,?,?,?,?);");
+					PreparedStatement query2 = connection.prepareStatement("INSERT INTO info_disco VALUES (?,?,?,?);");
+					PreparedStatement query3 = connection
+							.prepareStatement("INSERT INTO classificazione VALUES (?,?);")) {
+
 				if (disco.getAnnoDiUscita().isAfter(LocalDate.now())) {
 					throw new DateTimeException("Errore! Data invalida");
 				}
+				connection.setAutoCommit(false);
 				query.setString(1, disco.getTitolo());
 				query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
 				query.setString(3, disco.getFormato());
 				query.setString(4, disco.getStato());
 				query.setInt(5, disco.getEtichetta().getId());
 				query.setInt(6, idCollezioneDiDischi);
-
+				query.execute();
+				int lastInsertedId;
+				ResultSet rs = query.getGeneratedKeys();
+				// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
+				// significa che l'inserimento è andato a buon fine
+				rs.next();
+				lastInsertedId = rs.getInt(1);
+				query2.setInt(1, lastInsertedId);
+				query2.setString(2, disco.getBarcode());
+				query2.setString(3, disco.getNote());
+				query2.setInt(4, disco.getNumeroCopie());
+				query2.execute();
+				// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
+				// significa che l'inserimento è andato a buon fine
+				for (String genere : disco.getGeneri()) {
+					query3.setInt(2, lastInsertedId);
+					query3.setString(2, genere);
+					query3.execute();
+				}
+				connection.commit();
+			} catch (SQLIntegrityConstraintViolationException e) {
 				try {
-					query.execute();
-				} catch (SQLIntegrityConstraintViolationException e) {
+					connection.rollback();
 					throw new SQLIntegrityConstraintViolationException(
 							"Il disco risulta essere già inserito nella collezione", e);
-				}
-				int lastInsertedId;
-				try (PreparedStatement query2 = connection
-						.prepareStatement("INSERT INTO info_disco VALUES (?,?,?,?);")) {
-
-					ResultSet rs = query.getGeneratedKeys();
-					// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
-					// significa che l'inserimento è andato a buon fine
-					rs.next();
-					lastInsertedId = rs.getInt(1);
-					query2.setInt(1, lastInsertedId);
-					query2.setString(2, disco.getBarcode());
-					query2.setString(3, disco.getNote());
-					query2.setInt(4, disco.getNumeroCopie());
-					query2.execute();
-				} catch (SQLException e) {
-					throw new DatabaseConnectionException("Inserimento fallito", e);
-				}
-
-				try (PreparedStatement query2 = connection
-						.prepareStatement("INSERT INTO classificazione VALUES (?,?);")) {
-
-					ResultSet rs = query.getGeneratedKeys();
-					// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
-					// significa che l'inserimento è andato a buon fine
-					for (String genere : disco.getGeneri()) {
-						query2.setInt(2, lastInsertedId);
-						query2.setString(2, genere);
-						query2.execute();
-					}
-
-				} catch (SQLException e) {
-					throw new DatabaseConnectionException("Inserimento fallito", e);
+				} catch (SQLException e1) {
+					throw new DatabaseConnectionException("Errore nell'eseguire il rollback", e1);
 				}
 
 			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
+				try {
+					connection.rollback();
+					throw new DatabaseConnectionException("Inserimento fallito", e);
+				} catch (SQLException e1) {
+					throw new DatabaseConnectionException("Errore nell'eseguire il rollback", e1);
+				}
 			}
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
@@ -192,7 +190,6 @@ public class Query_JDBC {
 				query.setString(8, disco.getNote());
 				query.setInt(9, disco.getNumeroCopie());
 				query.execute();
-
 				try (PreparedStatement query2 = connection.prepareStatement("SELECT last_insert_id();")) {
 
 					ResultSet rs = query2.executeQuery();
@@ -417,17 +414,10 @@ public class Query_JDBC {
 			ResultSet result = query.executeQuery();
 			ArrayList<Disco> dischi = new ArrayList<Disco>();
 			while (result.next()) {
-				Disco d = new Disco(
-						result.getInt("ID"), 
-						result.getString("Titolo"),
-						result.getDate("Anno di uscita").toLocalDate(), 
-						result.getString("Stato"),
-						result.getString("Formato"), 
-						new Etichetta(null, null, result.getString("Etichetta")), 
-						result.getString("Generi").split(", "),
-						null, 
-						null, 
-						1);
+				Disco d = new Disco(result.getInt("ID"), result.getString("Titolo"),
+						result.getDate("Anno di uscita").toLocalDate(), result.getString("Stato"),
+						result.getString("Formato"), new Etichetta(null, null, result.getString("Etichetta")),
+						result.getString("Generi").split(", "), null, null, 1);
 				dischi.add(d);
 			}
 			return dischi;
@@ -485,24 +475,22 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					/*int idEtichetta = result.getInt("id_etichetta");
-
-					Etichetta dummyEtichetta = null;
-
-					try (PreparedStatement query2 = connection
-							.prepareStatement("Select * from etichetta where id = ?;")) {
-
-						query.setInt(1, idEtichetta);
-						ResultSet result2 = query.executeQuery();
-
-						while (result2.next()) {
-							dummyEtichetta = new Etichetta(result2.getInt("id"), result2.getString("nome"),
-									result2.getString("partitaIVA"));
-						}
-
-					} catch (SQLException e) {
-						throw new DatabaseConnectionException("Inserimento fallito", e);
-					}*/
+					/*
+					 * int idEtichetta = result.getInt("id_etichetta");
+					 * 
+					 * Etichetta dummyEtichetta = null;
+					 * 
+					 * try (PreparedStatement query2 = connection
+					 * .prepareStatement("Select * from etichetta where id = ?;")) {
+					 * 
+					 * query.setInt(1, idEtichetta); ResultSet result2 = query.executeQuery();
+					 * 
+					 * while (result2.next()) { dummyEtichetta = new Etichetta(result2.getInt("id"),
+					 * result2.getString("nome"), result2.getString("partitaIVA")); }
+					 * 
+					 * } catch (SQLException e) { throw new
+					 * DatabaseConnectionException("Inserimento fallito", e); }
+					 */
 
 					Track dummyTrack = new Track(null, result.getString("Titolo traccia"), result.getFloat("Durata"),
 							disco, null);
@@ -546,12 +534,9 @@ public class Query_JDBC {
 
 			while (result.next()) {
 
-				DiscoInCollezione dummyDisco = new DiscoInCollezione(
-						result.getString("Titolo"),
-						result.getDate("Anno di uscita").toLocalDate(), 
-						result.getString("Formato"),
-						result.getString("Condizioni"),
-						result.getString("Collezione"),
+				DiscoInCollezione dummyDisco = new DiscoInCollezione(result.getString("Titolo"),
+						result.getDate("Anno di uscita").toLocalDate(), result.getString("Formato"),
+						result.getString("Condizioni"), result.getString("Collezione"),
 						result.getString("Proprietario"));
 				dischi.add(dummyDisco);
 			}
