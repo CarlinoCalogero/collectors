@@ -18,15 +18,12 @@ BEGIN
 	DECLARE EXIT HANDLER FOR SQLSTATE "45000" BEGIN RESIGNAL; END;
     
     SELECT c.id FROM collezionista c WHERE c.nickname = nickname AND c.email = email INTO id_coll;
-    SELECT c.id_collezionista FROM collezione_di_dischi c WHERE c.id = id_collezione INTO id_condivide;
+    SELECT c.id_collezionista,c.visibilita FROM collezione_di_dischi c WHERE c.id = id_collezione INTO id_condivide,visibilita;
     
     IF(id_coll = id_condivide)
     THEN
 		SIGNAL SQLSTATE "45000" SET MESSAGE_TEXT = "Non si può condividere con se stessi";
 	END IF;
-    
-    SELECT coll.visibilita FROM collezione_di_dischi coll WHERE coll.id = id_collezione INTO visibilita;
-    
     IF(visibilita = false) 
 	THEN
 		INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (id_coll,id_collezione);
