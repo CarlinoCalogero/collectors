@@ -59,7 +59,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             ) UNION ( /* Ricerca di un disco in collezioni pubbliche dato l'id del 
 					collezionista e il nome d'arte dell'autore */
 				SELECT d.titolo as "Titolo",
@@ -74,7 +74,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             ) UNION ( /* Ricerca di un disco in collezioni condivise con il collezionista dato 
 					l'id del collezionista e il nome d'arte dell'autore */
 				SELECT d.titolo as "Titolo",
@@ -90,7 +90,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE /* Il titolo non è null */
@@ -109,8 +109,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             ) UNION (/* Ricerca di un disco in collezioni pubbliche dato l'id del 
 						collezionista, il nome d'arte dell'autore e il titolo */
 				SELECT d.titolo as "Titolo",
@@ -125,8 +125,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             ) UNION (/* Ricerca di un disco in collezioni condivise con il collezionista 
 						dato l'id del collezionista, il nome d'arte dell'autore e il titolo */
 				SELECT d.titolo as "Titolo",
@@ -142,8 +142,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
                 JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
     ELSE IF(condivise and collezioni) THEN
@@ -162,7 +162,7 @@ BEGIN
 				JOIN autore a on i.id_autore=a.id
 				JOIN collezionista co on cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             ) UNION ( /* Ricerca di dischi in collezioni condivise con il collezionista dato l'id 
 						del collezionista e il nome dell'autore*/
 				SELECT d.titolo as "Titolo",
@@ -178,7 +178,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE /* Il titolo non è null*/
@@ -197,8 +197,8 @@ BEGIN
 				JOIN autore a on i.id_autore=a.id
 				JOIN collezionista co on cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             ) UNION (/* Ricerca di dischi in collezioni condivise con il collezionista dato l'id 
 						del collezionista e il nome dell'autore e il titolo del disco*/
 				SELECT d.titolo as "Titolo",
@@ -214,8 +214,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
     ELSE IF(pubbliche AND collezioni) THEN
@@ -233,7 +233,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             ) UNION ( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
 				SELECT d.titolo as "Titolo",
 					   d.anno_di_uscita as "Anno di uscita",
@@ -247,7 +247,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista as co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE
@@ -266,8 +266,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             ) UNION ( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore e il
 						titolo del disco */
 				SELECT d.titolo as "Titolo",
@@ -282,8 +282,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista as co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
     ELSE IF(pubbliche AND condivise) THEN
@@ -301,7 +301,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
                 JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             ) UNION ( /* Ricerca di dischi in collezioni condivise con il collezionista dato il 
 						nome d'arte dell'autore */
 				SELECT d.titolo as "Titolo",
@@ -317,7 +317,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE /* Il titolo non è null */
@@ -336,8 +336,8 @@ BEGIN
 				JOIN autore a on i.id_autore=a.id
 				JOIN collezionista co on cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             ) UNION  (/* Ricerca di dischi condivisi con il collezionista dato il nome d'arte
 						dell'autore e il titolo del disco*/
 				SELECT d.titolo as "Titolo",
@@ -353,8 +353,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
     ELSE IF(collezioni) THEN
@@ -368,11 +368,11 @@ BEGIN
                        co.nickname as "Proprietario"
 				FROM disco d
 				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
-				JOIN incide ON d.id=i.id_disco
+				JOIN incide i ON d.id=i.id_disco
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE
@@ -391,8 +391,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
     ELSE IF(condivise) THEN
@@ -412,7 +412,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE
@@ -432,8 +432,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
 	ELSE IF(pubbliche) THEN
@@ -451,7 +451,7 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
+				AND a.nome_darte LIKE nomedarte
             );
 			
 		ELSE
@@ -470,8 +470,8 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE cd.visibilita=true
-				AND a.nome_darte=nomedarte
-				AND d.titolo=titolo
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
             );
 		END IF;
 	END IF;
