@@ -120,11 +120,7 @@ public class InsertDiscoController implements Initializable,DataInitalizable<Cou
 								barcodeTextField.getText(),
 								noteTextArea.getText(),
 								Integer.parseInt(numeroCopieTextField.getText()));
-		try {
-			implementation.aggiungiDiscoACollezione(disco, collection.getID());
-		}catch(SQLIntegrityConstraintViolationException e) {
-			System.out.println("Disco Gia presente");
-		}
+		implementation.aggiungiDiscoACollezione(disco, collection.getID());
 		dispatcher.renderHome(collector);
 
 	}

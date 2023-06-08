@@ -118,13 +118,13 @@ public class Query_JDBC {
 
 	// Query 2_1
 	public void aggiungiDiscoACollezione(Disco disco, int idCollezioneDiDischi)
-			throws DatabaseConnectionException, SQLIntegrityConstraintViolationException {
+			throws DatabaseConnectionException{
 		// Se il db non supporta le procedure allora si esegue una semplice query di
 		// inserimento
 		if (this.supports_procedures) {
 			try (PreparedStatement query = connection.prepareStatement(
 					"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
-							+ "        VALUES (?,?,?,?,?,?);");
+							+ "        VALUES (?,?,?,?,?,?);",new String[]{"ID"});
 					PreparedStatement query2 = connection.prepareStatement("INSERT INTO info_disco VALUES (?,?,?,?);");
 					PreparedStatement query3 = connection
 							.prepareStatement("INSERT INTO classificazione VALUES (?,?);")) {
@@ -133,12 +133,14 @@ public class Query_JDBC {
 					throw new DateTimeException("Errore! Data invalida");
 				}
 				connection.setAutoCommit(false);
+				System.out.println(idCollezioneDiDischi);
 				query.setString(1, disco.getTitolo());
 				query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
 				query.setString(3, disco.getFormato());
 				query.setString(4, disco.getStato());
 				query.setInt(5, disco.getEtichetta().getId());
 				query.setInt(6, idCollezioneDiDischi);
+				System.out.println("Query 1");
 				query.execute();
 				int lastInsertedId;
 				ResultSet rs = query.getGeneratedKeys();
@@ -147,34 +149,37 @@ public class Query_JDBC {
 				rs.next();
 				lastInsertedId = rs.getInt(1);
 				query2.setInt(1, lastInsertedId);
-				query2.setString(2, disco.getBarcode());
+				if(disco.getBarcode().equals(""))
+					query2.setString(2,null);
+				else
+					query2.setString(2, disco.getBarcode());
 				query2.setString(3, disco.getNote());
 				query2.setInt(4, disco.getNumeroCopie());
+				System.out.println("Query 2");
 				query2.execute();
 				// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
 				// significa che l'inserimento è andato a buon fine
 				for (String genere : disco.getGeneri()) {
+					query3.setString(1, genere);
 					query3.setInt(2, lastInsertedId);
-					query3.setString(2, genere);
+					System.out.println("Query 3");
 					query3.execute();
 				}
 				connection.commit();
-			} catch (SQLIntegrityConstraintViolationException e) {
-				try {
+				System.out.println("Commit");
+				connection.setAutoCommit(true);
+			}catch (SQLException e) {
+				throw new DatabaseConnectionException(e);
+				/*try {
+					String message = "Inserimento fallito";
+					System.out.println("Rollback");
 					connection.rollback();
-					throw new SQLIntegrityConstraintViolationException(
-							"Il disco risulta essere già inserito nella collezione", e);
+					if(e instanceof SQLIntegrityConstraintViolationException)
+						message = "Disco Duplicato";
+					new DatabaseConnectionException(message, e);
 				} catch (SQLException e1) {
 					throw new DatabaseConnectionException("Errore nell'eseguire il rollback", e1);
-				}
-
-			} catch (SQLException e) {
-				try {
-					connection.rollback();
-					throw new DatabaseConnectionException("Inserimento fallito", e);
-				} catch (SQLException e1) {
-					throw new DatabaseConnectionException("Errore nell'eseguire il rollback", e1);
-				}
+				}*/
 			}
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
@@ -186,7 +191,10 @@ public class Query_JDBC {
 				query.setString(4, disco.getStato());
 				query.setInt(5, disco.getEtichetta().getId());
 				query.setInt(6, idCollezioneDiDischi);
-				query.setString(7, disco.getBarcode());
+				if(disco.getBarcode().equals(""))
+					query.setString(7,null);
+				else
+					query.setString(7, disco.getBarcode());
 				query.setString(8, disco.getNote());
 				query.setInt(9, disco.getNumeroCopie());
 				query.execute();
