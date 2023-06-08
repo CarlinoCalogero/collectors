@@ -141,7 +141,7 @@ public class Query_JDBC {
 					throw new SQLIntegrityConstraintViolationException(
 							"Il disco risulta essere già inserito nella collezione", e);
 				}
-
+				int lastInsertedId;
 				try (PreparedStatement query2 = connection
 						.prepareStatement("INSERT INTO info_disco VALUES (?,?,?,?);")) {
 
@@ -149,12 +149,28 @@ public class Query_JDBC {
 					// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
 					// significa che l'inserimento è andato a buon fine
 					rs.next();
-					int lastInsertedId = rs.getInt(1);
+					lastInsertedId = rs.getInt(1);
 					query2.setInt(1, lastInsertedId);
 					query2.setString(2, disco.getBarcode());
 					query2.setString(3, disco.getNote());
 					query2.setInt(4, disco.getNumeroCopie());
 					query2.execute();
+				} catch (SQLException e) {
+					throw new DatabaseConnectionException("Inserimento fallito", e);
+				}
+
+				try (PreparedStatement query2 = connection
+						.prepareStatement("INSERT INTO classificazione VALUES (?,?);")) {
+
+					ResultSet rs = query.getGeneratedKeys();
+					// il controllo if(rs.next()) non è necessario perché se siamo arrivati qui
+					// significa che l'inserimento è andato a buon fine
+					for (String genere : disco.getGeneri()) {
+						query2.setInt(2, lastInsertedId);
+						query2.setString(2, genere);
+						query2.execute();
+					}
+
 				} catch (SQLException e) {
 					throw new DatabaseConnectionException("Inserimento fallito", e);
 				}
@@ -176,10 +192,33 @@ public class Query_JDBC {
 				query.setString(8, disco.getNote());
 				query.setInt(9, disco.getNumeroCopie());
 				query.execute();
+
+				try (PreparedStatement query2 = connection.prepareStatement("SELECT last_insert_id();")) {
+
+					ResultSet rs = query2.executeQuery();
+					System.out.println(rs.next());
+					int lastInsertedId = rs.getInt(1);
+					try (PreparedStatement query3 = connection
+							.prepareStatement("INSERT INTO classificazione(nome_genere,id_disco) VALUES(?,?)")) {
+						for (String genere : disco.getGeneri()) {
+							query3.setInt(2, lastInsertedId);
+							query3.setString(1, genere);
+							query3.execute();
+						}
+					} catch (SQLException e) {
+						throw new DatabaseConnectionException("Inserimento fallito", e);
+					}
+
+				} catch (SQLException e) {
+					throw new DatabaseConnectionException("Inserimento fallito", e);
+				}
+
 			} catch (SQLException e) {
 				throw new DatabaseConnectionException("Inserimento fallito", e);
 			}
+
 		}
+
 	}
 
 	// Query 2_2
@@ -378,11 +417,17 @@ public class Query_JDBC {
 			ResultSet result = query.executeQuery();
 			ArrayList<Disco> dischi = new ArrayList<Disco>();
 			while (result.next()) {
-				Disco d = new Disco(result.getInt("ID"), result.getString("Titolo"),
-						result.getDate("Anno di uscita").toLocalDate(), result.getString("Stato"),
-						result.getString("Formato"), new Etichetta(null, null, result.getString("Etichetta")),
-						result.getString("Generi").split(","), result.getString("Barcode"), result.getString("Note"),
-						result.getInt("Copie"));
+				Disco d = new Disco(
+						result.getInt("ID"), 
+						result.getString("Titolo"),
+						result.getDate("Anno di uscita").toLocalDate(), 
+						result.getString("Stato"),
+						result.getString("Formato"), 
+						new Etichetta(null, null, result.getString("Etichetta")), 
+						result.getString("Generi").split(", "),
+						null, 
+						null, 
+						1);
 				dischi.add(d);
 			}
 			return dischi;
@@ -906,27 +951,66 @@ public class Query_JDBC {
 
 	}
 
-	public List<String> getStates() {
+	public List<String> getStates() throws DatabaseConnectionException {
 		List<String> states = new ArrayList<>();
-		
-		return states;
+
+		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM collectors.stato s;");) {
+			try (ResultSet rs = query.executeQuery()) {
+				while (rs.next()) {
+					states.add(rs.getString("nome"));
+				}
+				return states;
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException(e);
+		}
 	}
-	
-	public List<String> getFormats() {
+
+	public List<String> getFormats() throws DatabaseConnectionException {
 		List<String> formats = new ArrayList<>();
-		
-		return formats;
+		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM collectors.formato;");) {
+			try (ResultSet rs = query.executeQuery()) {
+				while (rs.next()) {
+					formats.add(rs.getString("nome"));
+				}
+				return formats;
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException(e);
+		}
 	}
-	
-	public List<String> getGenras() {
+
+	public List<String> getGenras() throws DatabaseConnectionException {
 		List<String> genras = new ArrayList<>();
-		
-		return genras;
+
+		try (PreparedStatement query = connection.prepareStatement("SELECT g.nome FROM collectors.genere g;");) {
+			try (ResultSet rs = query.executeQuery()) {
+				while (rs.next()) {
+					genras.add(rs.getString("nome"));
+				}
+				return genras;
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException(e);
+		}
 	}
-	
-	public List<Etichetta> getEtichette() {
+
+	public List<Etichetta> getEtichette() throws DatabaseConnectionException {
 		List<Etichetta> etichette = new ArrayList<>();
-		
-		return etichette;
+
+		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM collectors.etichetta e;");) {
+			try (ResultSet rs = query.executeQuery()) {
+				while (rs.next()) {
+					etichette.add(new Etichetta(rs.getInt("ID"), rs.getString("partitaIVA"), rs.getString("nome")));
+				}
+				return etichette;
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException(e);
+		}
 	}
 }

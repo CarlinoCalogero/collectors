@@ -17,8 +17,9 @@ public class CollectorsApplication extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		try {
-			System.out.println(BusinessFactory.getImplementation().verifica_visibilita_collezione(new Collection(1,null,null,null), new Collector(1,null,null)));
+			BusinessFactory.getImplementation();
 			ViewDispatcher.getInstance().login(stage);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

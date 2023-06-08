@@ -33,4 +33,9 @@ public class Etichetta {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return "Etichetta [id=" + id + ", partitaIVA=" + partitaIVA + ", nome=" + nome + "]";
+	}
+
 }

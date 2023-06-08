@@ -237,7 +237,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	}
 	
 	@FXML
-	private void home() {
+	public void home() {
 		dispatcher.renderHome(this.collector);
 	}
 	
