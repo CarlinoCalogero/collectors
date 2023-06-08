@@ -69,7 +69,7 @@ public class Query_JDBC {
 		}
 	}
 
-	public List<Collection> getCollections(Integer ID_collector) throws DatabaseConnectionException {
+	public List<Collection> getCollectorsCollections(Integer ID_collector) throws DatabaseConnectionException {
 
 		List<Collection> collections = new ArrayList<>();
 
@@ -87,6 +87,53 @@ public class Query_JDBC {
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Login fallito", e);
 		}
+	}
+
+	public List<Collection> getSharedCollectionsWithCollectors(Integer idCollezionista)
+			throws DatabaseConnectionException {
+
+		List<Collection> collections = new ArrayList<>();
+
+		try (PreparedStatement s = connection.prepareStatement("select * \r\n" + "from condivisa as c\r\n"
+				+ "	join collezione_di_dischi as cd on c.id_collezione=cd.id\r\n" + "where c.id_collezionista = ?;");) {
+
+			s.setInt(1, idCollezionista);
+
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					Visibilita visibilita = rs.getBoolean("visibilita") ? Visibilita.PUBBLICA : Visibilita.PRIVATA;
+					collections.add(new Collection(rs.getInt("id"), rs.getString("nome"), visibilita,
+							rs.getInt("ID_collezionista")));
+				}
+			}
+			return collections;
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
+		}
+
+	}
+
+	public List<Collection> getPubblicCollections() throws DatabaseConnectionException {
+
+		List<Collection> collections = new ArrayList<>();
+
+		try (PreparedStatement s = connection
+				.prepareStatement("select * \r\n" + "from collezione_di_dischi\r\n" + "where visibilita = true;");) {
+
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					Visibilita visibilita = rs.getBoolean("visibilita") ? Visibilita.PUBBLICA : Visibilita.PRIVATA;
+					collections.add(new Collection(rs.getInt("id"), rs.getString("nome"), visibilita,
+							rs.getInt("ID_collezionista")));
+				}
+			}
+			return collections;
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
+		}
+
 	}
 
 	/*

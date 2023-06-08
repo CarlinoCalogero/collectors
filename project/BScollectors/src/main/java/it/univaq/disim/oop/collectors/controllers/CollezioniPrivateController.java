@@ -109,7 +109,7 @@ public class CollezioniPrivateController implements Initializable, DataInitaliza
 
 		try {
 
-			List<Collection> collections = implementation.getCollections(collector.getID());
+			List<Collection> collections = implementation.getCollectorsCollections(collector.getID());
 			collectionsData = FXCollections.observableArrayList(collections);
 			collectionsTableView.setItems((ObservableList<Collection>) collectionsData);
 
