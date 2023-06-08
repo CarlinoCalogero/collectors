@@ -35,6 +35,7 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 	
 	private Collection collection;
 	private Collector collector;
+	private ObservableList<Disco> discosData;
 	
 	@FXML
 	private Label nameLabel, visibilityLabel;
@@ -46,7 +47,7 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 	private TableColumn<Disco,String> titleTableColumn, stateTableColumn, formatTableColumn;
 	
 	@FXML
-	private TableColumn<Disco,Button> seeTableColumn;
+	private TableColumn<Disco,Button> seeTableColumn, deleteTableColumn;
 	
 	@FXML
 	private TableColumn<Disco,LocalDate> dateTableColumn;
@@ -66,6 +67,19 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 			});
 			return new SimpleObjectProperty<Button>(seeButton);
 		});
+		deleteTableColumn.setStyle("-fx-alignment: CENTER;");
+		deleteTableColumn.setCellValueFactory((CellDataFeatures<Disco, Button> param) -> {
+			final Button eliminaButton = new Button("Elimina");
+			eliminaButton.setOnAction((ActionEvent event) -> {
+				try {
+					implementation.deleteDisco(param.getValue().getId());
+					discosData.remove(param.getValue());
+				} catch (DatabaseConnectionException e) {
+					e.printStackTrace();
+				}
+			});
+			return new SimpleObjectProperty<Button>(eliminaButton);
+		});
 	}
 	
 	public void initializeData(Couple<Collection,Collector> couple) {
@@ -81,7 +95,7 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 		
 		try {
 			List<Disco> discos = implementation.getDischiInCollezione(collection.getID());
-			ObservableList<Disco> discosData = FXCollections.observableArrayList(discos);
+			discosData = FXCollections.observableArrayList(discos);
 			discoTableView.setItems((ObservableList<Disco>) discosData);
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
