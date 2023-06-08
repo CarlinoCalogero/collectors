@@ -1,13 +1,13 @@
 package it.univaq.disim.oop.collectors.domain;
 
 public class Collection {
-	
+
 	private final Integer ID;
 	private final String nome;
-	private final Boolean visibilita;
+	private final Visibilita visibilita;
 	private final Integer ID_collezionista;
-	
-	public Collection(Integer ID, String nome, Boolean visibilita, Integer ID_collezionista) {
+
+	public Collection(Integer ID, String nome, Visibilita visibilita, Integer ID_collezionista) {
 		this.ID = ID;
 		this.nome = nome;
 		this.visibilita = visibilita;
@@ -22,7 +22,7 @@ public class Collection {
 		return nome;
 	}
 
-	public Boolean getVisibilita() {
+	public Visibilita getVisibilita() {
 		return visibilita;
 	}
 

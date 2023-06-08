@@ -33,8 +33,6 @@
 -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
@@ -42,7 +40,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="456.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.HomeController">
    <center>
@@ -81,32 +78,4 @@
         </children>
       </VBox>
    </center>
-   <top>
-      <VBox style="-fx-background-color: #e0e0e0;" BorderPane.alignment="CENTER">
-         <children>
-            <HBox prefHeight="27.0" prefWidth="734.0">
-               <children>
-                  <Button fx:id="homeButton" layoutX="682.0" layoutY="15.0" mnemonicParsing="false" onAction="#home" styleClass="richiedi-button" stylesheets="@../style/style.css" text="Home">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Label fx:id="benvenutoLabel" prefHeight="28.0" prefWidth="597.0" text="Collezioni Condivise con">
-                     <font>
-                        <Font size="19.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" styleClass="exit-button" stylesheets="@../style/style.css" text="Logout">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-   </top>
 </BorderPane>
