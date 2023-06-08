@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping;
-import com.mysql.cj.protocol.Resultset;
-import com.mysql.cj.xdevapi.Result;
-
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
@@ -81,8 +77,8 @@ public class Query_JDBC {
 				.prepareStatement("select * from collezione_di_dischi where ID_collezionista = ?");) {
 			s.setInt(1, ID_collector);
 			try (ResultSet rs = s.executeQuery()) {
-				Visibilita visibilita = rs.getBoolean("visibilita") ? Visibilita.PUBBLICA : Visibilita.PRIVATA;
 				while (rs.next()) {
+					Visibilita visibilita = rs.getBoolean("visibilita") ? Visibilita.PUBBLICA : Visibilita.PRIVATA;
 					collections.add(new Collection(rs.getInt("id"), rs.getString("nome"), visibilita,
 							rs.getInt("ID_collezionista")));
 				}
