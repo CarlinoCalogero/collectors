@@ -129,7 +129,7 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 	
 	@FXML
 	private void goToInserimentoDisco() {
-		System.out.println("Inserendo un disco...");
+		dispatcher.renderView("insert_disco", collection);
 	}
 	@FXML
 	private void save() throws DatabaseConnectionException {

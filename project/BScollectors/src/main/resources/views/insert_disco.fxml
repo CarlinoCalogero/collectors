@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.InsertDiscoController">
+   <children>
+      <HBox>
+         <children>
+            <Label text="Inserisci disco:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets bottom="30.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="419.0" prefWidth="734.0">
+         <children>
+            <VBox prefHeight="417.0" prefWidth="377.0">
+               <children>
+                  <VBox>
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="382.0" text="Titolo:">
+                           <VBox.margin>
+                              <Insets left="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <TextField fx:id="titoloTextField" prefHeight="26.0" prefWidth="225.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0">
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="382.0" text="Data di uscita:">
+                           <VBox.margin>
+                              <Insets left="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <DatePicker fx:id="dataPicker" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <ComboBox fx:id="statoComboBox" prefHeight="26.0" prefWidth="172.0" promptText="Stato" />
+                        <ComboBox fx:id="formatoComboBox" layoutX="116.0" layoutY="10.0" prefHeight="26.0" prefWidth="169.0" promptText="Formato">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="427.0" text="Generi:">
+                           <VBox.margin>
+                              <Insets left="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TableView fx:id="generiTableView" prefHeight="200.0" prefWidth="200.0">
+                          <columns>
+                            <TableColumn fx:id="genereTableColumn" prefWidth="268.80000001192093" text="Genere" />
+                            <TableColumn fx:id="aggiungiTableColumn" prefWidth="92.00003051757812" text="Aggiungi" />
+                          </columns>
+                           <VBox.margin>
+                              <Insets left="5.0" right="5.0" />
+                           </VBox.margin>
+                        </TableView>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="417.0" prefWidth="386.0">
+               <children>
+                  <VBox prefHeight="51.0" prefWidth="370.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="381.0" text="Etichetta: " />
+                        <HBox alignment="CENTER">
+                           <children>
+                              <TextField fx:id="etichettaTextField" prefHeight="26.0" prefWidth="245.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" prefHeight="51.0" prefWidth="370.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="381.0" text="Barcode: " />
+                        <HBox alignment="CENTER">
+                           <children>
+                              <TextField fx:id="barcodeTextField" prefHeight="26.0" prefWidth="245.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="61.0" prefHeight="135.0" prefWidth="370.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="381.0" text="Note: " />
+                        <HBox alignment="CENTER" />
+                        <HBox alignment="CENTER" prefHeight="121.0" prefWidth="370.0">
+                           <children>
+                              <TextArea fx:id="noteTextArea" prefHeight="105.0" prefWidth="234.0" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="370.0">
+                     <children>
+                        <Label prefHeight="30.0" prefWidth="159.0" text="Numero copie:" />
+                        <TextField fx:id="numeroCopieTextField" prefHeight="26.0" prefWidth="32.0" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="34.0" prefWidth="71.0" text="Save">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="30.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

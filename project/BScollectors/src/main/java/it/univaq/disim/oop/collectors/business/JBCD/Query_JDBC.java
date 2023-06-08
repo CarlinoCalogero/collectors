@@ -906,4 +906,27 @@ public class Query_JDBC {
 
 	}
 
+	public List<String> getStates() {
+		List<String> states = new ArrayList<>();
+		
+		return states;
+	}
+	
+	public List<String> getFormats() {
+		List<String> formats = new ArrayList<>();
+		
+		return formats;
+	}
+	
+	public List<String> getGenras() {
+		List<String> genras = new ArrayList<>();
+		
+		return genras;
+	}
+	
+	public List<Etichetta> getEtichette() {
+		List<Etichetta> etichette = new ArrayList<>();
+		
+		return etichette;
+	}
 }
