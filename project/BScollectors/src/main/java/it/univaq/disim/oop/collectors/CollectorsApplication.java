@@ -26,7 +26,7 @@ public class CollectorsApplication extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		try {
-			//BusinessFactory.getImplementation().contaDischiPerGenere().forEach(System.out::println);
+			System.out.println(BusinessFactory.getImplementation().contaMinutiAutore("pink floyd"));
 			ViewDispatcher.getInstance().login(stage);
 			
 		} catch (Exception e) {

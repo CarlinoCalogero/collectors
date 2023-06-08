@@ -348,7 +348,7 @@ public class Query_JDBC {
 
 	// Query 3_1
 	public void insertCondivisione(Integer idColl, Collector c) throws DatabaseConnectionException {
-		if (this.supports_procedures) {
+		if (!this.supports_procedures) {
 			try (PreparedStatement query = connection
 					.prepareStatement("INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (?,?);");
 					PreparedStatement getCondivisa = connection.prepareStatement(
@@ -378,6 +378,8 @@ public class Query_JDBC {
 				query.setInt(2, idColl);
 				query.execute();
 				connection.commit();
+				connection.setAutoCommit(true);
+				return;
 			} catch (SQLException e) {
 				try {
 					connection.rollback();
@@ -416,6 +418,7 @@ public class Query_JDBC {
 				query.execute();
 				connection.commit();
 				connection.setAutoCommit(true);
+				return;
 			} catch (SQLException e) {
 				try {
 					connection.rollback();
@@ -424,7 +427,6 @@ public class Query_JDBC {
 				}
 				throw new DatabaseConnectionException("Condivisione Fallita", e);
 			}
-			return;
 		}
 		// Altrimenti si esegue la procedura creata e salvata nel db
 		try (CallableStatement query = connection.prepareCall("{call cambia_visibilita(?)}");) {
@@ -687,47 +689,24 @@ public class Query_JDBC {
 
 	// Query 11
 	public float contaMinutiAutore(String nomeDArte) throws DatabaseConnectionException {
-
+		String queryString = "SELECT sum(distinct t.durata) as 'conta'" + "		FROM autore a"
+				+ "		JOIN produce p ON p.id_autore=a.id" + "		JOIN traccia t ON t.id=p.id_traccia"
+				+ "		JOIN disco d ON d.id=t.id_disco"
+				+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi" + "		WHERE c.visibilita=true"
+				+ "		AND a.nome_darte=?" + "		GROUP BY a.id;";
 		float minutiTotaliAutore = 0;
-
-		// Se il db non supporta le procedure allora si esegue una semplice query di
-		// inserimento
-		if (!this.supports_procedures) {
-
-			try (PreparedStatement query = connection.prepareStatement("SELECT sum(distinct t.durata) as 'conta'"
-					+ "		FROM autore a\r\n" + "		JOIN produce p ON p.id_autore=a.id\r\n"
-					+ "		JOIN traccia t ON t.id=p.id_traccia\r\n" + "		JOIN disco d ON d.id=t.id_disco\r\n"
-					+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi\r\n"
-					+ "		WHERE c.visibilita=true \r\n" + "		AND a.nome_darte=?\r\n" + "		GROUP BY a.id);")) {
-
-				query.setString(1, nomeDArte);
-				ResultSet result = query.executeQuery();
-
-				while (result.next()) {
-					minutiTotaliAutore = result.getFloat("conta");
-				}
-
-			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
+		if (this.supports_function_calls)
+			queryString = "select conta_minuti_autore(?) as 'conta';";
+		try (PreparedStatement query = connection.prepareStatement(queryString)) {
+			query.setString(1, nomeDArte);
+			ResultSet result = query.executeQuery();
+			while (result.next()) {
+				minutiTotaliAutore = result.getFloat("conta");
 			}
-		} else {
-			// Altrimenti si esegue la procedura creata e salvata nel db
-			try (PreparedStatement query = connection.prepareStatement("select conta_minuti_autore(?) as 'conta';")) {
-
-				query.setString(1, nomeDArte);
-				ResultSet result = query.executeQuery();
-
-				while (result.next()) {
-					minutiTotaliAutore = result.getFloat("conta");
-				}
-
-			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
-			}
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Inserimento fallito", e);
 		}
-
 		return minutiTotaliAutore;
-
 	}
 
 	// Query 12_1
