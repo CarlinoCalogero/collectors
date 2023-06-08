@@ -44,57 +44,9 @@ CREATE PROCEDURE ricerca_di_dischi_con_autore_eo_titolo(
     in pubbliche boolean)
 BEGIN
 	IF(pubbliche AND condivise AND collezioni) THEN
-		IF(titolo is null) THEN
-			( /* Ricerca di un disco in collezioni personali dato l'id del 
-				collezionista e il nome d'arte dell'autore*/
-				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita", 
-                       d.nome_formato as "Formato", 
-                       d.nome_stato as "Condizioni", 
-                       cd.nome as "Collezione", 
-                       co.nickname as "Proprietario"
-				FROM disco d
-				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON d.id=i.id_disco
-				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte LIKE nomedarte
-            ) UNION ( /* Ricerca di un disco in collezioni pubbliche dato l'id del 
-					collezionista e il nome d'arte dell'autore */
-				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita", 
-                       d.nome_formato as "Formato", 
-                       d.nome_stato as "Condizioni", 
-                       cd.nome as "Collezione", 
-                       co.nickname as "Proprietario"
-				FROM disco d
-				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON d.id=i.id_disco
-				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE cd.visibilita=true
-				AND a.nome_darte LIKE nomedarte
-            ) UNION ( /* Ricerca di un disco in collezioni condivise con il collezionista dato 
-					l'id del collezionista e il nome d'arte dell'autore */
-				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita",
-                       d.nome_formato as "Formato", 
-                       d.nome_stato as "Condizioni", 
-                       cd.nome as "Collezione", 
-                       co.nickname as "Proprietario"
-				FROM condivisa c
-				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
-				JOIN disco d ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON i.id_disco=d.id
-				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte LIKE nomedarte
-            );
-			
-		ELSE /* Il titolo non è null */
-
+    
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
 			( /* Ricerca di un disco in collezioni personali dato l'id del 
 				collezionista, il nome d'arte dell'autore e il titolo*/
 				SELECT d.titolo as "Titolo",
@@ -145,8 +97,151 @@ BEGIN
 				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
+        ELSE        
+		/* Se il titolo è null */
+		IF(titolo is null) THEN
+			( /* Ricerca di un disco in collezioni personali dato l'id del 
+				collezionista e il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.id_collezionista = id_collezionista
+				AND a.nome_darte LIKE nomedarte
+            ) UNION ( /* Ricerca di un disco in collezioni pubbliche dato l'id del 
+					collezionista e il nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND a.nome_darte LIKE nomedarte
+            ) UNION ( /* Ricerca di un disco in collezioni condivise con il collezionista dato 
+					l'id del collezionista e il nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM condivisa c
+				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
+				JOIN disco d ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON i.id_disco=d.id
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE c.id_collezionista=id_collezionista
+				AND a.nome_darte LIKE nomedarte
+            );
+		ELSE
+        
+        /* Se il nomedarte è null */
+        IF(nomedarte is null) THEN
+			( /* Ricerca di un disco in collezioni personali dato l'id del 
+				collezionista e il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.id_collezionista = id_collezionista
+				AND d.titolo LIKE titolo
+            ) UNION ( /* Ricerca di un disco in collezioni pubbliche dato l'id del 
+					collezionista e il nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND d.titolo LIKE titolo
+            ) UNION ( /* Ricerca di un disco in collezioni condivise con il collezionista dato 
+					l'id del collezionista e il nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM condivisa c
+				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
+				JOIN disco d ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON i.id_disco=d.id
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE c.id_collezionista=id_collezionista
+				AND d.titolo LIKE titolo
+            );
 		END IF;
+        END IF;
+        END IF;
+        
     ELSE IF(condivise and collezioni) THEN
+    
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
+			( /* Ricerca di dischi in collezioni personali dato l'id del collezionista
+					e il nome dell'autore e il titolo del disco*/
+					SELECT d.titolo as "Titolo",
+						   d.anno_di_uscita as "Anno di uscita", 
+						   d.nome_formato as "Formato", 
+						   d.nome_stato as "Condizioni", 
+						   cd.nome as "Collezione", 
+						   co.nickname as "Proprietario"
+					FROM disco d
+					JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+					JOIN incide i on d.id=i.id_disco
+					JOIN autore a on i.id_autore=a.id
+					JOIN collezionista co on cd.id_collezionista=co.id
+					WHERE cd.id_collezionista = id_collezionista
+					AND a.nome_darte LIKE nomedarte
+					AND d.titolo LIKE titolo
+				) UNION (/* Ricerca di dischi in collezioni condivise con il collezionista dato l'id 
+							del collezionista e il nome dell'autore e il titolo del disco*/
+					SELECT d.titolo as "Titolo",
+						   d.anno_di_uscita as "Anno di uscita", 
+						   d.nome_formato as "Formato", 
+						   d.nome_stato as "Condizioni", 
+						   cd.nome as "Collezione", 
+						   co.nickname as "Proprietario"
+					FROM condivisa c
+					JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
+					JOIN disco d ON d.id_collezione_di_dischi=cd.id
+					JOIN incide i ON i.id_disco=d.id
+					JOIN autore a ON i.id_autore=a.id
+					JOIN collezionista co ON cd.id_collezionista=co.id
+					WHERE c.id_collezionista=id_collezionista
+					AND a.nome_darte LIKE nomedarte
+					AND d.titolo LIKE titolo
+				);
+		ELSE 
+		/* Se il titolo è null */
 		IF(titolo is null) THEN
 			( /* Ricerca di dischi in collezioni personali dato l'id del collezionista
 				e il nome dell'autore */
@@ -180,11 +275,12 @@ BEGIN
 				WHERE c.id_collezionista=id_collezionista
 				AND a.nome_darte LIKE nomedarte
             );
-			
-		ELSE /* Il titolo non è null*/
-
+		ELSE
+        
+        /* Se il nomedarte è null */
+        IF(nomedarte is null) THEN
 			( /* Ricerca di dischi in collezioni personali dato l'id del collezionista
-				e il nome dell'autore e il titolo del disco*/
+				e il nome dell'autore */
 				SELECT d.titolo as "Titolo",
 					   d.anno_di_uscita as "Anno di uscita", 
                        d.nome_formato as "Formato", 
@@ -192,19 +288,18 @@ BEGIN
                        cd.nome as "Collezione", 
                        co.nickname as "Proprietario"
 				FROM disco d
-				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN collezione_di_dischi cd on d.id_collezione_di_dischi=cd.id
 				JOIN incide i on d.id=i.id_disco
 				JOIN autore a on i.id_autore=a.id
 				JOIN collezionista co on cd.id_collezionista=co.id
 				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
-            ) UNION (/* Ricerca di dischi in collezioni condivise con il collezionista dato l'id 
-						del collezionista e il nome dell'autore e il titolo del disco*/
+            ) UNION ( /* Ricerca di dischi in collezioni condivise con il collezionista dato l'id 
+						del collezionista e il nome dell'autore*/
 				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita", 
-					   d.nome_formato as "Formato", 
-                       d.nome_stato as "Condizioni", 
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato",
+                       d.nome_stato as "Condizioni",
                        cd.nome as "Collezione", 
                        co.nickname as "Proprietario"
 				FROM condivisa c
@@ -214,44 +309,16 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
 		END IF;
-    ELSE IF(pubbliche AND collezioni) THEN
-		IF(titolo is null) THEN
-			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore*/
-				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita", 
-                       d.nome_formato as "Formato", 
-                       d.nome_stato as "Condizioni", 
-                       cd.nome as "Collezione", 
-                       co.nickname as "Proprietario"
-				FROM disco d
-				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON d.id=i.id_disco
-				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE cd.id_collezionista = id_collezionista
-				AND a.nome_darte LIKE nomedarte
-            ) UNION ( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
-				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita",
-                       d.nome_formato as "Formato", 
-                       d.nome_stato as "Condizioni", 
-                       cd.nome as "Collezione", 
-                       co.nickname as "Proprietario"
-				FROM disco d
-				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON d.id=i.id_disco
-				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista as co ON cd.id_collezionista=co.id
-				WHERE cd.visibilita=true
-				AND a.nome_darte LIKE nomedarte
-            );
-			
-		ELSE
+		END IF;
+        END IF;
 
+    ELSE IF(pubbliche AND collezioni) THEN
+
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
 			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore e il
 				titolo del disco */
 				SELECT d.titolo as "Titolo",
@@ -285,10 +352,11 @@ BEGIN
 				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
-		END IF;
-    ELSE IF(pubbliche AND condivise) THEN
+		ELSE 
+
+		/* Se il titolo è null */
 		IF(titolo is null) THEN
-			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
+			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore*/
 				SELECT d.titolo as "Titolo",
 					   d.anno_di_uscita as "Anno di uscita", 
                        d.nome_formato as "Formato", 
@@ -299,29 +367,65 @@ BEGIN
 				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
 				JOIN incide i ON d.id=i.id_disco
 				JOIN autore a ON i.id_autore=a.id
-                JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE cd.visibilita=true
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.id_collezionista = id_collezionista
 				AND a.nome_darte LIKE nomedarte
-            ) UNION ( /* Ricerca di dischi in collezioni condivise con il collezionista dato il 
-						nome d'arte dell'autore */
+            ) UNION ( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
 				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita", 
-                       d.nome_formato as "Formato",
-                       d.nome_stato as "Condizioni",
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
                        cd.nome as "Collezione", 
                        co.nickname as "Proprietario"
-				FROM condivisa c
-				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
-				JOIN disco d ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON i.id_disco=d.id
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
 				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE c.id_collezionista=id_collezionista
+				JOIN collezionista as co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
 				AND a.nome_darte LIKE nomedarte
             );
-			
-		ELSE /* Il titolo non è null */
+		ELSE
+        
+		/* Se il nomedarte è null */
+		IF(nomedarte is null) THEN
+			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.id_collezionista = id_collezionista
+				AND d.titolo LIKE titolo
+            ) UNION ( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista as co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND d.titolo LIKE titolo
+            );
+		END IF;
+		END IF;
+        END IF;
+        
+    ELSE IF(pubbliche AND condivise) THEN
 
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
 			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore e il 
 				titolo del disco */
 				SELECT d.titolo as "Titolo",
@@ -356,12 +460,13 @@ BEGIN
 				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
-		END IF;
-    ELSE IF(collezioni) THEN
+		ELSE 
+
+		/* Se il titolo è null */
 		IF(titolo is null) THEN
-			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore*/
+			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
 				SELECT d.titolo as "Titolo",
-					   d.anno_di_uscita as "Anno di uscita",
+					   d.anno_di_uscita as "Anno di uscita", 
                        d.nome_formato as "Formato", 
                        d.nome_stato as "Condizioni", 
                        cd.nome as "Collezione", 
@@ -370,13 +475,69 @@ BEGIN
 				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
 				JOIN incide i ON d.id=i.id_disco
 				JOIN autore a ON i.id_autore=a.id
+                JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND a.nome_darte LIKE nomedarte
+            ) UNION ( /* Ricerca di dischi in collezioni condivise con il collezionista dato il 
+						nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato",
+                       d.nome_stato as "Condizioni",
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM condivisa c
+				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
+				JOIN disco d ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON i.id_disco=d.id
+				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE cd.id_collezionista = id_collezionista
+				WHERE c.id_collezionista=id_collezionista
 				AND a.nome_darte LIKE nomedarte
             );
-			
 		ELSE
+        
+        /* Se il domedarte è null */
+		IF(nomedarte is null) THEN
+			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+                JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND d.titolo LIKE titolo
+            ) UNION ( /* Ricerca di dischi in collezioni condivise con il collezionista dato il 
+						nome d'arte dell'autore */
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita", 
+                       d.nome_formato as "Formato",
+                       d.nome_stato as "Condizioni",
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM condivisa c
+				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
+				JOIN disco d ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON i.id_disco=d.id
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE c.id_collezionista=id_collezionista
+				AND d.titolo LIKE titolo
+            );
+		END IF;
+        END IF;
+        END IF;
+        
+    ELSE IF(collezioni) THEN
 
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
 			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore
 				e il titolo*/
 				SELECT d.titolo as "Titolo",
@@ -394,8 +555,73 @@ BEGIN
 				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
+		ELSE
+        
+        /* Se il titolo è null */
+		IF(titolo is null) THEN
+			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.id_collezionista = id_collezionista
+				AND a.nome_darte LIKE nomedarte
+            );
+		ELSE 
+        
+        /* Se il nomedarte è null */
+        IF(nomedarte is null) THEN
+			( /* Ricerca di dischi in collezioni personali dato il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+					   d.anno_di_uscita as "Anno di uscita",
+                       d.nome_formato as "Formato", 
+                       d.nome_stato as "Condizioni", 
+                       cd.nome as "Collezione", 
+                       co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.id_collezionista = id_collezionista
+				AND d.titolo LIKE titolo
+            );
 		END IF;
+        END IF;
+        END IF;
+        
     ELSE IF(condivise) THEN
+
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
+			( /* Ricerca di dischi in collezioni condivise con il collezionista dato
+				il nome dell'autore e il titolo*/
+				SELECT d.titolo as "Titolo",
+                d.anno_di_uscita as "Anno di uscita",
+                d.nome_formato as "Formato", 
+                d.nome_stato as "Condizioni", 
+                cd.nome as "Collezione", 
+                co.nickname as "Proprietario"
+				FROM condivisa c
+				JOIN collezione_di_dischi cd ON c.id_collezione=cd.id
+				JOIN disco d ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON i.id_disco=d.id
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE c.id_collezionista=id_collezionista
+				AND a.nome_darte LIKE nomedarte
+				AND d.titolo LIKE titolo
+            );
+		ELSE
+
+		/* Se il titolo è null */
 		IF(titolo is null) THEN
 			( /* Ricerca di dischi in collezioni condivise con il collezionista dato
 				il nome dell'autore*/
@@ -416,11 +642,13 @@ BEGIN
             );
 			
 		ELSE
-
+        
+        /* Se il nomedarte è null */
+		IF(nomedarte is null) THEN
 			( /* Ricerca di dischi in collezioni condivise con il collezionista dato
-				il nome dell'autore e il titolo*/
+				il nome dell'autore*/
 				SELECT d.titolo as "Titolo",
-                d.anno_di_uscita as "Anno di uscita",
+                d.anno_di_uscita as "Anno di uscita", 
                 d.nome_formato as "Formato", 
                 d.nome_stato as "Condizioni", 
                 cd.nome as "Collezione", 
@@ -432,30 +660,17 @@ BEGIN
 				JOIN autore a ON i.id_autore=a.id
 				JOIN collezionista co ON cd.id_collezionista=co.id
 				WHERE c.id_collezionista=id_collezionista
-				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
-		END IF;
-	ELSE IF(pubbliche) THEN
-		IF(titolo is null) THEN
-			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore*/
-				SELECT d.titolo as "Titolo",
-                d.anno_di_uscita as "Anno di uscita",
-                d.nome_formato as "Formato",
-                d.nome_stato as "Condizioni", 
-                cd.nome as "Collezione", 
-                co.nickname as "Proprietario"
-				FROM disco d
-				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
-				JOIN incide i ON d.id=i.id_disco
-				JOIN autore a ON i.id_autore=a.id
-				JOIN collezionista co ON cd.id_collezionista=co.id
-				WHERE cd.visibilita=true
-				AND a.nome_darte LIKE nomedarte
-            );
 			
-		ELSE
+		END IF;
+        END IF;
+        END IF;
+        
+	ELSE IF(pubbliche) THEN
 
+		/* Se il nomedarte e il titolo sono entrambi not null*/
+        IF(titolo is not null and nomedarte is not null) THEN
 			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore
 				e il titolo del disco*/
 				SELECT d.titolo as "Titolo",
@@ -473,7 +688,49 @@ BEGIN
 				AND a.nome_darte LIKE nomedarte
 				AND d.titolo LIKE titolo
             );
+		ELSE
+
+		/* Se il titolo è null */
+		IF(titolo is null) THEN
+			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+                d.anno_di_uscita as "Anno di uscita",
+                d.nome_formato as "Formato",
+                d.nome_stato as "Condizioni", 
+                cd.nome as "Collezione", 
+                co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND a.nome_darte LIKE nomedarte
+            );
+		ELSE
+
+		/* Se il nomedarte è null */
+		IF(nomedarte is null) THEN
+			( /* Ricerca di dischi in collezioni pubbliche dato il nome d'arte dell'autore*/
+				SELECT d.titolo as "Titolo",
+                d.anno_di_uscita as "Anno di uscita",
+                d.nome_formato as "Formato",
+                d.nome_stato as "Condizioni", 
+                cd.nome as "Collezione", 
+                co.nickname as "Proprietario"
+				FROM disco d
+				JOIN collezione_di_dischi cd ON d.id_collezione_di_dischi=cd.id
+				JOIN incide i ON d.id=i.id_disco
+				JOIN autore a ON i.id_autore=a.id
+				JOIN collezionista co ON cd.id_collezionista=co.id
+				WHERE cd.visibilita=true
+				AND d.titolo LIKE titolo
+            );
+			
 		END IF;
+        END IF;
+        END IF;
+        
 	END IF;
 	END IF;
 	END IF;
