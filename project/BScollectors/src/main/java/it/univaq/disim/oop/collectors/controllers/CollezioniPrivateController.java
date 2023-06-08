@@ -69,7 +69,7 @@ public class CollezioniPrivateController implements Initializable, DataInitaliza
 			seeButton.setStyle(
 					"-fx-background-color:#bacad7; -fx-background-radius: 15px; -fx-text-fill: #5f6569; -fx-font-weight: bold;");
 			seeButton.setOnAction((ActionEvent event) -> {
-				dispatcher.renderView("see_collection", new Couple<Collection, Collector>(param.getValue(), collector));
+				dispatcher.renderView("see_collection_mie", new Couple<Collection, Collector>(param.getValue(), collector));
 			});
 			return new SimpleObjectProperty<Button>(seeButton);
 		});

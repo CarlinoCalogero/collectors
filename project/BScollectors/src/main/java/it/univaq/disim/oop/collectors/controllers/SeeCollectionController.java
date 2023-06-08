@@ -2,11 +2,8 @@ package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import org.controlsfx.control.SearchableComboBox;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
@@ -31,9 +28,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 
-public class SeeCollectionMieController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
+public class SeeCollectionController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
 
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
@@ -43,13 +39,7 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 	private ObservableList<Disco> discosData;
 
 	@FXML
-	private Label nameLabel, visibilityLabel, visibileALabel;
-
-	@FXML
-	private Button checkButton;
-
-	@FXML
-	private VBox comboBoxVBox;
+	private Label nameLabel, visibilityLabel;
 
 	@FXML
 	private TableView<Disco> discoTableView;
@@ -62,9 +52,6 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 
 	@FXML
 	private TableColumn<Disco, LocalDate> dateTableColumn;
-
-	private SearchableComboBox<String> searchableComboBox;
-	private List<Collector> collezionisti;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -119,74 +106,9 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 			discosData = FXCollections.observableArrayList(discos);
 			discoTableView.setItems((ObservableList<Disco>) discosData);
 
-			collezionisti = implementation.getCollectors();
-
-			List<String> stringList = new ArrayList<>();
-			String collectionOwnerNickname = collector.getNickname();
-			for (Collector dummyCollezionista : collezionisti) {
-
-				String name = dummyCollezionista.getNickname();
-				if (!name.equals(collectionOwnerNickname))
-					stringList.add(dummyCollezionista.getNickname());
-
-			}
-
-			searchableComboBox = new SearchableComboBox<>(FXCollections.observableArrayList(stringList));
-
-			searchableComboBox.setPrefWidth(245);
-			searchableComboBox.setMaxWidth(245);
-			searchableComboBox.setPrefHeight(26);
-			searchableComboBox.setMaxHeight(26);
-			searchableComboBox.setPromptText("Cerca...");
-			comboBoxVBox.getChildren().add(searchableComboBox);
-
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
 		}
 	}
 
-	@FXML
-	private void checkVisibilitaCollezionista() {
-
-		String selectedCollectorNickname = searchableComboBox.getValue();
-		if (selectedCollectorNickname != null) {
-
-			int selectedCollectorID;
-
-			try {
-				selectedCollectorID = findSelectedCollectorsId(selectedCollectorNickname);
-			} catch (Exception e) {
-				return;
-			}
-
-			try {
-
-				if (implementation.verifica_visibilita_collezione(collection.getID(), selectedCollectorID)) {
-					visibileALabel.setText("Si");
-				} else {
-					visibileALabel.setText("No");
-				}
-
-			} catch (DatabaseConnectionException e) {
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-
-	private int findSelectedCollectorsId(String selectedCollectorNickname) throws Exception {
-
-		for (Collector dummyCollector : collezionisti) {
-
-			if (dummyCollector.getNickname().equals(selectedCollectorNickname)) {
-				System.out.println(dummyCollector);
-				return dummyCollector.getID();
-			}
-
-		}
-
-		throw new Exception("Collezionista non trovato");
-
-	}
 }
