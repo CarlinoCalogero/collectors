@@ -117,14 +117,14 @@ public class Query_JDBC {
 	}
 
 	// Query 2_1
-	public void aggiungiDiscoACollezione(Disco disco, int idCollezioneDiDischi)
-			throws DatabaseConnectionException{
+	public void aggiungiDiscoACollezione(Disco disco, int idCollezioneDiDischi) throws DatabaseConnectionException {
 		// Se il db non supporta le procedure allora si esegue una semplice query di
 		// inserimento
 		if (!this.supports_procedures) {
 			try (PreparedStatement query = connection.prepareStatement(
 					"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
-							+ "        VALUES (?,?,?,?,?,?);",new String[]{"ID"});
+							+ "        VALUES (?,?,?,?,?,?);",
+					new String[] { "ID" });
 					PreparedStatement query2 = connection.prepareStatement("INSERT INTO info_disco VALUES (?,?,?,?);");
 					PreparedStatement query3 = connection
 							.prepareStatement("INSERT INTO classificazione VALUES (?,?);")) {
@@ -147,8 +147,8 @@ public class Query_JDBC {
 				rs.next();
 				lastInsertedId = rs.getInt(1);
 				query2.setInt(1, lastInsertedId);
-				if(disco.getBarcode().equals(""))
-					query2.setString(2,null);
+				if (disco.getBarcode().equals(""))
+					query2.setString(2, null);
 				else
 					query2.setString(2, disco.getBarcode());
 				query2.setString(3, disco.getNote());
@@ -164,12 +164,12 @@ public class Query_JDBC {
 				}
 				connection.commit();
 				connection.setAutoCommit(true);
-			}catch (SQLException e) {
+			} catch (SQLException e) {
 				try {
 					String message = "Inserimento fallito";
 					System.out.println("Rollback");
 					connection.rollback();
-					if(e instanceof SQLIntegrityConstraintViolationException)
+					if (e instanceof SQLIntegrityConstraintViolationException)
 						message = "Disco Duplicato";
 					throw new DatabaseConnectionException(message, e);
 				} catch (SQLException e1) {
@@ -179,42 +179,45 @@ public class Query_JDBC {
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
 			try (CallableStatement query = connection
-					.prepareCall("{call aggiungi_disco_a_collezione(?,?,?,?,?,?,?,?,?)}");) {
+					.prepareCall("{call aggiungi_disco_a_collezione(?,?,?,?,?,?,?,?,?)}");
+					PreparedStatement query2 = connection.prepareStatement("SELECT last_insert_id();");
+					PreparedStatement query3 = connection
+							.prepareStatement("INSERT INTO classificazione(nome_genere,id_disco) VALUES(?,?)")) {
+				connection.setAutoCommit(false);
 				query.setString(1, disco.getTitolo());
 				query.setDate(2, Date.valueOf(disco.getAnnoDiUscita()));
 				query.setString(3, disco.getFormato());
 				query.setString(4, disco.getStato());
 				query.setInt(5, disco.getEtichetta().getId());
 				query.setInt(6, idCollezioneDiDischi);
-				if(disco.getBarcode().equals(""))
-					query.setString(7,null);
+				if (disco.getBarcode().equals(""))
+					query.setString(7, null);
 				else
 					query.setString(7, disco.getBarcode());
 				query.setString(8, disco.getNote());
 				query.setInt(9, disco.getNumeroCopie());
 				query.execute();
-				try (PreparedStatement query2 = connection.prepareStatement("SELECT last_insert_id();")) {
-
-					ResultSet rs = query2.executeQuery();
-					System.out.println(rs.next());
-					int lastInsertedId = rs.getInt(1);
-					try (PreparedStatement query3 = connection
-							.prepareStatement("INSERT INTO classificazione(nome_genere,id_disco) VALUES(?,?)")) {
-						for (String genere : disco.getGeneri()) {
-							query3.setInt(2, lastInsertedId);
-							query3.setString(1, genere);
-							query3.execute();
-						}
-					} catch (SQLException e) {
-						throw new DatabaseConnectionException("Inserimento fallito", e);
-					}
-
-				} catch (SQLException e) {
-					throw new DatabaseConnectionException("Inserimento fallito", e);
+				ResultSet rs = query2.executeQuery();
+				System.out.println(rs.next());
+				int lastInsertedId = rs.getInt(1);
+				for (String genere : disco.getGeneri()) {
+					query3.setInt(2, lastInsertedId);
+					query3.setString(1, genere);
+					query3.execute();
 				}
-
+				connection.commit();
+				connection.setAutoCommit(true);
 			} catch (SQLException e) {
-				throw new DatabaseConnectionException("Inserimento fallito", e);
+				try {
+					String message = "Inserimento fallito";
+					System.out.println("Rollback");
+					connection.rollback();
+					if (e instanceof SQLIntegrityConstraintViolationException)
+						message = "Disco Duplicato";
+					throw new DatabaseConnectionException(message, e);
+				} catch (SQLException e1) {
+					throw new DatabaseConnectionException("Errore nell'eseguire il rollback", e1);
+				}
 			}
 
 		}
@@ -438,14 +441,15 @@ public class Query_JDBC {
 		// inserimento
 		if (!this.supports_procedures) {
 
-			try (PreparedStatement query = connection.prepareStatement("SELECT t.titolo,t.durata FROM traccia t WHERE t.id_disco=?;")) {
+			try (PreparedStatement query = connection
+					.prepareStatement("SELECT t.titolo,t.durata FROM traccia t WHERE t.id_disco=?;")) {
 
 				query.setInt(1, idDisco);
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					Track dummyTrack = new Track(null, result.getString("titolo"),
-							result.getFloat("durata"), null, null);
+					Track dummyTrack = new Track(null, result.getString("titolo"), result.getFloat("durata"), null,
+							null);
 					tracce.add(dummyTrack);
 				}
 
@@ -502,7 +506,7 @@ public class Query_JDBC {
 			while (result.next()) {
 				DiscoInCollezione dummyDisco = new DiscoInCollezione(null, result.getString("Titolo"),
 						result.getDate("Anno di uscita").toLocalDate(), result.getString("Condizioni"),
-						result.getString("Formato"),null,new String[1],null,null,1, result.getString("Collezione"),
+						result.getString("Formato"), null, new String[1], null, null, 1, result.getString("Collezione"),
 						result.getString("Proprietario"));
 				dischi.add(dummyDisco);
 			}
@@ -741,9 +745,10 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+					dischiInCollezione.add(new DiscoInCollezione(null, result.getString("titolo"),
 							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
-							result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
+							result.getString("nome_formato"), null, new String[1], null, null, 1,
+							result.getString("nome"), result.getString("nickname")));
 				}
 
 			} catch (SQLException e) {
@@ -766,9 +771,10 @@ public class Query_JDBC {
 					ResultSet result = query.executeQuery();
 
 					while (result.next()) {
-						dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+						dischiInCollezione.add(new DiscoInCollezione(null, result.getString("titolo"),
 								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
-								result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
+								result.getString("nome_formato"), null, new String[1], null, null, 1,
+								result.getString("nome"), result.getString("nickname")));
 					}
 
 					Collections.sort(dischiInCollezioneByTitolo, new StringByLengthComparator(titolo, null));
@@ -793,9 +799,10 @@ public class Query_JDBC {
 					ResultSet result = query.executeQuery();
 
 					while (result.next()) {
-						dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+						dischiInCollezione.add(new DiscoInCollezione(null, result.getString("titolo"),
 								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
-								result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
+								result.getString("nome_formato"), null, new String[1], null, null, 1,
+								result.getString("nome"), result.getString("nickname")));
 					}
 
 					Collections.sort(dischiInCollezioneByAutore, new StringByLengthComparator(null, nomeDArte));
@@ -821,9 +828,10 @@ public class Query_JDBC {
 					ResultSet result = query.executeQuery();
 
 					while (result.next()) {
-						dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+						dischiInCollezione.add(new DiscoInCollezione(null, result.getString("titolo"),
 								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
-								result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
+								result.getString("nome_formato"), null, new String[1], null, null, 1,
+								result.getString("nome"), result.getString("nickname")));
 					}
 
 					Collections.sort(dischiInCollezioneByTitoloAndByAutore,

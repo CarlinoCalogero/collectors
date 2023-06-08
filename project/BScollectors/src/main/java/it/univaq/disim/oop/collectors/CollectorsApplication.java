@@ -26,7 +26,7 @@ public class CollectorsApplication extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		try {
-			BusinessFactory.getImplementation().contaDischiPerGenere().forEach(System.out::println);
+			//BusinessFactory.getImplementation().contaDischiPerGenere().forEach(System.out::println);
 			ViewDispatcher.getInstance().login(stage);
 			
 		} catch (Exception e) {
