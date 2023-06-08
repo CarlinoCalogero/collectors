@@ -8,6 +8,7 @@ import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
+import it.univaq.disim.oop.collectors.domain.Visibilita;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.fxml.FXML;
@@ -44,9 +45,9 @@ public class InsertCollectionController implements Initializable,DataInitalizabl
 	@FXML
 	private void save() throws DatabaseConnectionException {
 		if(publicRadioButton.isSelected()) {
-			implementation.insertCollezione(new Collection(null,nameTextField.getText(),true,collector.getID()));
+			implementation.insertCollezione(new Collection(null,nameTextField.getText(),Visibilita.PUBBLICA,collector.getID()));
 		} else if (privateRadioButton.isSelected()) {
-			implementation.insertCollezione(new Collection(null,nameTextField.getText(),false,collector.getID()));
+			implementation.insertCollezione(new Collection(null,nameTextField.getText(),Visibilita.PRIVATA,collector.getID()));
 		} else {
 			System.err.println("La visibilità deve essere selezionata!");
 		}

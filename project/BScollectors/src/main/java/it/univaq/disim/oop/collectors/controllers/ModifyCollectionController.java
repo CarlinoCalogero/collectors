@@ -12,6 +12,7 @@ import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Couple;
+import it.univaq.disim.oop.collectors.domain.Visibilita;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -89,7 +90,7 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 		this.collector = couple.getFirst();
 		
 		publicRadioButton.setOnMousePressed(event -> {
-			if(collection.getVisibilita() == false) {
+			if(collection.getVisibilita() == Visibilita.PRIVATA) {
 				try {
 					implementation.switchVisibilita(collection.getID());
 				} catch (DatabaseConnectionException e) {
@@ -99,7 +100,7 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 		});
 		
 		privateRadioButton.setOnMousePressed(event -> {
-			if(collection.getVisibilita() == true) {
+			if(collection.getVisibilita() == Visibilita.PUBBLICA) {
 				try {
 					implementation.switchVisibilita(collection.getID());
 				} catch (DatabaseConnectionException e) {
@@ -113,7 +114,7 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 			//Per prendere i collezionisti con cui la collezione è già condivisa
 			sharingCollector = FXCollections.observableArrayList(implementation.getSharingOf(collection));
 			List<Collector> collectors = new ArrayList<>();
-			if(!collection.getVisibilita()) {
+			if(collection.getVisibilita() == Visibilita.PRIVATA) {
 				collectors = implementation.getCollectors();
 			}
 			

@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping;
+import com.mysql.cj.protocol.Resultset;
+import com.mysql.cj.xdevapi.Result;
+
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
@@ -24,6 +28,7 @@ import it.univaq.disim.oop.collectors.domain.Etichetta;
 import it.univaq.disim.oop.collectors.domain.NumeroCollezioniDiCollezionista;
 import it.univaq.disim.oop.collectors.domain.NumeroDischiPerGenere;
 import it.univaq.disim.oop.collectors.domain.Track;
+import it.univaq.disim.oop.collectors.domain.Visibilita;
 
 public class Query_JDBC {
 
@@ -76,8 +81,9 @@ public class Query_JDBC {
 				.prepareStatement("select * from collezione_di_dischi where ID_collezionista = ?");) {
 			s.setInt(1, ID_collector);
 			try (ResultSet rs = s.executeQuery()) {
+				Visibilita visibilita = rs.getBoolean("visibilita") ? Visibilita.PUBBLICA : Visibilita.PRIVATA;
 				while (rs.next()) {
-					collections.add(new Collection(rs.getInt("id"), rs.getString("nome"), rs.getBoolean("visibilita"),
+					collections.add(new Collection(rs.getInt("id"), rs.getString("nome"), visibilita,
 							rs.getInt("ID_collezionista")));
 				}
 			}
@@ -97,7 +103,10 @@ public class Query_JDBC {
 			try (PreparedStatement query = connection.prepareStatement(
 					"INSERT INTO collezione_di_dischi(nome,visibilita,id_collezionista)" + "VALUES(?,?,?);");) {
 				query.setString(1, c.getNome());
-				query.setBoolean(2, c.getVisibilita());
+				if (c.getVisibilita() == Visibilita.PRIVATA)
+					query.setBoolean(3, false);
+				else
+					query.setBoolean(3, true);
 				query.setInt(3, c.getID_collezionista());
 				query.execute();
 			} catch (SQLException e) {
@@ -108,7 +117,10 @@ public class Query_JDBC {
 		// Altrimenti si esegue la procedura creata e salvata nel db
 		try (CallableStatement query = connection.prepareCall("{call insert_collezione(?,?,?)}");) {
 			query.setString(2, c.getNome());
-			query.setBoolean(3, c.getVisibilita());
+			if (c.getVisibilita() == Visibilita.PRIVATA)
+				query.setBoolean(3, false);
+			else
+				query.setBoolean(3, true);
 			query.setInt(1, c.getID_collezionista());
 			query.execute();
 		} catch (SQLException e) {
@@ -293,8 +305,44 @@ public class Query_JDBC {
 
 	// Query 3_1
 	public void insertCondivisione(Integer idColl, Collector c) throws DatabaseConnectionException {
-		if (!this.supports_procedures) {
-			throw new DatabaseConnectionException("Non si puo inserire senza procedure");
+		if (this.supports_procedures) {
+			try (PreparedStatement query = connection
+					.prepareStatement("INSERT INTO condivisa(id_collezionista,id_collezione) VALUES (?,?);");
+					PreparedStatement getCondivisa = connection.prepareStatement(
+							"SELECT c.id as 'condivisa' FROM collezionista c WHERE c.nickname = ? AND c.email = ?;");
+					PreparedStatement getCondivide = connection.prepareStatement(
+							"SELECT c.id_collezionista as 'condivide', c.visibilita FROM collezione_di_dischi c WHERE c.id = ?");) {
+				connection.setAutoCommit(false);
+				Integer idCondivisa = null;
+				Integer idCondivide = null;
+				boolean visibilita = false;
+				getCondivisa.setString(1, c.getNickname());
+				getCondivisa.setString(2, c.getEmail());
+				ResultSet condivisa = getCondivisa.executeQuery();
+				if (condivisa.next())
+					idCondivisa = condivisa.getInt("condivisa");
+				getCondivide.setInt(1, idColl);
+				ResultSet condivide = getCondivide.executeQuery();
+				if (condivide.next()) {
+					idCondivide = condivide.getInt("condivide");
+					visibilita = condivide.getBoolean("visibilita");
+				}
+				if (idCondivisa.equals(idCondivide))
+					throw new DatabaseConnectionException("Non si può condividere una collezione con se stessi");
+				if (visibilita)
+					throw new DatabaseConnectionException("La collezione è gia pubblica");
+				query.setInt(1, idCondivisa);
+				query.setInt(2, idColl);
+				query.execute();
+				connection.commit();
+			} catch (SQLException e) {
+				try {
+					connection.rollback();
+					throw new DatabaseConnectionException("Condivisione Fallita", e);
+				} catch (SQLException e1) {
+					throw new DatabaseConnectionException("Rollback fallito", e1);
+				}
+			}
 		}
 		// Altrimenti si esegue la procedura creata e salvata nel db
 		try (CallableStatement query = connection.prepareCall("{call inserisci_condivisione(?,?,?)}");) {

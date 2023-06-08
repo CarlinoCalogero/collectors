@@ -13,6 +13,7 @@ import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Couple;
 import it.univaq.disim.oop.collectors.domain.Disco;
 import it.univaq.disim.oop.collectors.domain.Triple;
+import it.univaq.disim.oop.collectors.domain.Visibilita;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.beans.property.SimpleObjectProperty;
@@ -89,7 +90,7 @@ public class SeeCollectionController implements Initializable, DataInitalizable<
 		nameLabel.setStyle("-fx-font-style: italic;");
 		visibilityLabel.setStyle("-fx-font-style: italic;");
 		nameLabel.setText(collection.getNome());
-		if(collection.getVisibilita()) {
+		if(collection.getVisibilita() == Visibilita.PUBBLICA) {
 			visibilityLabel.setText("Pubblica");
 		} else visibilityLabel.setText("Privata");
 		
