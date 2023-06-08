@@ -33,8 +33,8 @@
                     <columns>
                       <TableColumn fx:id="titoloTableColumn" prefWidth="133.6000002026558" text="Titolo" />
                       <TableColumn fx:id="dataTableColumn" prefWidth="92.0" text="Anno" />
-                        <TableColumn fx:id="statoTableColumn" prefWidth="84.80001831054688" text="Stato" />
-                        <TableColumn fx:id="formatoTableColumn" prefWidth="128.00006103515625" text="Formato" />
+                        <TableColumn fx:id="statoTableColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Stato" />
+                        <TableColumn fx:id="formatoTableColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Formato" />
                         <TableColumn fx:id="collezioneTableColumn" prefWidth="149.5999755859375" text="Collezione" />
                         <TableColumn fx:id="proprietarioTableColumn" prefWidth="68.79998779296875" text="Proprietario" />
                     </columns>

@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 /*
  * Query implementate:
- * 1,2_1,3,3_1,4,5
+ * 1,2_1,3,3_1,4,5,6,7,8,
  * 
  * 
  * 

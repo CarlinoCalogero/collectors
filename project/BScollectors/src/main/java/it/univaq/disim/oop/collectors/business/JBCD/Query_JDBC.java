@@ -485,7 +485,7 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					int idEtichetta = result.getInt("id_etichetta");
+					/*int idEtichetta = result.getInt("id_etichetta");
 
 					Etichetta dummyEtichetta = null;
 
@@ -502,10 +502,10 @@ public class Query_JDBC {
 
 					} catch (SQLException e) {
 						throw new DatabaseConnectionException("Inserimento fallito", e);
-					}
+					}*/
 
 					Track dummyTrack = new Track(null, result.getString("Titolo traccia"), result.getFloat("Durata"),
-							disco, dummyEtichetta);
+							disco, null);
 					tracce.add(dummyTrack);
 				}
 
@@ -546,9 +546,12 @@ public class Query_JDBC {
 
 			while (result.next()) {
 
-				DiscoInCollezione dummyDisco = new DiscoInCollezione(result.getString("Titolo"),
-						result.getDate("Anno di uscita").toLocalDate(), result.getString("Formato"),
-						result.getString("Condizioni"), result.getString("Collezione"),
+				DiscoInCollezione dummyDisco = new DiscoInCollezione(
+						result.getString("Titolo"),
+						result.getDate("Anno di uscita").toLocalDate(), 
+						result.getString("Formato"),
+						result.getString("Condizioni"),
+						result.getString("Collezione"),
 						result.getString("Proprietario"));
 				dischi.add(dummyDisco);
 			}
