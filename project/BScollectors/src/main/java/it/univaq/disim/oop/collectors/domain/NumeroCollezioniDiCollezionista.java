@@ -2,6 +2,12 @@ package it.univaq.disim.oop.collectors.domain;
 
 public class NumeroCollezioniDiCollezionista {
 
+	@Override
+	public String toString() {
+		return "NumeroCollezioniDiCollezionista [collezionista=" + collezionista + ", numeroCollezioni="
+				+ numeroCollezioni + "]";
+	}
+
 	private final String collezionista;
 	private final Integer numeroCollezioni;
 

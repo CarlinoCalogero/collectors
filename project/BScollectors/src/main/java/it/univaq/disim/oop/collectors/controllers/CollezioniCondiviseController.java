@@ -219,7 +219,7 @@ public class CollezioniCondiviseController implements Initializable, DataInitali
 				List<DiscoInCollezione> discos = implementation.ricercaDiDischiConAutoreEOTitolo(
 						nomedarteTextField.getText(), 
 						titoloTextField.getText(), 
-						collector, 
+						collector.getID(), 
 						personali.isSelected(), 
 						condivise.isSelected(),
 						pubbliche.isSelected());

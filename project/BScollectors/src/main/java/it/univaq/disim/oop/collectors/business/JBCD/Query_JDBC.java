@@ -121,7 +121,7 @@ public class Query_JDBC {
 			throws DatabaseConnectionException{
 		// Se il db non supporta le procedure allora si esegue una semplice query di
 		// inserimento
-		if (this.supports_procedures) {
+		if (!this.supports_procedures) {
 			try (PreparedStatement query = connection.prepareStatement(
 					"INSERT INTO disco(titolo,anno_di_uscita,nome_formato,nome_stato,id_etichetta,id_collezione_di_dischi)\n"
 							+ "        VALUES (?,?,?,?,?,?);",new String[]{"ID"});
@@ -430,7 +430,7 @@ public class Query_JDBC {
 	}
 
 	// Query 7
-	public List<Track> getTrackList(Disco disco) throws DatabaseConnectionException {
+	public List<Track> getTrackList(Integer idDisco) throws DatabaseConnectionException {
 
 		List<Track> tracce = new ArrayList<Track>();
 
@@ -438,33 +438,14 @@ public class Query_JDBC {
 		// inserimento
 		if (!this.supports_procedures) {
 
-			try (PreparedStatement query = connection.prepareStatement("SELECT * FROM traccia t WHERE t.id_disco=?;")) {
+			try (PreparedStatement query = connection.prepareStatement("SELECT t.titolo,t.durata FROM traccia t WHERE t.id_disco=?;")) {
 
-				query.setInt(1, disco.getId());
+				query.setInt(1, idDisco);
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					int idEtichetta = result.getInt("id_etichetta");
-
-					Etichetta dummyEtichetta = null;
-
-					try (PreparedStatement query2 = connection
-							.prepareStatement("Select * from etichetta where id = ?;")) {
-
-						query.setInt(1, idEtichetta);
-						ResultSet result2 = query.executeQuery();
-
-						while (result2.next()) {
-							dummyEtichetta = new Etichetta(result2.getInt("id"), result2.getString("nome"),
-									result2.getString("partitaIVA"));
-						}
-
-					} catch (SQLException e) {
-						throw new DatabaseConnectionException("Inserimento fallito", e);
-					}
-
-					Track dummyTrack = new Track(result.getInt("id"), result.getString("titolo"),
-							result.getFloat("durata"), disco, dummyEtichetta);
+					Track dummyTrack = new Track(null, result.getString("titolo"),
+							result.getFloat("durata"), null, null);
 					tracce.add(dummyTrack);
 				}
 
@@ -474,29 +455,12 @@ public class Query_JDBC {
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
 			try (CallableStatement query = connection.prepareCall("{call track_list_disco(?)}");) {
-				query.setInt(1, disco.getId());
+				query.setInt(1, idDisco);
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					/*
-					 * int idEtichetta = result.getInt("id_etichetta");
-					 * 
-					 * Etichetta dummyEtichetta = null;
-					 * 
-					 * try (PreparedStatement query2 = connection
-					 * .prepareStatement("Select * from etichetta where id = ?;")) {
-					 * 
-					 * query.setInt(1, idEtichetta); ResultSet result2 = query.executeQuery();
-					 * 
-					 * while (result2.next()) { dummyEtichetta = new Etichetta(result2.getInt("id"),
-					 * result2.getString("nome"), result2.getString("partitaIVA")); }
-					 * 
-					 * } catch (SQLException e) { throw new
-					 * DatabaseConnectionException("Inserimento fallito", e); }
-					 */
-
 					Track dummyTrack = new Track(null, result.getString("Titolo traccia"), result.getFloat("Durata"),
-							disco, null);
+							null, null);
 					tracce.add(dummyTrack);
 				}
 
@@ -510,7 +474,7 @@ public class Query_JDBC {
 
 	// Query 8
 	public List<DiscoInCollezione> ricercaDiDischiConAutoreEOTitolo(String nomeDArte, String titolo,
-			Collector collezionista, boolean collezioni, boolean condivise, boolean pubbliche)
+			Integer idCollezionista, boolean collezioni, boolean condivise, boolean pubbliche)
 			throws DatabaseConnectionException {
 		List<DiscoInCollezione> dischi = new ArrayList<DiscoInCollezione>();
 
@@ -529,17 +493,16 @@ public class Query_JDBC {
 				query.setString(2, null);
 			else
 				query.setString(2, titolo);
-			query.setInt(3, collezionista.getID());
+			query.setInt(3, idCollezionista);
 			query.setBoolean(4, collezioni);
 			query.setBoolean(5, condivise);
 			query.setBoolean(6, pubbliche);
 			ResultSet result = query.executeQuery();
 
 			while (result.next()) {
-
-				DiscoInCollezione dummyDisco = new DiscoInCollezione(result.getString("Titolo"),
-						result.getDate("Anno di uscita").toLocalDate(), result.getString("Formato"),
-						result.getString("Condizioni"), result.getString("Collezione"),
+				DiscoInCollezione dummyDisco = new DiscoInCollezione(null, result.getString("Titolo"),
+						result.getDate("Anno di uscita").toLocalDate(), result.getString("Condizioni"),
+						result.getString("Formato"),null,new String[1],null,null,1, result.getString("Collezione"),
 						result.getString("Proprietario"));
 				dischi.add(dummyDisco);
 			}
@@ -552,7 +515,7 @@ public class Query_JDBC {
 	}
 
 	// Query 9
-	public boolean verifica_visibilita_collezione(Collection collezione, Collector collezionista)
+	public boolean verifica_visibilita_collezione(Integer idCollezione, Integer idCollezionista)
 			throws DatabaseConnectionException {
 
 		Boolean isVisible = false;
@@ -572,11 +535,11 @@ public class Query_JDBC {
 							+ "		SELECT c.id_collezione as \"Visibilità\"\r\n" + "		FROM condivisa c\r\n"
 							+ "		WHERE c.id_collezione=?\r\n" + "		AND c.id_collezionista=?\r\n" + "	);")) {
 
-				query.setInt(1, collezione.getID());
-				query.setInt(2, collezionista.getID());
-				query.setInt(3, collezione.getID());
-				query.setInt(4, collezione.getID());
-				query.setInt(5, collezionista.getID());
+				query.setInt(1, idCollezione);
+				query.setInt(2, idCollezionista);
+				query.setInt(3, idCollezione);
+				query.setInt(4, idCollezione);
+				query.setInt(5, idCollezionista);
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
@@ -589,8 +552,8 @@ public class Query_JDBC {
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
 			try (CallableStatement query = connection.prepareCall("{call verifica_visibilita_collezione(?,?)}");) {
-				query.setInt(1, collezione.getID());
-				query.setInt(2, collezionista.getID());
+				query.setInt(1, idCollezione);
+				query.setInt(2, idCollezionista);
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
@@ -636,7 +599,7 @@ public class Query_JDBC {
 		// inserimento
 		if (!this.supports_procedures) {
 
-			try (PreparedStatement query = connection.prepareStatement("SELECT sum(t.durata)\r\n"
+			try (PreparedStatement query = connection.prepareStatement("SELECT sum(distinct t.durata) as 'conta'"
 					+ "		FROM autore a\r\n" + "		JOIN produce p ON p.id_autore=a.id\r\n"
 					+ "		JOIN traccia t ON t.id=p.id_traccia\r\n" + "		JOIN disco d ON d.id=t.id_disco\r\n"
 					+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi\r\n"
@@ -646,7 +609,7 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					minutiTotaliAutore = result.getFloat("conta_minuti_autore(\"" + nomeDArte + "\")");
+					minutiTotaliAutore = result.getFloat("conta");
 				}
 
 			} catch (SQLException e) {
@@ -654,13 +617,13 @@ public class Query_JDBC {
 			}
 		} else {
 			// Altrimenti si esegue la procedura creata e salvata nel db
-			try (PreparedStatement query = connection.prepareStatement("select conta_minuti_autore(?);")) {
+			try (PreparedStatement query = connection.prepareStatement("select conta_minuti_autore(?) as 'conta';")) {
 
 				query.setString(1, nomeDArte);
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					minutiTotaliAutore = result.getFloat("conta_minuti_autore(\"" + nomeDArte + "\")");
+					minutiTotaliAutore = result.getFloat("conta");
 				}
 
 			} catch (SQLException e) {
@@ -778,9 +741,9 @@ public class Query_JDBC {
 				ResultSet result = query.executeQuery();
 
 				while (result.next()) {
-					dischiInCollezione.add(new DiscoInCollezione(result.getString("titolo"),
-							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-							result.getString("nome_stato"), result.getString("nome"), result.getString("nickname")));
+					dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+							result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
+							result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
 				}
 
 			} catch (SQLException e) {
@@ -803,10 +766,9 @@ public class Query_JDBC {
 					ResultSet result = query.executeQuery();
 
 					while (result.next()) {
-						dischiInCollezioneByTitolo.add(new DiscoInCollezione(result.getString("titolo"),
-								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-								result.getString("nome_stato"), result.getString("nome"),
-								result.getString("nickname")));
+						dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
+								result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
 					}
 
 					Collections.sort(dischiInCollezioneByTitolo, new StringByLengthComparator(titolo, null));
@@ -831,10 +793,9 @@ public class Query_JDBC {
 					ResultSet result = query.executeQuery();
 
 					while (result.next()) {
-						dischiInCollezioneByAutore.add(new DiscoInCollezione(result.getString("titolo"),
-								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-								result.getString("nome_stato"), result.getString("nome"),
-								result.getString("nickname")));
+						dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
+								result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
 					}
 
 					Collections.sort(dischiInCollezioneByAutore, new StringByLengthComparator(null, nomeDArte));
@@ -860,10 +821,9 @@ public class Query_JDBC {
 					ResultSet result = query.executeQuery();
 
 					while (result.next()) {
-						dischiInCollezioneByTitoloAndByAutore.add(new DiscoInCollezione(result.getString("titolo"),
-								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_formato"),
-								result.getString("nome_stato"), result.getString("nome"),
-								result.getString("nickname")));
+						dischiInCollezione.add(new DiscoInCollezione(null,result.getString("titolo"),
+								result.getDate("anno_di_uscita").toLocalDate(), result.getString("nome_stato"),
+								result.getString("nome_formato"),null,new String[1],null,null,1, result.getString("nome"), result.getString("nickname")));
 					}
 
 					Collections.sort(dischiInCollezioneByTitoloAndByAutore,
