@@ -1,8 +1,19 @@
-#Inizializzazione database
+-- --------------------------------------------------------
+-- Data Definitoin Language (DDL)
+-- --------------------------------------------------------
+
+--
+-- Database initialization
+--
+
 drop database if exists collectors;
-create database collectors;
+create database if not exists collectors;
 use collectors;
-#Tabelle
+
+--
+-- Dropping database if existing
+--
+
 drop table if exists incide;
 drop table if exists classificazione;
 drop table if exists produce;
@@ -23,6 +34,10 @@ drop table if exists stato;
 drop table if exists ruolo;
 drop table if exists formato;
 drop table if exists genere;
+
+--
+-- Creating tables
+--
 
 create table genere(
 nome varchar(50),
