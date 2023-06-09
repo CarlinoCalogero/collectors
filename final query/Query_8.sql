@@ -7,26 +7,33 @@ e/o quelle condivise con lo stesso collezionista e/o quelle pubbliche.
  
  La seguente query si articola così:
  1. Ricerca in collezioni personale, condivise e pubbliche
-	1.1 Ricerca con nome d'arte
-    1.2 Ricerca con nome d'arte e con titolo
+	1.1 Ricerca con nome d'arte e con titolo
+    1.2 Ricerca con titolo
+	1.3 Ricerca con nome d'arte
  2. Ricerca in collezioni personali e condivise
-	2.1 Ricerca con nome d'arte
-    2.2 Ricerca con nome d'arte e con titolo
+	2.1 Ricerca con nome d'arte e con titolo
+    2.2 Ricerca con titolo
+	2.3 Ricerca con nome d'arte
  3. Ricerca in collezioni personali e pubbliche
-	3.1 Ricerca con nome d'arte
-    3.2 Ricerca con nome d'arte con titolo
+	3.1 Ricerca con nome d'arte e con titolo
+    3.2 Ricerca con titolo
+	3.3 Ricerca con nome d'arte
  4. Ricerca in collezioni pubbliche e condivise
-	4.1 Ricerca con nome d'arte
-    4.2 Ricerca con nome d'arte e titolo
+	4.1 Ricerca con nome d'arte e con titolo
+    4.2 Ricerca con titolo
+	4.3 Ricerca con nome d'arte
  5. Ricerca in collezioni personali
-	5.1 Ricerca con nome d'arte
-    5.2 Ricerca con nome d'arte e titolo
+	5.1 Ricerca con nome d'arte e con titolo
+    5.2 Ricerca con titolo
+	5.3 Ricerca con nome d'arte
  6. Ricerca in collezioni condivise
-	6.1 Ricerca con nome d'arte
-    6.2 Ricerca con nome d'arte e con titolo
+	6.1 Ricerca con nome d'arte e con titolo
+    6.2 Ricerca con titolo
+	6.3 Ricerca con nome d'arte
  7. Ricerca in collezioni pubbliche 
-	7.1 Ricerca con nome d'arte
-    7.2 Ricerca con nome d'arte e con titolo
+	7.1 Ricerca con nome d'arte e con titolo
+    7.2 Ricerca con titolo
+	7.3 Ricerca con nome d'arte
     
   In questo modo vengono coperte tutte le possibili combinazioni di ricerca 
 */
