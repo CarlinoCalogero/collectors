@@ -18,6 +18,7 @@ import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -35,6 +36,9 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 	@FXML
 	private Label titleLabel, dateLabel, generiLabel, stateLabel, formatLabel, etichettaLabel, copieLabel, barcodeLabel,
 			noteLabel;
+	
+	@FXML
+	private Button inserisciTracciaButton;
 
 	@FXML
 	private TableView<Track> trackTableView;
@@ -95,5 +99,10 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 			e.printStackTrace();
 		}
 
+	}
+	
+	@FXML
+	private void inserisciDisco() {
+		dispatcher.renderView("insert_traccia", new Triple<Collection, Disco, Collector>(collection, disco, collector));
 	}
 }
