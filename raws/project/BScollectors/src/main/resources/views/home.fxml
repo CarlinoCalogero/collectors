@@ -76,7 +76,8 @@
             <Button fx:id="collezioniPrivateButton" layoutX="152.0" layoutY="187.0" mnemonicParsing="false" onAction="#renderCollezioniPrivate" prefHeight="48.0" prefWidth="95.0" text="Mie collezioni" textAlignment="CENTER" wrapText="true" />
             <Button fx:id="collezioniCondiviseButton" layoutX="303.0" layoutY="187.0" mnemonicParsing="false" onAction="#renderCollezioniCondivise" prefHeight="48.0" prefWidth="128.0" text="Collezioni condivise con me" textAlignment="CENTER" wrapText="true" />
             <Button fx:id="collezioniPubblicheButton" layoutX="501.0" layoutY="187.0" mnemonicParsing="false" onAction="#renderCollezioniPubbliche" prefHeight="48.0" prefWidth="110.0" text="Collezioni pubbliche" textAlignment="CENTER" wrapText="true" />
-            <Button fx:id="collezioniTutteButton" layoutX="303.0" layoutY="268.0" mnemonicParsing="false" onAction="#renderCollezioniTutte" prefHeight="48.0" prefWidth="128.0" text="Tutte le collezioni" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="collezioniTutteButton" layoutX="209.0" layoutY="268.0" mnemonicParsing="false" onAction="#renderCollezioniTutte" prefHeight="48.0" prefWidth="128.0" text="Tutte le collezioni" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="cercaDiscoButton" layoutX="393.0" layoutY="268.0" mnemonicParsing="false" onAction="#cercaDisco" prefHeight="48.0" prefWidth="128.0" text="Cerca un disco" textAlignment="CENTER" wrapText="true" />
          </children>
       </AnchorPane>
    </center>

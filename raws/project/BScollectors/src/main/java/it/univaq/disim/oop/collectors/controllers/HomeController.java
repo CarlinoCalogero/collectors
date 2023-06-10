@@ -18,10 +18,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	private Collector collector;
 
 	@FXML
-	private Button homeButton;
-
-	@FXML
-	private Button logoutButton;
+	private Button homeButton, logoutButton, cercaDiscoButton;
 
 	@FXML
 	private Label benvenutoLabel;
@@ -75,6 +72,11 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	@FXML
 	private void renderCollezioniTutte() {
 		dispatcher.renderView("collezioni_tutte", collector);
+	}
+
+	@FXML
+	private void cercaDisco() {
+		dispatcher.renderView("cerca_disco", collector);
 	}
 
 }
