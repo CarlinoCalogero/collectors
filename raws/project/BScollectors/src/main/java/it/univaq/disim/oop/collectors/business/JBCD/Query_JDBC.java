@@ -22,6 +22,7 @@ import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.domain.Etichetta;
+import it.univaq.disim.oop.collectors.domain.InfoDisco;
 import it.univaq.disim.oop.collectors.domain.NumeroCollezioniDiCollezionista;
 import it.univaq.disim.oop.collectors.domain.NumeroDischiPerGenere;
 import it.univaq.disim.oop.collectors.domain.TipoAutore;
@@ -131,6 +132,51 @@ public class Query_JDBC {
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Login fallito", e);
 		}
+	}
+
+	public InfoDisco getInfoDisco(Integer idDisco) throws DatabaseConnectionException {
+
+		InfoDisco infoDisco = null;
+		try (PreparedStatement s = connection
+				.prepareStatement("select *\r\n" + "from info_disco as inf\r\n" + "where inf.id_disco=?;");) {
+
+			s.setInt(1, idDisco);
+
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					infoDisco = new InfoDisco(idDisco, rs.getString("barcode"), rs.getString("note"),
+							rs.getInt("numero_copie"));
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
+		}
+
+		return infoDisco;
+
+	}
+
+	public List<String> getGeneriDisco(Integer idDisco) throws DatabaseConnectionException {
+
+		List<String> generi = new ArrayList<String>();
+		try (PreparedStatement s = connection
+				.prepareStatement("select *\r\n" + "from classificazione as c\r\n" + "where c.id_disco=?;");) {
+
+			s.setInt(1, idDisco);
+
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					generi.add(rs.getString("nome_genere"));
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
+		}
+
+		return generi;
+
 	}
 
 	public List<Collection> getSharedCollectionsWithCollectors(Integer idCollezionista)

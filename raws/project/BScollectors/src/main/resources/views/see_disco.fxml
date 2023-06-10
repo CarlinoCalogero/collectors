@@ -29,87 +29,164 @@
          <children>
             <VBox prefHeight="317.0" prefWidth="494.0">
                <children>
-                  <VBox prefHeight="55.0" prefWidth="277.0">
+                  <HBox prefHeight="18.0" prefWidth="207.0">
                      <children>
                         <Label prefHeight="21.0" prefWidth="324.0" text="Nome Disco:">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="titleLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                        <Label fx:id="titleLabel" prefHeight="21.0" prefWidth="324.0">
                            <font>
                               <Font name="System Italic" size="13.0" />
                            </font>
                         </Label>
                      </children>
                      <VBox.margin>
-                        <Insets />
+                        <Insets top="5.0" />
                      </VBox.margin>
-                  </VBox>
-                  <VBox layoutX="15.0" layoutY="10.0" prefHeight="55.0" prefWidth="277.0">
+                  </HBox>
+                  <HBox prefHeight="37.0" prefWidth="207.0">
                      <children>
-                        <Label prefHeight="21.0" prefWidth="324.0" text="Anno di uscita:">
+                        <VBox prefHeight="50.0" prefWidth="277.0">
+                           <children>
+                              <Label prefHeight="21.0" prefWidth="324.0" text="Anno">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="21.0" prefWidth="324.0" text="di uscita:">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <Label fx:id="dateLabel" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="207.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Generi:">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="dateLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                        <Label fx:id="generiLabel" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="17.0" prefWidth="207.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Stato:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="stateLabel" prefHeight="21.0" prefWidth="324.0">
                            <font>
                               <Font name="System Italic" size="13.0" />
                            </font>
                         </Label>
                      </children>
                      <VBox.margin>
-                        <Insets />
+                        <Insets top="5.0" />
                      </VBox.margin>
-                  </VBox>
-                  <HBox>
-                     <children>
-                        <VBox prefHeight="55.0" prefWidth="277.0">
-                           <children>
-                              <Label prefHeight="21.0" prefWidth="324.0" text="Stato:">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="stateLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <VBox layoutX="10.0" layoutY="10.0" prefHeight="55.0" prefWidth="277.0">
-                           <children>
-                              <Label prefHeight="21.0" prefWidth="324.0" text="Formato:">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="formatLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
-                                 <font>
-                                    <Font name="System Italic" size="13.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
                   </HBox>
-                  <VBox layoutX="15.0" layoutY="65.0" prefHeight="55.0" prefWidth="277.0">
+                  <HBox prefHeight="21.0" prefWidth="207.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Formato:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="formatLabel" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER">
                      <children>
                         <Label prefHeight="21.0" prefWidth="324.0" text="Etichetta:">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="etichettaLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                        <Label fx:id="etichettaLabel" prefHeight="21.0" prefWidth="324.0">
                            <font>
                               <Font name="System Italic" size="13.0" />
                            </font>
                         </Label>
                      </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin></HBox>
+                  <HBox prefHeight="15.0" prefWidth="207.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Copie:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="copieLabel" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="207.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Barcode:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="barcodeLabel" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Note:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="noteLabel" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
                   </VBox>
-                  <HBox alignment="CENTER" />
                </children>
                <HBox.margin>
                   <Insets left="5.0" top="60.0" />

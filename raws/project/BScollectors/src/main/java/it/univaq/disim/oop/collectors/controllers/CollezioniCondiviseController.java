@@ -45,12 +45,6 @@ public class CollezioniCondiviseController implements Initializable, DataInitali
 	@FXML
 	private TableColumn<Collection, Button> seeTableColumn;
 
-	@FXML
-	private TableColumn<Collection, Button> modifyTableColumn;
-
-	@FXML
-	private TableColumn<Collection, Button> deleteTableColumn;
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -67,33 +61,6 @@ public class CollezioniCondiviseController implements Initializable, DataInitali
 			return new SimpleObjectProperty<Button>(seeButton);
 		});
 
-		deleteTableColumn.setStyle("-fx-alignment: CENTER;");
-		deleteTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
-			final Button deleteButton = new Button("Cancella");
-			deleteButton.setStyle(
-					"-fx-background-color: red; -fx-background-radius: 15px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
-			deleteButton.setOnAction((ActionEvent event) -> {
-				try {
-					implementation.deleteCollezione(param.getValue().getID());
-					collectionsData.remove(param.getValue());
-				} catch (DatabaseConnectionException e) {
-					e.printStackTrace();
-				}
-			});
-			return new SimpleObjectProperty<Button>(deleteButton);
-		});
-
-		modifyTableColumn.setStyle("-fx-alignment: CENTER;");
-		modifyTableColumn.setCellValueFactory((CellDataFeatures<Collection, Button> param) -> {
-			final Button modifyButton = new Button("Modifica");
-			modifyButton.setStyle(
-					"-fx-background-color: green; -fx-background-radius: 15px; -fx-text-fill: #ffffff; -fx-font-weight: bold;");
-			modifyButton.setOnAction((ActionEvent event) -> {
-				dispatcher.renderView("modify_collection",
-						new Couple<Collector, Collection>(collector, param.getValue()));
-			});
-			return new SimpleObjectProperty<Button>(modifyButton);
-		});
 	}
 
 	public void initializeData(Collector collector) {

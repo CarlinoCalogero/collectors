@@ -36,6 +36,9 @@ public class CollezioniPrivateController implements Initializable, DataInitaliza
 
 	@FXML
 	private ImageView searchImageView;
+	
+	@FXML
+	private Button nuovaCollezioneButton;
 
 	@FXML
 	private TableView<Collection> collectionsTableView;
@@ -126,6 +129,11 @@ public class CollezioniPrivateController implements Initializable, DataInitaliza
 	@FXML
 	public void home() {
 		dispatcher.renderHome(this.collector);
+	}
+	
+	@FXML
+	private void inserisciCollezione() {
+		dispatcher.renderView("insert_collection", collector);
 	}
 
 }

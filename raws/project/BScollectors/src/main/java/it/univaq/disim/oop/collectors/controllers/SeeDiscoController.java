@@ -10,6 +10,7 @@ import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
+import it.univaq.disim.oop.collectors.domain.InfoDisco;
 import it.univaq.disim.oop.collectors.domain.Track;
 import it.univaq.disim.oop.collectors.domain.Triple;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
@@ -32,7 +33,8 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 	private Disco disco;
 
 	@FXML
-	private Label titleLabel, dateLabel, stateLabel, formatLabel, etichettaLabel;
+	private Label titleLabel, dateLabel, generiLabel, stateLabel, formatLabel, etichettaLabel, copieLabel, barcodeLabel,
+			noteLabel;
 
 	@FXML
 	private TableView<Track> trackTableView;
@@ -63,6 +65,28 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 		formatLabel.setText(disco.getFormato());
 		etichettaLabel.setText(disco.getEtichetta().getNome());
 		try {
+			InfoDisco infoDisco = implementation.getInfoDisco(disco.getId());
+			if (infoDisco != null) {
+				copieLabel.setText("" + infoDisco.getNumeroCopie());
+				String barcode = infoDisco.getBarcode();
+				if (barcode == null) {
+					barcodeLabel.setText("");
+				} else {
+					barcodeLabel.setText("" + infoDisco.getBarcode());
+				}
+
+				noteLabel.setText("" + infoDisco.getNote());
+			}
+			List<String> generi = implementation.getGeneriDisco(disco.getId());
+			if (generi != null) {
+				String generiLabelText = "";
+				for (String genere : generi) {
+					if (generiLabelText.equals(""))
+						generiLabelText = genere;
+					generiLabelText = generiLabelText + ", " + genere;
+				}
+				generiLabel.setText(generiLabelText);
+			}
 			List<Track> tracks = implementation.getTrackList(disco.getId());
 			trackTableView.setItems(FXCollections.observableArrayList(tracks));
 

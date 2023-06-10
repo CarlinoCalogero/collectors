@@ -189,4 +189,5 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 		throw new Exception("Collezionista non trovato");
 
 	}
+
 }
