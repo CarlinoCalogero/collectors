@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import com.mysql.cj.x.protobuf.MysqlxExpr.Object;
-
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
@@ -136,8 +134,10 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private void isSearching() {
-		if(this.titoloTextField.getText().length() == 0)
+		if(this.titoloTextField.getText().length() == 0) {
+			this.searchedWthTitle = null;
 			return;
+		}
 		String titolo = titoloTextField.getText();
 		Collections.sort(poolDischi, new StringByLengthComparator(titolo, null));
 		this.searchedWthTitle = poolDischi.get(0);
@@ -145,15 +145,19 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private void isSearchingBarcode() {
-		if(this.barcodeTextField.getText().length() == 0)
+		
+		if(this.barcodeTextField.getText().length() == 0) {
+			this.searchedWthBarcode = null;
 			return;
-		if (barcodeTextField.getText() != null && barcodeTextField.getText().length() >= 5) {
+		}
+		if (barcodeTextField.getText().length() >= 5) {
 			this.searchedWthBarcode = this.barcodeMap.get(barcodeTextField.getText());
 		}
 	}
 	@FXML
 	private void complete() {
 		searchUnion();
+		System.out.println(this.mostCoherent);
 		if(this.mostCoherent != null) {
 			this.titoloTextField.setText(this.mostCoherent.getTitolo());
 			this.dataPicker.setValue(this.mostCoherent.getAnnoDiUscita());
