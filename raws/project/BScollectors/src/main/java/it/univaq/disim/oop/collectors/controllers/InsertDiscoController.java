@@ -4,11 +4,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
@@ -41,7 +43,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
 
-	private List<String> generi = new ArrayList<>();
+	private Set<String> generi = new HashSet<String>();
 	private List<DiscoInCollezione> poolDischi = new ArrayList<DiscoInCollezione>();
 	private Map<String, DiscoInCollezione> barcodeMap = new HashMap<String, DiscoInCollezione>();
 	private Collection collection;
@@ -51,7 +53,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private Button saveButton;
 
 	@FXML
-	private ComboBox<String> formatoComboBox, statoComboBox,generiComboBox;
+	private ComboBox<String> formatoComboBox, statoComboBox, generiComboBox;
 
 	@FXML
 	private DatePicker dataPicker;
@@ -82,10 +84,13 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			removeGenereColumn.setCellValueFactory((CellDataFeatures<String, Button> param) -> {
 				final Button rimuoviButton = new Button("Rimuovi");
 				rimuoviButton.setOnAction((ActionEvent event) -> {
-					generi.remove(param.getValue());
+					this.generi.remove(param.getValue());
+					this.generiTableView.getItems().remove(param.getValue());
+					System.out.println(this.generi);
 				});
 				return new SimpleObjectProperty<Button>(rimuoviButton);
 			});
+			this.generiTableView.setItems(FXCollections.observableArrayList());
 		} catch (DatabaseConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,10 +105,20 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			for (DiscoInCollezione disco : this.poolDischi)
 				if (disco.getBarcode() != null)
 					barcodeMap.put(disco.getBarcode(), disco);
-			generiTableView.setItems(FXCollections.observableArrayList(implementation.getGenras()));
+			this.generiComboBox.setItems(FXCollections.observableArrayList(implementation.getGenras()));
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@FXML
+	private void addGenere() {
+		String genere = this.generiComboBox.getValue();
+		if (genere != null) {
+			this.generi.add(genere);
+			this.generiTableView.setItems(FXCollections.observableArrayList(generi));
+		}
+		System.out.println(this.generi);
 	}
 
 	@FXML
@@ -131,7 +146,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private void isSearching() {
-		if(this.titoloTextField.getText().length() == 0) {
+		if (this.titoloTextField.getText().length() == 0) {
 			this.searchedWthTitle = null;
 			return;
 		}
@@ -142,8 +157,8 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private void isSearchingBarcode() {
-		
-		if(this.barcodeTextField.getText().length() == 0) {
+
+		if (this.barcodeTextField.getText().length() == 0) {
 			this.searchedWthBarcode = null;
 			return;
 		}
@@ -151,26 +166,28 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			this.searchedWthBarcode = this.barcodeMap.get(barcodeTextField.getText());
 		}
 	}
+
 	@FXML
 	private void complete() {
 		searchUnion();
 		System.out.println(this.mostCoherent);
-		if(this.mostCoherent != null) {
+		if (this.mostCoherent != null) {
 			this.titoloTextField.setText(this.mostCoherent.getTitolo());
 			this.dataPicker.setValue(this.mostCoherent.getAnnoDiUscita());
-			this.statoComboBox.setValue(this.mostCoherent.getStato()); //Da cambiare
-			this.formatoComboBox.setValue(this.mostCoherent.getFormato()); //Da cambiare
+			this.statoComboBox.setValue(this.mostCoherent.getStato()); // Da cambiare
+			this.formatoComboBox.setValue(this.mostCoherent.getFormato()); // Da cambiare
 			this.etichettaTextField.setText(this.mostCoherent.getEtichetta().getNome());
 			this.noteTextArea.setText(this.mostCoherent.getNote());
 			this.numeroCopieTextField.setText(String.valueOf(this.mostCoherent.getNumeroCopie()));
 		}
 	}
+
 	private void searchUnion() {
-		if(Objects.equals(this.searchedWthTitle, this.searchedWthBarcode) || this.searchedWthTitle == null) {
+		if (Objects.equals(this.searchedWthTitle, this.searchedWthBarcode) || this.searchedWthTitle == null) {
 			this.mostCoherent = this.searchedWthBarcode;
 			return;
 		}
-		if(this.searchedWthBarcode == null) {
+		if (this.searchedWthBarcode == null) {
 			this.mostCoherent = this.searchedWthTitle;
 			return;
 		}
