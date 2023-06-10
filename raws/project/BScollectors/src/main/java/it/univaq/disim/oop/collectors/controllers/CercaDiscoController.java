@@ -12,16 +12,13 @@ import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,10 +44,8 @@ public class CercaDiscoController implements Initializable, DataInitalizable<Col
 	private TableView<DiscoInCollezione> discoTableView;
 
 	@FXML
-	private TableColumn<DiscoInCollezione, String> titleTableColumn, stateTableColumn, formatTableColumn;
-
-	@FXML
-	private TableColumn<DiscoInCollezione, Button> seeTableColumn, deleteTableColumn;
+	private TableColumn<DiscoInCollezione, String> titleTableColumn, stateTableColumn, formatTableColumn,
+			collezioneTableColumn, proprietarioTableColumn;
 
 	@FXML
 	private TableColumn<DiscoInCollezione, LocalDate> dateTableColumn;
@@ -66,29 +61,11 @@ public class CercaDiscoController implements Initializable, DataInitalizable<Col
 
 		formatTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("formato"));
 
-		seeTableColumn.setStyle("-fx-alignment: CENTER;");
-		seeTableColumn.setCellValueFactory((CellDataFeatures<DiscoInCollezione, Button> param) -> {
-			final Button seeButton = new Button("Visualizza");
-			seeButton.setOnAction((ActionEvent event) -> {
-				// dispatcher.renderView("see_disco", new Triple<Collector, Collection,
-				// Disco>(collector, collection, param.getValue()));
-			});
-			return new SimpleObjectProperty<Button>(seeButton);
-		});
+		collezioneTableColumn.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("collezione"));
 
-		deleteTableColumn.setStyle("-fx-alignment: CENTER;");
-		deleteTableColumn.setCellValueFactory((CellDataFeatures<DiscoInCollezione, Button> param) -> {
-			final Button eliminaButton = new Button("Elimina");
-			eliminaButton.setOnAction((ActionEvent event) -> {
-				try {
-					implementation.deleteDisco(param.getValue().getId());
-					discoInCollezioneData.remove(param.getValue());
-				} catch (DatabaseConnectionException e) {
-					e.printStackTrace();
-				}
-			});
-			return new SimpleObjectProperty<Button>(eliminaButton);
-		});
+		proprietarioTableColumn
+				.setCellValueFactory(new PropertyValueFactory<DiscoInCollezione, String>("proprietario"));
+
 	}
 
 	public void initializeData(Collector collector) {
@@ -126,7 +103,6 @@ public class CercaDiscoController implements Initializable, DataInitalizable<Col
 					this.pubblicheCheckBox.isSelected());
 			discoInCollezioneData = FXCollections.observableArrayList(discoInCollezione);
 			discoTableView.setItems((ObservableList<DiscoInCollezione>) discoInCollezioneData);
-			System.out.println(discoInCollezione);
 
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
