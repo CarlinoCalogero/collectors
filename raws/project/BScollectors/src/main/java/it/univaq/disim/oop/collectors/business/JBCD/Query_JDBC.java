@@ -161,7 +161,7 @@ public class Query_JDBC {
 
 		InfoDisco infoDisco = null;
 		try (PreparedStatement s = connection
-				.prepareStatement("select *" + "from info_disco as inf" + "where inf.id_disco=?;");) {
+				.prepareStatement("select * " + "from info_disco as inf " + " where inf.id_disco=?;");) {
 
 			s.setInt(1, idDisco);
 
