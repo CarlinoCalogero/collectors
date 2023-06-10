@@ -184,7 +184,7 @@ public class Query_JDBC {
 
 		List<String> generi = new ArrayList<String>();
 		try (PreparedStatement s = connection
-				.prepareStatement("select *" + "from classificazione as c" + "where c.id_disco=?;");) {
+				.prepareStatement("select * " + " from classificazione as c " + " where c.id_disco=?;");) {
 
 			s.setInt(1, idDisco);
 
@@ -208,7 +208,7 @@ public class Query_JDBC {
 		List<Collection> collections = new ArrayList<>();
 
 		try (PreparedStatement s = connection.prepareStatement("select * " + "from condivisa as c"
-				+ "	join collezione_di_dischi as cd on c.id_collezione=cd.id" + "where c.id_collezionista = ?;");) {
+				+ "	join collezione_di_dischi as cd on c.id_collezione=cd.id " + " where c.id_collezionista = ?;");) {
 
 			s.setInt(1, idCollezionista);
 
@@ -232,7 +232,7 @@ public class Query_JDBC {
 		List<Collection> collections = new ArrayList<>();
 
 		try (PreparedStatement s = connection
-				.prepareStatement("select * " + "from collezione_di_dischi" + "where visibilita = true;");) {
+				.prepareStatement("select * " + "from collezione_di_dischi" + " where visibilita = true;");) {
 
 			try (ResultSet rs = s.executeQuery()) {
 				while (rs.next()) {
@@ -257,7 +257,7 @@ public class Query_JDBC {
 		// inserimento
 		if (!this.supports_procedures) {
 			try (PreparedStatement query = connection.prepareStatement(
-					"INSERT INTO collezione_di_dischi(nome,visibilita,id_collezionista)" + "VALUES(?,?,?);");) {
+					"INSERT INTO collezione_di_dischi(nome,visibilita,id_collezionista)" + " VALUES(?,?,?);");) {
 				query.setString(1, c.getNome());
 				if (c.getVisibilita() == Visibilita.PRIVATA)
 					query.setBoolean(3, false);
@@ -781,7 +781,7 @@ public class Query_JDBC {
 	public int getNumberOfTracks(String nomeArte) throws DatabaseConnectionException {
 		String queryString = "SELECT count(distinct t.id) as 'conta'" + "		FROM autore a"
 				+ "		JOIN produce p ON p.id_autore=a.id" + "		JOIN traccia t ON t.id=p.id_traccia"
-				+ "		JOIN disco d ON d.id=t.id_disco"
+				+ "		JOIN disco d ON d.id=t.id_disco "
 				+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi" + "		WHERE c.visibilita=true"
 				+ "		AND a.nome_darte LIKE ?" + "		GROUP BY a.id);";
 		if (this.supports_function_calls)
@@ -801,7 +801,7 @@ public class Query_JDBC {
 	public float contaMinutiAutore(String nomeDArte) throws DatabaseConnectionException {
 		String queryString = "SELECT sum(distinct t.durata) as 'conta'" + "		FROM autore a"
 				+ "		JOIN produce p ON p.id_autore=a.id" + "		JOIN traccia t ON t.id=p.id_traccia"
-				+ "		JOIN disco d ON d.id=t.id_disco"
+				+ "		JOIN disco d ON d.id=t.id_disco "
 				+ "		JOIN collezione_di_dischi c ON c.id=d.id_collezione_di_dischi" + "		WHERE c.visibilita=true"
 				+ "		AND a.nome_darte=?" + "		GROUP BY a.id;";
 		float minutiTotaliAutore = 0;
@@ -915,10 +915,10 @@ public class Query_JDBC {
 		if (barcode != null) {
 
 			try (PreparedStatement query = connection.prepareStatement(
-					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname"
-							+ "from info_disco as i " + "	join disco as d on d.id=i.id_disco "
+					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname "
+							+ " from info_disco as i " + "	join disco as d on d.id=i.id_disco "
 							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
-							+ "    join collezionista as ca on cd.id_collezionista = ca.id" + "where i.barcode=?;")) {
+							+ "    join collezionista as ca on cd.id_collezionista = ca.id " + " where i.barcode=?;")) {
 
 				query.setString(1, barcode);
 				ResultSet result = query.executeQuery();
@@ -940,11 +940,11 @@ public class Query_JDBC {
 
 			if (titolo != null) {
 				try (PreparedStatement query = connection.prepareStatement(
-						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname"
-								+ "from disco as d"
-								+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
-								+ "	join collezionista as ca on cd.id_collezionista = ca.id"
-								+ "where d.titolo like concat(?,'%');")) {
+						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname "
+								+ " from disco as d "
+								+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id "
+								+ "	join collezionista as ca on cd.id_collezionista = ca.id "
+								+ " where d.titolo like concat(?,'%');")) {
 
 					query.setString(1, titolo);
 					ResultSet result = query.executeQuery();
@@ -967,11 +967,11 @@ public class Query_JDBC {
 			List<DiscoInCollezione> dischiInCollezioneByAutore = new ArrayList<DiscoInCollezione>();
 			if (nomeDArte != null) {
 				try (PreparedStatement query = connection.prepareStatement(
-						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname"
-								+ "from incide as i" + "	join disco as d on i.id_disco=d.id"
-								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
-								+ "    join collezionista as ca on cd.id_collezionista = ca.id"
-								+ "	join autore as a on i.id_autore=a.id" + "where a.nome_darte like concat(?,'%');")) {
+						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname "
+								+ " from incide as i" + "	join disco as d on i.id_disco=d.id "
+								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id "
+								+ "    join collezionista as ca on cd.id_collezionista = ca.id "
+								+ "	join autore as a on i.id_autore=a.id " + " where a.nome_darte like concat(?,'%');")) {
 
 					query.setString(1, nomeDArte);
 					ResultSet result = query.executeQuery();
@@ -995,10 +995,10 @@ public class Query_JDBC {
 			if (titolo != null & nomeDArte != null) {
 
 				try (PreparedStatement query = connection
-						.prepareStatement("select *" + "from incide as i" + "	join disco as d on i.id_disco=d.id"
-								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
-								+ "    join collezionista as ca on cd.id_collezionista = ca.id"
-								+ "	join autore as a on i.id_autore=a.id" + "where a.nome_darte like concat(?,'%')"
+						.prepareStatement("select *" + "from incide as i" + "	join disco as d on i.id_disco=d.id "
+								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id "
+								+ "    join collezionista as ca on cd.id_collezionista = ca.id "
+								+ "	join autore as a on i.id_autore=a.id " + " where a.nome_darte like concat(?,'%') "
 								+ "	and d.titolo like concat(?,'%');")) {
 
 					query.setString(1, titolo);
