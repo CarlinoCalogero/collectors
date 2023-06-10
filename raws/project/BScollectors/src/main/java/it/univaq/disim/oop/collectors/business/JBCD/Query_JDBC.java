@@ -11,7 +11,9 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -156,7 +158,19 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Ricerca fallita", e);
 		}
 	}
-
+	public Set<Etichetta> getAllEtichetta() throws DatabaseConnectionException {
+		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM etichetta;");) {
+			Set<Etichetta> etichette = new HashSet<Etichetta>();
+			ResultSet queryResult = query.executeQuery();
+			while (queryResult.next()) {
+				Etichetta etichetta = new Etichetta(queryResult.getInt("id"),queryResult.getString("nome"),queryResult.getString("partitaIVA"));
+				etichette.add(etichetta);
+			}
+			return etichette;
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Ricerca fallita", e);
+		}
+	}
 	public InfoDisco getInfoDisco(Integer idDisco) throws DatabaseConnectionException {
 
 		InfoDisco infoDisco = null;
