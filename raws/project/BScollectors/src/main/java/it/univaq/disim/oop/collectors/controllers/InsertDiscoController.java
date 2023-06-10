@@ -34,6 +34,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.util.StringConverter;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -54,6 +55,8 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private ComboBox<String> formatoComboBox, statoComboBox, generiComboBox;
+	@FXML
+	private ComboBox<Etichetta> etichettaComboBox;
 
 	@FXML
 	private DatePicker dataPicker;
@@ -76,8 +79,22 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
+			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
+				@Override
+				public String toString(Etichetta object) {
+					return object.getNome();
+				}
+
+				@Override
+				public Etichetta fromString(String string) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			});
+			generiComboBox.setItems(FXCollections.observableArrayList(implementation.getGenras()));
 			statoComboBox.setItems(FXCollections.observableArrayList(implementation.getStates()));
 			formatoComboBox.setItems(FXCollections.observableArrayList(implementation.getFormats()));
+			etichettaComboBox.setItems(FXCollections.observableArrayList(implementation.getAllEtichette()));
 			nomeGenereColumn.setCellValueFactory((CellDataFeatures<String, String> param) -> {
 				return new SimpleObjectProperty<String>(param.getValue());
 			});
@@ -105,7 +122,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			for (DiscoInCollezione disco : this.poolDischi)
 				if (disco.getBarcode() != null)
 					barcodeMap.put(disco.getBarcode(), disco);
-			this.generiComboBox.setItems(FXCollections.observableArrayList(implementation.getGenras()));
+
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
 		}
@@ -176,7 +193,6 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			this.dataPicker.setValue(this.mostCoherent.getAnnoDiUscita());
 			this.statoComboBox.setValue(this.mostCoherent.getStato()); // Da cambiare
 			this.formatoComboBox.setValue(this.mostCoherent.getFormato()); // Da cambiare
-			this.etichettaTextField.setText(this.mostCoherent.getEtichetta().getNome());
 			this.noteTextArea.setText(this.mostCoherent.getNote());
 			this.numeroCopieTextField.setText(String.valueOf(this.mostCoherent.getNumeroCopie()));
 		}

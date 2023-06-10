@@ -87,7 +87,11 @@
                         </Label>
                         <HBox prefHeight="31.0" prefWidth="361.0">
                            <children>
-                              <ComboBox fx:id="generiComboBox" prefWidth="150.0" />
+                              <ComboBox fx:id="generiComboBox" prefWidth="150.0" promptText="Genere">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </ComboBox>
                               <Button mnemonicParsing="false" onAction="#addGenere" text="Aggiungi">
                                  <HBox.margin>
                                     <Insets left="10.0" />
@@ -95,13 +99,13 @@
                               </Button>
                            </children>
                         </HBox>
-                        <TableView fx:id="generiTableView" prefHeight="220.0" prefWidth="361.0">
+                        <TableView fx:id="generiTableView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="143.0" prefWidth="213.0" VBox.vgrow="NEVER">
                           <columns>
-                            <TableColumn fx:id="nomeGenereColumn" prefWidth="117.0" text="Nome Genere" />
-                            <TableColumn fx:id="removeGenereColumn" prefWidth="69.0" />
+                            <TableColumn fx:id="nomeGenereColumn" prefWidth="117.0" resizable="false" text="Nome Genere" />
+                            <TableColumn fx:id="removeGenereColumn" prefWidth="95.0" resizable="false" />
                           </columns>
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets left="10.0" top="10.0" />
                            </VBox.margin>
                         </TableView>
                      </children>
@@ -121,7 +125,7 @@
                         <Label prefHeight="18.0" prefWidth="381.0" text="Etichetta: " />
                         <HBox alignment="CENTER">
                            <children>
-                              <TextField fx:id="etichettaTextField" prefHeight="26.0" prefWidth="245.0" />
+                              <ComboBox fx:id="etichettaComboBox" prefHeight="26.0" prefWidth="169.0" promptText="Nome Etichetta" />
                            </children>
                         </HBox>
                      </children>

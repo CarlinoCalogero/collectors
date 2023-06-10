@@ -158,12 +158,12 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Ricerca fallita", e);
 		}
 	}
-	public Set<Etichetta> getAllEtichetta() throws DatabaseConnectionException {
+	public Set<Etichetta> getAllEtichette() throws DatabaseConnectionException {
 		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM etichetta;");) {
 			Set<Etichetta> etichette = new HashSet<Etichetta>();
 			ResultSet queryResult = query.executeQuery();
 			while (queryResult.next()) {
-				Etichetta etichetta = new Etichetta(queryResult.getInt("id"),queryResult.getString("nome"),queryResult.getString("partitaIVA"));
+				Etichetta etichetta = new Etichetta(queryResult.getInt("id"),queryResult.getString("partitaIVA"),queryResult.getString("nome"));
 				etichette.add(etichetta);
 			}
 			return etichette;
