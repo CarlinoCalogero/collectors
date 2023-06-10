@@ -46,7 +46,7 @@ public class InsertTracciaController implements Initializable, DataInitalizable<
 	private TextField titoloTextField, durataTextField;
 
 	@FXML
-	private Button saveButton;
+	private Button inserisciTracciaButton;
 
 	@FXML
 	private ComboBox<Etichetta> etichettaComboBox;
