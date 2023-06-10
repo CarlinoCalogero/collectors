@@ -137,6 +137,7 @@ public class Query_JDBC {
 				+ "	d.nome_formato,	"
 				+ "    d.nome_stato,"
 				+ "    d.anno_di_uscita,"
+				+ "	   generi_disco(d.id) as 'generi',"
 				+ "    inf.barcode,"
 				+ "    inf.note,"
 				+ "    inf.numero_copie,"
@@ -151,7 +152,7 @@ public class Query_JDBC {
 			while(queryResult.next()) {
 				DiscoInCollezione disco = new DiscoInCollezione(queryResult.getInt("IDD"),queryResult.getString("titolo"), queryResult.getDate("anno_di_uscita").toLocalDate(),
 						queryResult.getString("nome_stato"), queryResult.getString("nome_formato"),new Etichetta(queryResult.getInt("IDE"), queryResult.getString("partitaIVA"), 
-								queryResult.getString("nome")), new String[]{}, queryResult.getString("barcode"), queryResult.getString("note"), queryResult.getInt("numero_copie"), null, null);
+								queryResult.getString("nome")),queryResult.getString("generi").split(","), queryResult.getString("barcode"), queryResult.getString("note"), queryResult.getInt("numero_copie"), null, null);
 				dischi.add(disco);
 			}
 			return dischi;

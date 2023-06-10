@@ -51,7 +51,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private Button saveButton;
 
 	@FXML
-	private ComboBox<String> formatoComboBox, statoComboBox;
+	private ComboBox<String> formatoComboBox, statoComboBox,generiComboBox;
 
 	@FXML
 	private DatePicker dataPicker;
@@ -60,10 +60,10 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private TableView<String> generiTableView;
 
 	@FXML
-	private TableColumn<String, String> genereTableColumn;
+	private TableColumn<String, String> nomeGenereColumn;
 
 	@FXML
-	private TableColumn<String, Button> aggiungiTableColumn;
+	private TableColumn<String, Button> removeGenereColumn;
 
 	@FXML
 	private TextArea noteTextArea;
@@ -76,18 +76,15 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 		try {
 			statoComboBox.setItems(FXCollections.observableArrayList(implementation.getStates()));
 			formatoComboBox.setItems(FXCollections.observableArrayList(implementation.getFormats()));
-			genereTableColumn.setCellValueFactory((CellDataFeatures<String, String> param) -> {
+			nomeGenereColumn.setCellValueFactory((CellDataFeatures<String, String> param) -> {
 				return new SimpleObjectProperty<String>(param.getValue());
 			});
-			aggiungiTableColumn.setCellValueFactory((CellDataFeatures<String, Button> param) -> {
-				final Button aggiungiButton = new Button("Aggiungi");
-				aggiungiButton.setOnAction((ActionEvent event) -> {
-					generi.add(param.getValue());
-					aggiungiButton.setText("Aggiunto");
-					aggiungiButton.setStyle("-fx-font-weight: bold;");
-					aggiungiButton.setDisable(true);
+			removeGenereColumn.setCellValueFactory((CellDataFeatures<String, Button> param) -> {
+				final Button rimuoviButton = new Button("Rimuovi");
+				rimuoviButton.setOnAction((ActionEvent event) -> {
+					generi.remove(param.getValue());
 				});
-				return new SimpleObjectProperty<Button>(aggiungiButton);
+				return new SimpleObjectProperty<Button>(rimuoviButton);
 			});
 		} catch (DatabaseConnectionException e) {
 			// TODO Auto-generated catch block
