@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.univaq.disim.oop.collectors.domain.Autore;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
@@ -23,6 +24,8 @@ import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.domain.Etichetta;
 import it.univaq.disim.oop.collectors.domain.NumeroCollezioniDiCollezionista;
 import it.univaq.disim.oop.collectors.domain.NumeroDischiPerGenere;
+import it.univaq.disim.oop.collectors.domain.TipoAutore;
+import it.univaq.disim.oop.collectors.domain.TracciaECollezione;
 import it.univaq.disim.oop.collectors.domain.Track;
 import it.univaq.disim.oop.collectors.domain.Visibilita;
 
@@ -66,6 +69,47 @@ public class Query_JDBC {
 			return null;
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException(e);
+		}
+	}
+
+	public List<Autore> getAutori() throws DatabaseConnectionException {
+
+		List<Autore> autori = new ArrayList<>();
+
+		try (PreparedStatement s = connection.prepareStatement("select * from autore;")) {
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					TipoAutore tipoAutore = rs.getBoolean("tipo") ? TipoAutore.BAND : TipoAutore.ARTISTA_SINGOLO;
+					autori.add(new Autore(rs.getInt("id"), rs.getString("nome_darte"), tipoAutore));
+				}
+			}
+			return autori;
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
+		}
+	}
+
+	public List<TracciaECollezione> getTrackListAutori(Autore autore) throws DatabaseConnectionException {
+
+		List<TracciaECollezione> trackList = new ArrayList<>();
+
+		try (PreparedStatement s = connection.prepareStatement(
+				"select t.id as \"id_traccia\", t.titolo, t.durata, t.id_etichetta, t.id_disco, c.id as \"id_collezione\", c.visibilita\r\n"
+						+ "from incide as i\r\n" + "join autore as a on i.id_autore=a.id\r\n"
+						+ "join traccia as t on i.id_disco=t.id_disco\r\n" + "join disco as d on d.id=i.id_disco\r\n"
+						+ "join collezione_di_dischi as c on c.id=d.id_collezione_di_dischi\r\n"
+						+ "where i.id_autore=?;")) {
+			s.setInt(1, autore.getId());
+			try (ResultSet rs = s.executeQuery()) {
+				while (rs.next()) {
+					Visibilita visibilita = rs.getBoolean("visibilita") ? Visibilita.PUBBLICA : Visibilita.PRIVATA;
+					trackList.add(new TracciaECollezione(rs.getInt("id_traccia"), rs.getString("titolo"),
+							rs.getFloat("durata"), null, null, rs.getInt("id_collezione"), visibilita));
+				}
+			}
+			return trackList;
+		} catch (SQLException e) {
+			throw new DatabaseConnectionException("Login fallito", e);
 		}
 	}
 

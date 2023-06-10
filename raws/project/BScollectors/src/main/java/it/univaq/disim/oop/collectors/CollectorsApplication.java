@@ -32,3 +32,9 @@ public class CollectorsApplication extends Application {
 	}
 
 }
+
+
+/* 
+ * VM Arguments:
+ * --module-path "C:\Program Files (x86)\JavaFX versions\javafx-sdk-18.0.1\lib" --add-modules javafx.controls,javafx.fxml --add-modules javafx.controls,javafx.media
+ */

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.SeeAutoriController">
+   <children>
+      <HBox>
+         <children>
+            <Label text="Visualizza Autore:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="462.0" prefWidth="734.0">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <children>
+            <VBox prefHeight="317.0" prefWidth="494.0">
+               <children>
+                  <VBox prefHeight="55.0" prefWidth="277.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Nome D'Arte:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nomeDarteAutoreLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox layoutX="15.0" layoutY="10.0" prefHeight="55.0" prefWidth="277.0">
+                     <children>
+                        <Label prefHeight="21.0" prefWidth="324.0" text="Tipo:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="tipoAutoreLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox prefHeight="55.0" prefWidth="175.0">
+                     <children>
+                        <Label prefHeight="67.0" prefWidth="207.0" text="Tracce in collezioni" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="67.0" prefWidth="207.0" text="pubbliche:" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="numeroTraccePubblicheLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="55.0" prefWidth="175.0">
+                     <children>
+                        <Label prefHeight="67.0" prefWidth="207.0" text="Minuti totali di musica in" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="67.0" prefWidth="207.0" text="collezioni pubbliche:" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="minutiTotaliMusicaPubblicheLabel" layoutX="10.0" layoutY="10.0" prefHeight="21.0" prefWidth="324.0">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets left="5.0" top="60.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox layoutX="258.0" layoutY="10.0" prefHeight="417.0" prefWidth="810.0">
+               <children>
+                  <Label prefHeight="38.0" prefWidth="381.0" text="Tracce:">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <TableView fx:id="trackTableView" editable="true" prefHeight="379.0" prefWidth="517.0">
+                    <columns>
+                      <TableColumn fx:id="titleTableColumn" prefWidth="216.0" text="Titolo" />
+                      <TableColumn fx:id="durataTableColumn" prefWidth="166.0" text="Durata" />
+                        <TableColumn fx:id="collezioneTableColumn" prefWidth="130.0" text="Collezione" />
+                    </columns>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </TableView>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="5.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

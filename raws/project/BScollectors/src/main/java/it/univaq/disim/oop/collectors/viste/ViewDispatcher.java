@@ -74,6 +74,20 @@ public class ViewDispatcher {
 		}
 	}
 	
+	public<T> void renderAdminHome(T dato){
+		try {
+			View<T> homeView = loadView("admin_home");
+			DataInitalizable<T> controller = homeView.getController();
+			controller.initializeData(dato);
+			this.pane = (BorderPane) homeView.getView();
+			Scene scene = new Scene(this.pane);
+			stage.setScene(scene);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
 	private <T> View<T> loadView(String nomeVista) {
 		try {
 			FXMLLoader loader= new FXMLLoader(getClass().getResource(PREFIX+nomeVista+SUFFIX));
