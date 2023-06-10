@@ -30,10 +30,10 @@ public class AdminHomeController implements Initializable, DataInitalizable<Coll
 	private Button autoriButton;
 
 	@FXML
-	private Button collezioniCondiviseButton;
+	private Button collezioniButton;
 
 	@FXML
-	private Button collezioniTutteButton;
+	private Button dischiButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -58,23 +58,18 @@ public class AdminHomeController implements Initializable, DataInitalizable<Coll
 	}
 
 	@FXML
-	private void renderVisualizzaAutorei() {
-		dispatcher.renderView("autori", admin);
+	private void renderVisualizzaAutori() {
+		dispatcher.renderView("autori_admin", admin);
 	}
 
 	@FXML
-	private void renderCollezioniCondivise() {
-		dispatcher.renderView("collezioni_condivise", admin);
+	private void renderCollezioni() {
+		dispatcher.renderView("collezioni_admin", admin);
 	}
 
 	@FXML
-	private void renderCollezioniPubbliche() {
-		dispatcher.renderView("collezioni_pubbliche", admin);
-	}
-
-	@FXML
-	private void renderCollezioniTutte() {
-		dispatcher.renderView("collezioni_tutte", admin);
+	private void renderDischi() {
+		dispatcher.renderView("dischi_admin", admin);
 	}
 
 }

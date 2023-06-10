@@ -26,7 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 
-public class AutoriController implements Initializable, DataInitalizable<Collector> {
+public class AdminAutoriController implements Initializable, DataInitalizable<Collector> {
 
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
