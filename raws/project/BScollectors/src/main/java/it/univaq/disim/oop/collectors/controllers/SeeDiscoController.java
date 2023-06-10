@@ -79,11 +79,12 @@ public class SeeDiscoController implements Initializable, DataInitalizable<Tripl
 			}
 			List<String> generi = implementation.getGeneriDisco(disco.getId());
 			if (generi != null) {
-				String generiLabelText = "";
+				String generiLabelText = null;
 				for (String genere : generi) {
-					if (generiLabelText.equals(""))
+					if (generiLabelText == null)
 						generiLabelText = genere;
-					generiLabelText = generiLabelText + ", " + genere;
+					else
+						generiLabelText = generiLabelText + ", " + genere;
 				}
 				generiLabel.setText(generiLabelText);
 			}
