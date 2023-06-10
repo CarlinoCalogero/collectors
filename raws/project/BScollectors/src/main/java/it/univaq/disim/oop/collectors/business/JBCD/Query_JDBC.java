@@ -11,7 +11,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -95,10 +94,10 @@ public class Query_JDBC {
 		List<TracciaECollezione> trackList = new ArrayList<>();
 
 		try (PreparedStatement s = connection.prepareStatement(
-				"select t.id as \"id_traccia\", t.titolo, t.durata, t.id_etichetta, t.id_disco, c.id as \"id_collezione\", c.visibilita\r\n"
-						+ "from incide as i\r\n" + "join autore as a on i.id_autore=a.id\r\n"
-						+ "join traccia as t on i.id_disco=t.id_disco\r\n" + "join disco as d on d.id=i.id_disco\r\n"
-						+ "join collezione_di_dischi as c on c.id=d.id_collezione_di_dischi\r\n"
+				"select t.id as \"id_traccia\", t.titolo, t.durata, t.id_etichetta, t.id_disco, c.id as \"id_collezione\", c.visibilita"
+						+ "from incide as i" + "join autore as a on i.id_autore=a.id"
+						+ "join traccia as t on i.id_disco=t.id_disco" + "join disco as d on d.id=i.id_disco"
+						+ "join collezione_di_dischi as c on c.id=d.id_collezione_di_dischi"
 						+ "where i.id_autore=?;")) {
 			s.setInt(1, autore.getId());
 			try (ResultSet rs = s.executeQuery()) {
@@ -133,12 +132,38 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Login fallito", e);
 		}
 	}
-
+	public List<DiscoInCollezione> getAllDischi() throws DatabaseConnectionException{
+		try(PreparedStatement query = connection.prepareStatement("Select d.id as \"IDD\",d.titolo,"
+				+ "	d.nome_formato,	"
+				+ "    d.nome_stato,"
+				+ "    d.anno_di_uscita,"
+				+ "    inf.barcode,"
+				+ "    inf.note,"
+				+ "    inf.numero_copie,"
+				+ "    e.id as \"IDE\","
+				+ "    e.nome,"
+				+ "    e.partitaIVA "
+				+ "from info_disco inf "
+				+ "join disco d on inf.id_disco = d.id "
+				+ "join etichetta e on d.id_etichetta = e.id;");){
+			List<DiscoInCollezione> dischi = new ArrayList<DiscoInCollezione>();
+			ResultSet queryResult = query.executeQuery();
+			while(queryResult.next()) {
+				DiscoInCollezione disco = new DiscoInCollezione(queryResult.getInt("IDD"),queryResult.getString("titolo"), queryResult.getDate("anno_di_uscita").toLocalDate(),
+						queryResult.getString("nome_stato"), queryResult.getString("nome_formato"),new Etichetta(queryResult.getInt("IDE"), queryResult.getString("partitaIVA"), 
+								queryResult.getString("nome")), new String[]{}, queryResult.getString("barcode"), queryResult.getString("note"), queryResult.getInt("numero_copie"), null, null);
+				dischi.add(disco);
+			}
+			return dischi;
+		}catch(SQLException e) {
+			throw new DatabaseConnectionException("Ricerca fallita",e);
+		}
+	}
 	public InfoDisco getInfoDisco(Integer idDisco) throws DatabaseConnectionException {
 
 		InfoDisco infoDisco = null;
 		try (PreparedStatement s = connection
-				.prepareStatement("select *\r\n" + "from info_disco as inf\r\n" + "where inf.id_disco=?;");) {
+				.prepareStatement("select *" + "from info_disco as inf" + "where inf.id_disco=?;");) {
 
 			s.setInt(1, idDisco);
 
@@ -161,7 +186,7 @@ public class Query_JDBC {
 
 		List<String> generi = new ArrayList<String>();
 		try (PreparedStatement s = connection
-				.prepareStatement("select *\r\n" + "from classificazione as c\r\n" + "where c.id_disco=?;");) {
+				.prepareStatement("select *" + "from classificazione as c" + "where c.id_disco=?;");) {
 
 			s.setInt(1, idDisco);
 
@@ -184,8 +209,8 @@ public class Query_JDBC {
 
 		List<Collection> collections = new ArrayList<>();
 
-		try (PreparedStatement s = connection.prepareStatement("select * \r\n" + "from condivisa as c\r\n"
-				+ "	join collezione_di_dischi as cd on c.id_collezione=cd.id\r\n" + "where c.id_collezionista = ?;");) {
+		try (PreparedStatement s = connection.prepareStatement("select * " + "from condivisa as c"
+				+ "	join collezione_di_dischi as cd on c.id_collezione=cd.id" + "where c.id_collezionista = ?;");) {
 
 			s.setInt(1, idCollezionista);
 
@@ -209,7 +234,7 @@ public class Query_JDBC {
 		List<Collection> collections = new ArrayList<>();
 
 		try (PreparedStatement s = connection
-				.prepareStatement("select * \r\n" + "from collezione_di_dischi\r\n" + "where visibilita = true;");) {
+				.prepareStatement("select * " + "from collezione_di_dischi" + "where visibilita = true;");) {
 
 			try (ResultSet rs = s.executeQuery()) {
 				while (rs.next()) {
@@ -376,7 +401,7 @@ public class Query_JDBC {
 		if (!this.supports_procedures) {
 
 			try (PreparedStatement query = connection.prepareStatement(
-					"INSERT INTO traccia(titolo,durata,id_etichetta,id_disco) \r\n" + "    VALUES (?,?,?,?);")) {
+					"INSERT INTO traccia(titolo,durata,id_etichetta,id_disco) " + "    VALUES (?,?,?,?);")) {
 
 				query.setString(1, traccia.getTitolo());
 				query.setFloat(2, traccia.getDurata());
@@ -420,8 +445,10 @@ public class Query_JDBC {
 		List<Collector> sharingCollectors = new ArrayList<>();
 
 		try (PreparedStatement query = connection
-				.prepareStatement("" + "SELECT c.id,c.nickname,c.email \r\n" + "FROM condivisa con \r\n"
-						+ "JOIN collezionista c on c.id=con.id_collezionista\r\n" + "WHERE id_collezione=?;");) {
+				.prepareStatement("SELECT c.id,c.nickname,c.email " 
+									+ "FROM condivisa con "
+									+ "JOIN collezionista c on c.id=con.id_collezionista " 
+									+ "WHERE id_collezione=?;");) {
 			query.setInt(1, collection.getID());
 			try (ResultSet rs = query.executeQuery()) {
 				while (rs.next()) {
@@ -712,15 +739,15 @@ public class Query_JDBC {
 		if (!this.supports_procedures) {
 
 			try (PreparedStatement query = connection
-					.prepareStatement("(/* Verifica della visibiltà per collezioni personali */\r\n"
-							+ "		SELECT cd.id as \"Visibilità\"\r\n" + "		FROM collezione_di_dischi cd\r\n"
-							+ "		WHERE cd.id=?\r\n" + "		AND cd.id_collezionista=? \r\n"
-							+ "	) UNION (/* Verifica della visibilità per collezioni pubbliche */\r\n"
-							+ "		select cd.id as \"Visibilità\"\r\n" + "		from collezione_di_dischi as cd\r\n"
-							+ "		where cd.id=?\r\n" + "			and cd.visibilita=true\r\n"
-							+ "	) UNION (/* Verifica della visibilità per collezioni condivise */\r\n"
-							+ "		SELECT c.id_collezione as \"Visibilità\"\r\n" + "		FROM condivisa c\r\n"
-							+ "		WHERE c.id_collezione=?\r\n" + "		AND c.id_collezionista=?\r\n" + "	);")) {
+					.prepareStatement("(/* Verifica della visibiltà per collezioni personali */"
+							+ "		SELECT cd.id as \"Visibilità\"" + "		FROM collezione_di_dischi cd"
+							+ "		WHERE cd.id=?" + "		AND cd.id_collezionista=? "
+							+ "	) UNION (/* Verifica della visibilità per collezioni pubbliche */"
+							+ "		select cd.id as \"Visibilità\"" + "		from collezione_di_dischi as cd"
+							+ "		where cd.id=?" + "			and cd.visibilita=true"
+							+ "	) UNION (/* Verifica della visibilità per collezioni condivise */"
+							+ "		SELECT c.id_collezione as \"Visibilità\"" + "		FROM condivisa c"
+							+ "		WHERE c.id_collezione=?" + "		AND c.id_collezionista=?" + "	);")) {
 
 				query.setInt(1, idCollezione);
 				query.setInt(2, idCollezionista);
@@ -808,9 +835,9 @@ public class Query_JDBC {
 		// inserimento
 		if (!this.supports_procedures) {
 
-			try (PreparedStatement query = connection.prepareStatement("SELECT c.nickname as \"Collezionista\" , \r\n"
-					+ "		   count(cd.id) as \"Numero di Collezioni\"\r\n" + "    FROM collezione_di_dischi cd\r\n"
-					+ "	RIGHT JOIN collezionista c ON cd.id_collezionista=c.id\r\n" + "    GROUP BY c.nickname\r\n"
+			try (PreparedStatement query = connection.prepareStatement("SELECT c.nickname as \"Collezionista\" , "
+					+ "		   count(cd.id) as \"Numero di Collezioni\"" + "    FROM collezione_di_dischi cd"
+					+ "	RIGHT JOIN collezionista c ON cd.id_collezionista=c.id" + "    GROUP BY c.nickname"
 					+ "    ORDER BY Collezionista ASC;")) {
 
 				ResultSet result = query.executeQuery();
@@ -852,8 +879,8 @@ public class Query_JDBC {
 		// inserimento
 		if (!this.supports_procedures) {
 
-			try (PreparedStatement query = connection.prepareStatement("SELECT c.nome_genere as \"Genere\" , \r\n"
-					+ "		   count(c.id_disco) as \"Numero di Dischi\"\r\n" + "    FROM classificazione c\r\n"
+			try (PreparedStatement query = connection.prepareStatement("SELECT c.nome_genere as \"Genere\" , "
+					+ "		   count(c.id_disco) as \"Numero di Dischi\"" + "    FROM classificazione c"
 					+ "    GROUP BY c.nome_genere;")) {
 
 				ResultSet result = query.executeQuery();
@@ -895,10 +922,10 @@ public class Query_JDBC {
 		if (barcode != null) {
 
 			try (PreparedStatement query = connection.prepareStatement(
-					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
-							+ "from info_disco as i \r\n" + "	join disco as d on d.id=i.id_disco \r\n"
-							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-							+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+					"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname"
+							+ "from info_disco as i " + "	join disco as d on d.id=i.id_disco "
+							+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
+							+ "    join collezionista as ca on cd.id_collezionista = ca.id"
 							+ "where i.barcode=?;")) {
 
 				query.setString(1, barcode);
@@ -921,10 +948,10 @@ public class Query_JDBC {
 
 			if (titolo != null) {
 				try (PreparedStatement query = connection.prepareStatement(
-						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
-								+ "from disco as d\r\n"
-								+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-								+ "	join collezionista as ca on cd.id_collezionista = ca.id\r\n"
+						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname"
+								+ "from disco as d"
+								+ "	join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
+								+ "	join collezionista as ca on cd.id_collezionista = ca.id"
 								+ "where d.titolo like concat(?,'%');")) {
 
 					query.setString(1, titolo);
@@ -948,11 +975,11 @@ public class Query_JDBC {
 			List<DiscoInCollezione> dischiInCollezioneByAutore = new ArrayList<DiscoInCollezione>();
 			if (nomeDArte != null) {
 				try (PreparedStatement query = connection.prepareStatement(
-						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname\r\n"
-								+ "from incide as i\r\n" + "	join disco as d on i.id_disco=d.id\r\n"
-								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-								+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
-								+ "	join autore as a on i.id_autore=a.id\r\n"
+						"select d.titolo, d.anno_di_uscita, d.nome_formato, d.nome_stato, cd.nome, ca.nickname"
+								+ "from incide as i" + "	join disco as d on i.id_disco=d.id"
+								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
+								+ "    join collezionista as ca on cd.id_collezionista = ca.id"
+								+ "	join autore as a on i.id_autore=a.id"
 								+ "where a.nome_darte like concat(?,'%');")) {
 
 					query.setString(1, nomeDArte);
@@ -976,11 +1003,11 @@ public class Query_JDBC {
 			List<DiscoInCollezione> dischiInCollezioneByTitoloAndByAutore = new ArrayList<DiscoInCollezione>();
 			if (titolo != null & nomeDArte != null) {
 
-				try (PreparedStatement query = connection.prepareStatement("select *\r\n" + "from incide as i\r\n"
-						+ "	join disco as d on i.id_disco=d.id\r\n"
-						+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id\r\n"
-						+ "    join collezionista as ca on cd.id_collezionista = ca.id\r\n"
-						+ "	join autore as a on i.id_autore=a.id\r\n" + "where a.nome_darte like concat(?,'%')\r\n"
+				try (PreparedStatement query = connection.prepareStatement("select *" + "from incide as i"
+						+ "	join disco as d on i.id_disco=d.id"
+						+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id"
+						+ "    join collezionista as ca on cd.id_collezionista = ca.id"
+						+ "	join autore as a on i.id_autore=a.id" + "where a.nome_darte like concat(?,'%')"
 						+ "	and d.titolo like concat(?,'%');")) {
 
 					query.setString(1, titolo);
@@ -1013,61 +1040,6 @@ public class Query_JDBC {
 		}
 
 		return dischiInCollezione;
-	}
-
-	// Comparator class for query 13
-	private class StringByLengthComparator implements Comparator<DiscoInCollezione> {
-
-		private Integer referenceLengthTitolo;
-		private Integer referenceLengthNomeDarte;
-
-		public StringByLengthComparator(String referenceTitolo, String referenceNomeDArte) {
-			super();
-			if (referenceTitolo != null)
-				this.referenceLengthTitolo = referenceTitolo.length();
-			if (referenceNomeDArte != null)
-				this.referenceLengthNomeDarte = referenceNomeDArte.length();
-		}
-
-		private int customCompare(DiscoInCollezione s1, DiscoInCollezione s2, int referenceLength) {
-			int dist1 = Math.abs(s1.getTitolo().length() - referenceLength);
-			int dist2 = Math.abs(s2.getTitolo().length() - referenceLength);
-
-			return dist1 - dist2;
-		}
-
-		public int compare(DiscoInCollezione s1, DiscoInCollezione s2) {
-
-			if (this.referenceLengthTitolo != null && referenceLengthNomeDarte == null) {
-				return customCompare(s1, s2, this.referenceLengthTitolo);
-			}
-
-			if (this.referenceLengthTitolo == null && referenceLengthNomeDarte != null) {
-				return customCompare(s1, s2, this.referenceLengthNomeDarte);
-			}
-
-			if (this.referenceLengthTitolo != null && referenceLengthNomeDarte != null) {
-				int diffTitolo = customCompare(s1, s2, this.referenceLengthTitolo);
-				int diffAutore = customCompare(s1, s2, this.referenceLengthNomeDarte);
-
-				if (diffTitolo >= diffAutore) {
-					return diffAutore;
-				} else {
-					return diffTitolo;
-				}
-			}
-
-			// this.referenceLengthTitolo == null && referenceLengthNomeDarte == null
-			if (s1.getTitolo().length() > s2.getTitolo().length()) {
-				return 1;
-			} else if (s1.getTitolo().length() < s2.getTitolo().length()) {
-				return -1;
-			}
-			// s1.getTitolo().length() == s2.getTitolo().length()
-			return 0;
-
-		}
-
 	}
 
 	public List<String> getStates() throws DatabaseConnectionException {

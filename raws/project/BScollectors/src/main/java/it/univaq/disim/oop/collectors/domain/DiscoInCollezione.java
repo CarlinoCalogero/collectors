@@ -22,7 +22,15 @@ public class DiscoInCollezione extends Disco {
 	public String getProprietario() {
 		return proprietario;
 	}
-
+	@Override
+	public boolean equals(Object o){
+		if(o == null || !(o instanceof DiscoInCollezione))
+			return false;
+		DiscoInCollezione d = (DiscoInCollezione)o;
+		if(super.getId().equals(d.getId()) && super.getBarcode().equals(d.getBarcode()))
+			return true;
+		return false;
+	}
 	@Override
 	public String toString() {
 		return super.toString() + "DiscoInCollezione [collezione=" + collezione + ", proprietario=" + proprietario
