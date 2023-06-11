@@ -130,7 +130,9 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 			List<Disco> discos = implementation.getDischiInCollezione(collection.getID());
 			discosData = FXCollections.observableArrayList(discos);
 			discoTableView.setItems((ObservableList<Disco>) discosData);
-			searchableComboBox.setItems(FXCollections.observableArrayList(implementation.getCollectors()));
+			List<Collector> collectors = implementation.getCollectors();
+			collectors.remove(collector); // Rimuovo dalla lista delle condivisioni il proprietario della collezione
+			searchableComboBox.setItems(FXCollections.observableArrayList(collectors));
 			searchableComboBox.setPrefWidth(245);
 			searchableComboBox.setMaxWidth(245);
 			searchableComboBox.setPrefHeight(26);
