@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,10 +33,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.util.StringConverter;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 
 public class InsertDiscoController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
 
@@ -74,7 +73,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private TextArea noteTextArea;
 
 	@FXML
-	private TextField barcodeTextField, titoloTextField, etichettaTextField, numeroCopieTextField;
+	private TextField barcodeTextField, titoloTextField, numeroCopieTextField;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -141,23 +140,17 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private void save() throws DatabaseConnectionException {
-		List<Etichetta> etichette = implementation.getEtichette();
-		Etichetta etichetta = null;
-		Iterator<Etichetta> iteratore = etichette.iterator();
-		while (iteratore.hasNext()) {
-			etichetta = iteratore.next();
-			if (etichetta.getNome().equalsIgnoreCase(etichettaTextField.getText())) {
-				break;
-			}
-		}
-
-		Disco disco = new Disco(null, titoloTextField.getText(), dataPicker.getValue(), statoComboBox.getValue(),
-				formatoComboBox.getValue(), etichetta, generi.toArray(new String[generi.size()]),
-				barcodeTextField.getText(), noteTextArea.getText(), Integer.parseInt(numeroCopieTextField.getText()));
+		
 		try {
+			Disco disco = new Disco(null, titoloTextField.getText(), dataPicker.getValue(), statoComboBox.getValue(),
+					formatoComboBox.getValue(), etichettaComboBox.getValue(), generi.toArray(new String[generi.size()]),
+					barcodeTextField.getText(), noteTextArea.getText(), Integer.parseInt(numeroCopieTextField.getText()));
 			implementation.aggiungiDiscoACollezione(disco, collection.getID());
 		} catch (DatabaseConnectionException e) {
 			System.err.println(e);
+		}
+		catch(Exception e1) {
+			System.err.println("Inserimento fallito");
 		}
 		dispatcher.renderHome(collector);
 	}
