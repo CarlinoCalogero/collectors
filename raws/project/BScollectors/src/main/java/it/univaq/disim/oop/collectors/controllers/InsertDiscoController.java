@@ -79,18 +79,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
-				@Override
-				public String toString(Etichetta object) {
-					return object.getNome();
-				}
-
-				@Override
-				public Etichetta fromString(String string) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			});
+			
 			generiComboBox.setItems(FXCollections.observableArrayList(implementation.getGenras()));
 			statoComboBox.setItems(FXCollections.observableArrayList(implementation.getStates()));
 			formatoComboBox.setItems(FXCollections.observableArrayList(implementation.getFormats()));
@@ -108,6 +97,18 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 				return new SimpleObjectProperty<Button>(rimuoviButton);
 			});
 			this.generiTableView.setItems(FXCollections.observableArrayList());
+			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
+				@Override
+				public String toString(Etichetta object) {
+					return object.getNome();
+				}
+
+				@Override
+				public Etichetta fromString(String string) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			});
 		} catch (DatabaseConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -191,8 +192,10 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 		if (this.mostCoherent != null) {
 			this.titoloTextField.setText(this.mostCoherent.getTitolo());
 			this.dataPicker.setValue(this.mostCoherent.getAnnoDiUscita());
-			this.statoComboBox.setValue(this.mostCoherent.getStato()); // Da cambiare
-			this.formatoComboBox.setValue(this.mostCoherent.getFormato()); // Da cambiare
+			this.statoComboBox.setValue(this.mostCoherent.getStato());
+			this.formatoComboBox.setValue(this.mostCoherent.getFormato());
+			this.etichettaComboBox.setValue(this.mostCoherent.getEtichetta());
+			this.barcodeTextField.setText(this.mostCoherent.getBarcode());
 			this.noteTextArea.setText(this.mostCoherent.getNote());
 			this.numeroCopieTextField.setText(String.valueOf(this.mostCoherent.getNumeroCopie()));
 		}

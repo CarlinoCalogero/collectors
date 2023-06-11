@@ -32,6 +32,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 public class SeeCollectionMieController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
 
@@ -63,12 +64,12 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 	@FXML
 	private TableColumn<Disco, LocalDate> dateTableColumn;
 
-	private SearchableComboBox<String> searchableComboBox;
+	private SearchableComboBox<Collector> searchableComboBox = new SearchableComboBox<Collector>();
 	private List<Collector> collezionisti;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		
 		titleTableColumn.setCellValueFactory(new PropertyValueFactory<Disco, String>("titolo"));
 
 		dateTableColumn.setCellValueFactory(new PropertyValueFactory<Disco, LocalDate>("annoDiUscita"));
@@ -100,6 +101,19 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 			});
 			return new SimpleObjectProperty<Button>(eliminaButton);
 		});
+		searchableComboBox.setConverter(new StringConverter<Collector>() {
+
+			@Override
+			public String toString(Collector object) {
+				return object.getNickname();
+			}
+
+			@Override
+			public Collector fromString(String string) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
 	}
 
 	public void initializeData(Couple<Collection, Collector> couple) {
@@ -118,21 +132,7 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 			List<Disco> discos = implementation.getDischiInCollezione(collection.getID());
 			discosData = FXCollections.observableArrayList(discos);
 			discoTableView.setItems((ObservableList<Disco>) discosData);
-
-			collezionisti = implementation.getCollectors();
-
-			List<String> stringList = new ArrayList<>();
-			String collectionOwnerNickname = collector.getNickname();
-			for (Collector dummyCollezionista : collezionisti) {
-
-				String name = dummyCollezionista.getNickname();
-				if (!name.equals(collectionOwnerNickname))
-					stringList.add(dummyCollezionista.getNickname());
-
-			}
-
-			searchableComboBox = new SearchableComboBox<>(FXCollections.observableArrayList(stringList));
-
+			searchableComboBox.setItems(FXCollections.observableArrayList(implementation.getCollectors()));
 			searchableComboBox.setPrefWidth(245);
 			searchableComboBox.setMaxWidth(245);
 			searchableComboBox.setPrefHeight(26);
@@ -140,7 +140,9 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 			searchableComboBox.setPromptText("Cerca...");
 			comboBoxVBox.getChildren().add(searchableComboBox);
 
-		} catch (DatabaseConnectionException e) {
+		} catch (
+
+		DatabaseConnectionException e) {
 			e.printStackTrace();
 		}
 	}
@@ -148,20 +150,10 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 	@FXML
 	private void checkVisibilitaCollezionista() {
 
-		String selectedCollectorNickname = searchableComboBox.getValue();
-		if (selectedCollectorNickname != null) {
-
-			int selectedCollectorID;
-
+		Collector selectedCollector = searchableComboBox.getValue();
+		if (selectedCollector != null) {
 			try {
-				selectedCollectorID = findSelectedCollectorsId(selectedCollectorNickname);
-			} catch (Exception e) {
-				return;
-			}
-
-			try {
-
-				if (implementation.verifica_visibilita_collezione(collection.getID(), selectedCollectorID)) {
+				if (implementation.verifica_visibilita_collezione(collection.getID(), selectedCollector.getID())) {
 					visibileALabel.setText("Si");
 				} else {
 					visibileALabel.setText("No");
@@ -172,21 +164,6 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 			}
 
 		}
-
-	}
-
-	private int findSelectedCollectorsId(String selectedCollectorNickname) throws Exception {
-
-		for (Collector dummyCollector : collezionisti) {
-
-			if (dummyCollector.getNickname().equals(selectedCollectorNickname)) {
-				System.out.println(dummyCollector);
-				return dummyCollector.getID();
-			}
-
-		}
-
-		throw new Exception("Collezionista non trovato");
 
 	}
 
