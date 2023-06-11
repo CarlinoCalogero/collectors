@@ -79,6 +79,7 @@ public class CollezioniTutteController implements Initializable, DataInitalizabl
 
 			List<Collection> collections = new ArrayList<Collection>();
 
+			System.out.println(collector.getID());
 			collections.addAll(implementation.getCollectorsCollections(collector.getID())); // collezioni private
 			collections.addAll(implementation.getSharedCollectionsWithCollectors(collector.getID())); // collezioni
 																										// condivise

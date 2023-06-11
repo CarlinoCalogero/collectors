@@ -1539,11 +1539,11 @@ INSERT INTO autore(nome_darte,tipo) VALUES ("Rick Brown", false);
 INSERT INTO autore(nome_darte,tipo) VALUES ("Marz", false);
 INSERT INTO autore(nome_darte,tipo) VALUES ("Zef", false);
 
-INSERT INTO collezionista(nickname, email) VALUES ("admin","admin");
-INSERT INTO collezionista(nickname, email) VALUES ("user","user");
 INSERT INTO collezionista(nickname, email) VALUES ("Michael","michael.piccirilli@student.univaq.it");
 INSERT INTO collezionista(nickname, email) VALUES ("Luca", "lucafrancesco.macera@student.univaq.it");
 INSERT INTO collezionista(nickname, email) VALUES ("Calogero","calogero.carlino@student.univaq.it");
+INSERT INTO collezionista(nickname, email) VALUES ("admin","admin");
+INSERT INTO collezionista(nickname, email) VALUES ("user","user");
 
 # visibilità true->pubblica false->privata
 INSERT INTO collezione_di_dischi(nome, visibilita, ID_collezionista) VALUES("Grandi successi mondiali",1,1);
