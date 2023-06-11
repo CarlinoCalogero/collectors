@@ -78,7 +78,6 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			
 			generiComboBox.setItems(FXCollections.observableArrayList(implementation.getGenras()));
 			statoComboBox.setItems(FXCollections.observableArrayList(implementation.getStates()));
 			formatoComboBox.setItems(FXCollections.observableArrayList(implementation.getFormats()));
@@ -191,6 +190,8 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			this.barcodeTextField.setText(this.mostCoherent.getBarcode());
 			this.noteTextArea.setText(this.mostCoherent.getNote());
 			this.numeroCopieTextField.setText(String.valueOf(this.mostCoherent.getNumeroCopie()));
+			this.generi.addAll(this.mostCoherent.getGeneri());
+			this.generiTableView.setItems(FXCollections.observableArrayList(generi));
 		}
 	}
 
