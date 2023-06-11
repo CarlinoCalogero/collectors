@@ -2,7 +2,6 @@ package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -65,11 +64,10 @@ public class SeeCollectionMieController implements Initializable, DataInitalizab
 	private TableColumn<Disco, LocalDate> dateTableColumn;
 
 	private SearchableComboBox<Collector> searchableComboBox = new SearchableComboBox<Collector>();
-	private List<Collector> collezionisti;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+
 		titleTableColumn.setCellValueFactory(new PropertyValueFactory<Disco, String>("titolo"));
 
 		dateTableColumn.setCellValueFactory(new PropertyValueFactory<Disco, LocalDate>("annoDiUscita"));

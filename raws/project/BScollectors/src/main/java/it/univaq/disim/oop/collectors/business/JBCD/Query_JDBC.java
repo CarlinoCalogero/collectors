@@ -158,12 +158,14 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Ricerca fallita", e);
 		}
 	}
+
 	public Set<Etichetta> getAllEtichette() throws DatabaseConnectionException {
 		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM etichetta;");) {
 			Set<Etichetta> etichette = new HashSet<Etichetta>();
 			ResultSet queryResult = query.executeQuery();
 			while (queryResult.next()) {
-				Etichetta etichetta = new Etichetta(queryResult.getInt("id"),queryResult.getString("partitaIVA"),queryResult.getString("nome"));
+				Etichetta etichetta = new Etichetta(queryResult.getInt("id"), queryResult.getString("partitaIVA"),
+						queryResult.getString("nome"));
 				etichette.add(etichetta);
 			}
 			return etichette;
@@ -171,6 +173,7 @@ public class Query_JDBC {
 			throw new DatabaseConnectionException("Ricerca fallita", e);
 		}
 	}
+
 	public InfoDisco getInfoDisco(Integer idDisco) throws DatabaseConnectionException {
 
 		InfoDisco infoDisco = null;
@@ -443,7 +446,8 @@ public class Query_JDBC {
 		try (PreparedStatement query = connection.prepareStatement("SELECT * FROM collezionista");) {
 			try (ResultSet rs = query.executeQuery()) {
 				while (rs.next()) {
-					collectors.add(new Collector(rs.getInt("id"), rs.getString("nickname"), rs.getString("email")));
+					if (!rs.getString("nickname").equals("admin") && !rs.getString("nickname").equals("user"))
+						collectors.add(new Collector(rs.getInt("id"), rs.getString("nickname"), rs.getString("email")));
 				}
 				return collectors;
 			}
@@ -985,7 +989,8 @@ public class Query_JDBC {
 								+ " from incide as i" + "	join disco as d on i.id_disco=d.id "
 								+ "    join collezione_di_dischi as cd on d.id_collezione_di_dischi=cd.id "
 								+ "    join collezionista as ca on cd.id_collezionista = ca.id "
-								+ "	join autore as a on i.id_autore=a.id " + " where a.nome_darte like concat(?,'%');")) {
+								+ "	join autore as a on i.id_autore=a.id "
+								+ " where a.nome_darte like concat(?,'%');")) {
 
 					query.setString(1, nomeDArte);
 					ResultSet result = query.executeQuery();

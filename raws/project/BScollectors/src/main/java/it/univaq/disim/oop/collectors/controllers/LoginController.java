@@ -36,12 +36,14 @@ public class LoginController<T> implements Initializable, DataInitalizable<T> {
 
 	public void login() {
 		try {
-			Collector collector = implementation.login("Michael", "michael.piccirilli@student.univaq.it");
-			//Collector collector = implementation.login("admin", "admin");
+			Collector collector = implementation.login(nickname.getText(), email.getText());
 			if (collector == null)
 				throw new DatabaseConnectionException("Wrong nickname or email!");
-			dispatcher.renderHome(collector);
-			//dispatcher.renderAdminHome(collector);
+			if (!collector.getNickname().equals("admin")) {
+				dispatcher.renderHome(collector);
+			} else {
+				dispatcher.renderAdminHome(collector);
+			}
 		} catch (DatabaseConnectionException e) {
 			System.err.println(e.getMessage());
 		}

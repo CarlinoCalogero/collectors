@@ -11,7 +11,6 @@ import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
-import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,7 +24,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CercaDiscoController implements Initializable, DataInitalizable<Collector> {
 
-	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
 
 	private Collector collector;

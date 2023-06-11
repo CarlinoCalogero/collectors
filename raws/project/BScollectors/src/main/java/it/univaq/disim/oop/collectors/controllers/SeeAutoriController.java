@@ -13,7 +13,6 @@ import it.univaq.disim.oop.collectors.domain.Couple;
 import it.univaq.disim.oop.collectors.domain.TracciaECollezione;
 import it.univaq.disim.oop.collectors.domain.Visibilita;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
-import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,10 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class SeeAutoriController implements Initializable, DataInitalizable<Couple<Autore, Collector>> {
 
-	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
 
-	private Collector admin;
 	private Autore autore;
 
 	@FXML
@@ -59,7 +56,6 @@ public class SeeAutoriController implements Initializable, DataInitalizable<Coup
 
 	public void initializeData(Couple<Autore, Collector> couple) {
 		this.autore = couple.getFirst();
-		this.admin = couple.getSecond();
 
 		nomeDarteAutoreLabel.setText(autore.getNomedarte());
 		tipoAutoreLabel.setText(autore.getTipoAutore().toString());

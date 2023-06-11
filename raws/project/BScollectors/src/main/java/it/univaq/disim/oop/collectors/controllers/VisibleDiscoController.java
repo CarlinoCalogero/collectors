@@ -5,11 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import it.univaq.disim.oop.collectors.business.BusinessFactory;
-import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.viste.DataInitalizable;
-import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,11 +15,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VisibleDiscoController implements Initializable, DataInitalizable<List<DiscoInCollezione>> {
-
-	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
-	private Query_JDBC implementation = BusinessFactory.getImplementation();
-
-	private List<DiscoInCollezione> discos;
 
 	@FXML
 	private TableView<DiscoInCollezione> discoTableView;
@@ -54,7 +46,6 @@ public class VisibleDiscoController implements Initializable, DataInitalizable<L
 
 	public void initializeData(List<DiscoInCollezione> discos) {
 
-		this.discos = discos;
 		discoTableView.setItems(FXCollections.observableArrayList(discos));
 	}
 }

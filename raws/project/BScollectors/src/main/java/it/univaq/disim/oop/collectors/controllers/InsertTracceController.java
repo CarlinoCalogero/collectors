@@ -1,13 +1,7 @@
 package it.univaq.disim.oop.collectors.controllers;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
@@ -15,7 +9,6 @@ import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
 import it.univaq.disim.oop.collectors.domain.Collection;
 import it.univaq.disim.oop.collectors.domain.Collector;
 import it.univaq.disim.oop.collectors.domain.Disco;
-import it.univaq.disim.oop.collectors.domain.DiscoInCollezione;
 import it.univaq.disim.oop.collectors.domain.Etichetta;
 import it.univaq.disim.oop.collectors.domain.Track;
 import it.univaq.disim.oop.collectors.domain.Triple;
@@ -29,18 +22,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
-public class InsertTracciaController implements Initializable, DataInitalizable<Triple<Collection, Disco, Collector>> {
+public class InsertTracceController implements Initializable, DataInitalizable<Triple<Collection, Disco, Collector>> {
 
 	private ViewDispatcher dispatcher = ViewDispatcher.getInstance();
 	private Query_JDBC implementation = BusinessFactory.getImplementation();
 
-	private Set<String> generi = new HashSet<String>();
-	private List<DiscoInCollezione> poolDischi = new ArrayList<DiscoInCollezione>();
-	private Map<String, DiscoInCollezione> barcodeMap = new HashMap<String, DiscoInCollezione>();
 	private Collection collection;
 	private Collector collector;
 	private Disco disco;
-	private DiscoInCollezione searchedWthBarcode, searchedWthTitle, mostCoherent;
 
 	@FXML
 	private TextField titoloTextField, durataTextField;
@@ -55,6 +44,8 @@ public class InsertTracciaController implements Initializable, DataInitalizable<
 	public void initialize(URL location, ResourceBundle resources) {
 
 		try {
+			etichettaComboBox.setItems(FXCollections.observableArrayList(implementation.getAllEtichette()));
+
 			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
 				@Override
 				public String toString(Etichetta object) {
@@ -67,7 +58,7 @@ public class InsertTracciaController implements Initializable, DataInitalizable<
 					return null;
 				}
 			});
-			etichettaComboBox.setItems(FXCollections.observableArrayList(implementation.getAllEtichette()));
+
 		} catch (DatabaseConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,13 +76,22 @@ public class InsertTracciaController implements Initializable, DataInitalizable<
 
 	@FXML
 	private void save() throws DatabaseConnectionException {
-		System.out.println(this.etichettaComboBox.getValue());
-		if (this.titoloTextField.getText().length() == 0 || this.durataTextField.getText().length() == 0)
+
+		if (this.titoloTextField.getText().length() == 0 || this.durataTextField.getText().length() == 0
+				|| this.etichettaComboBox.getValue() == null)
 			return;
 
+		float durataTraccia = 0;
 		try {
-			implementation.aggiungiTracciaADisco(new Track(null, this.titoloTextField.getText(),
-					Float.parseFloat(this.durataTextField.getText()), disco, null));
+			durataTraccia = Float.parseFloat(this.durataTextField.getText());
+		} catch (NumberFormatException e) {
+			System.err.println("Not a Number");
+			return;
+		}
+
+		try {
+			implementation.aggiungiTracciaADisco(new Track(null, this.titoloTextField.getText(), durataTraccia, disco,
+					this.etichettaComboBox.getValue()));
 			;
 		} catch (DatabaseConnectionException e) {
 			e.printStackTrace();
