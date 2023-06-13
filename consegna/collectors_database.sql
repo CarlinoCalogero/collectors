@@ -360,7 +360,7 @@ DROP PROCEDURE IF EXISTS insert_collezione;
 
 # 2. Aggiunta di dischi a una collezione e di tracce a un disco.
 DROP PROCEDURE IF EXISTS aggiungi_disco_a_collezione;
-DROP PROCEDURE IF EXISTS aggiugi_traccia_a_disco;
+DROP PROCEDURE IF EXISTS aggiungi_traccia_a_disco;
 
 /* 3. Modifica dello stato di pubblicazione di una collezione (da privata a pubblica e viceversa) 
 e aggiunta di nuove condivisioni a una collezione.*/
