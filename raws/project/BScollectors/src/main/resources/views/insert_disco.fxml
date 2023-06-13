@@ -98,7 +98,7 @@
                               <Insets top="5.0" />
                            </VBox.margin>
                         </HBox>
-                        <TableView fx:id="generiTableView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="194.0" prefWidth="338.0" VBox.vgrow="NEVER">
+                        <TableView fx:id="generiTableView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="185.0" prefWidth="338.0" VBox.vgrow="NEVER">
                           <columns>
                             <TableColumn fx:id="nomeGenereColumn" prefWidth="117.0" resizable="false" text="Nome Genere" />
                             <TableColumn fx:id="removeGenereColumn" prefWidth="95.0" resizable="false" />

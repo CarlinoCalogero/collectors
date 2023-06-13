@@ -75,7 +75,7 @@
                         <Font size="19.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="discoTableView" editable="true" prefHeight="379.0" prefWidth="517.0">
+                  <TableView fx:id="discoTableView" editable="true" prefHeight="360.0" prefWidth="517.0">
                     <columns>
                       <TableColumn fx:id="titleTableColumn" prefWidth="75.0" text="Titolo" />
                       <TableColumn fx:id="dateTableColumn" prefWidth="75.0" text="Anno " />
