@@ -35,8 +35,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -72,79 +71,14 @@
       </VBox>
    </top>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER" prefHeight="279.0" prefWidth="734.0">
-               <children>
-                  <VBox alignment="CENTER" prefHeight="193.0" prefWidth="150.0">
-                     <children>
-                        <ImageView fx:id="privateImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#renderCollezioniPrivate" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons8-album-musicale-100%20(1).png" />
-                           </image>
-                        </ImageView>
-                        <Label prefHeight="22.0" prefWidth="98.0" text="Collezioni private" />
-                     </children>
-                     <HBox.margin>
-                        <Insets right="40.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutX="302.0" layoutY="10.0" prefHeight="193.0" prefWidth="150.0">
-                     <children>
-                        <ImageView fx:id="pubblicheImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#renderCollezioniPubbliche" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons8-album-musicale-100.png" />
-                           </image>
-                        </ImageView>
-                        <Label prefHeight="22.0" prefWidth="115.0" text="Collezioni pubbliche" />
-                     </children>
-                     <HBox.margin>
-                        <Insets right="40.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutX="377.0" layoutY="10.0" prefHeight="193.0" prefWidth="150.0">
-                     <children>
-                        <ImageView fx:id="condiviseImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#renderCollezioniCondivise" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons8-album-musicale-100%20(2).png" />
-                           </image>
-                        </ImageView>
-                        <Label prefHeight="22.0" prefWidth="107.0" text="Collezioni condivise" />
-                     </children>
-                  </VBox>
-               </children>
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="454.0" prefWidth="734.0">
-               <children>
-                  <VBox alignment="CENTER" prefHeight="193.0" prefWidth="150.0">
-                     <children>
-                        <ImageView fx:id="tutteImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#renderCollezioniTutte" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons8-album-musicale-100%20(3).png" />
-                           </image>
-                        </ImageView>
-                        <Label prefHeight="22.0" prefWidth="107.0" text="Tutte le collezioni" />
-                     </children>
-                     <HBox.margin>
-                        <Insets right="60.0" />
-                     </HBox.margin>
-                  </VBox>
-                  <VBox alignment="CENTER" layoutX="302.0" layoutY="10.0" prefHeight="193.0" prefWidth="150.0">
-                     <children>
-                        <ImageView fx:id="cercaImageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#cercaDisco" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/icons8-ricerca-100.png" />
-                           </image>
-                        </ImageView>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="22.0" prefWidth="107.0" text="Cerca disco" textAlignment="CENTER" />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
+            <Button fx:id="collezioniPrivateButton" layoutX="152.0" layoutY="187.0" mnemonicParsing="false" onAction="#renderCollezioniPrivate" prefHeight="48.0" prefWidth="95.0" text="Mie collezioni" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="collezioniCondiviseButton" layoutX="303.0" layoutY="187.0" mnemonicParsing="false" onAction="#renderCollezioniCondivise" prefHeight="48.0" prefWidth="128.0" text="Collezioni condivise con me" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="collezioniPubblicheButton" layoutX="501.0" layoutY="187.0" mnemonicParsing="false" onAction="#renderCollezioniPubbliche" prefHeight="48.0" prefWidth="110.0" text="Collezioni pubbliche" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="collezioniTutteButton" layoutX="209.0" layoutY="268.0" mnemonicParsing="false" onAction="#renderCollezioniTutte" prefHeight="48.0" prefWidth="128.0" text="Tutte le collezioni" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="cercaDiscoButton" layoutX="393.0" layoutY="268.0" mnemonicParsing="false" onAction="#cercaDisco" prefHeight="48.0" prefWidth="128.0" text="Cerca un disco" textAlignment="CENTER" wrapText="true" />
          </children>
-      </VBox>
+      </AnchorPane>
    </center>
 </BorderPane>

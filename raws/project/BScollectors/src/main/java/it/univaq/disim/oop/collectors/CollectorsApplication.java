@@ -1,7 +1,5 @@
 package it.univaq.disim.oop.collectors;
 
-import org.controlsfx.control.textfield.CustomTextField;
-
 import it.univaq.disim.oop.collectors.viste.ViewDispatcher;
 import javafx.application.Application;
 import javafx.stage.Stage;

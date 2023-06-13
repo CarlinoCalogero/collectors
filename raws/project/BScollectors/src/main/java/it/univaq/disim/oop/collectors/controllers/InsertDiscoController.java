@@ -1,7 +1,5 @@
 package it.univaq.disim.oop.collectors.controllers;
 
-import java.awt.Event;
-import java.beans.EventHandler;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,10 +11,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.controlsfx.control.SearchableComboBox;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-
-import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
@@ -42,8 +36,6 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 public class InsertDiscoController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
@@ -64,8 +56,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private ComboBox<String> formatoComboBox, statoComboBox, generiComboBox;
 	@FXML
 	private ComboBox<Etichetta> etichettaComboBox;
-	@FXML
-	private HBox HBoxTitolo;
+
 	@FXML
 	private DatePicker dataPicker;
 
@@ -83,11 +74,11 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private TextField barcodeTextField, titoloTextField, numeroCopieTextField;
-	
-	private SearchableComboBox<DiscoInCollezione> titoloSearchableField = new SearchableComboBox<DiscoInCollezione>();
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
+			
 			generiComboBox.setItems(FXCollections.observableArrayList(implementation.getGenras()));
 			statoComboBox.setItems(FXCollections.observableArrayList(implementation.getStates()));
 			formatoComboBox.setItems(FXCollections.observableArrayList(implementation.getFormats()));
@@ -105,29 +96,6 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 				return new SimpleObjectProperty<Button>(rimuoviButton);
 			});
 			this.generiTableView.setItems(FXCollections.observableArrayList());
-			titoloSearchableField.setOnInputMethodTextChanged(event ->{
-				System.out.print("Ciao");
-				event.consume();
-			});
-			titoloSearchableField.setOnKeyPressed(event ->{
-				System.out.println("Ciao2");
-				event.consume();
-			});
-			titoloSearchableField.setOnAction(action -> {
-				System.out.println(action.getSource());
-				System.out.println(action.getTarget());
-			});
-			System.out.println(titoloSearchableField.getParent());
-			/*titoloSearchableField.textProperty().addListener(new ChangeListener<String>() {
-			    @Override
-			    public void changed(ObservableValue<? extends String> observable,
-			            String oldValue, String newValue) {
-
-			        System.out.println(" Text Changed to  " + newValue + ")\n");
-			    }
-			});*/
-			setUpSearchableField("Inserisci Titolo", this.titoloSearchableField);
-			this.HBoxTitolo.getChildren().add(titoloSearchableField);
 			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
 				@Override
 				public String toString(Etichetta object) {
@@ -140,24 +108,10 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 					return null;
 				}
 			});
-			titoloSearchableField.setConverter(new StringConverter<DiscoInCollezione>() {
-
-				@Override
-				public String toString(DiscoInCollezione object) {
-					return object.getTitolo();
-				}
-
-				@Override
-				public DiscoInCollezione fromString(String string) {
-					// TODO Auto-generated method stub
-					return null;
-				}
-			});
 		} catch (DatabaseConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public void initializeData(Couple<Collection, Collector> couple) {
@@ -237,8 +191,6 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			this.barcodeTextField.setText(this.mostCoherent.getBarcode());
 			this.noteTextArea.setText(this.mostCoherent.getNote());
 			this.numeroCopieTextField.setText(String.valueOf(this.mostCoherent.getNumeroCopie()));
-			this.generi.addAll(this.mostCoherent.getGeneri());
-			this.generiTableView.setItems(FXCollections.observableArrayList(generi));
 		}
 	}
 
@@ -252,13 +204,5 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			return;
 		}
 		this.mostCoherent = null;
-	}
-	private<T> void setUpSearchableField(String prompt, SearchableComboBox<T> field) {
-		
-		field.setPrefWidth(245);
-		field.setMaxWidth(245);
-		field.setPrefHeight(26);
-		field.setMaxHeight(26);
-		field.setPromptText(prompt);
 	}
 }
