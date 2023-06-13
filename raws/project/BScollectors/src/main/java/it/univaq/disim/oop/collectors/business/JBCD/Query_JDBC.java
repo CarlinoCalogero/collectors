@@ -140,7 +140,7 @@ public class Query_JDBC {
 		try (PreparedStatement query = connection.prepareStatement("Select d.id as \"IDD\",d.titolo,"
 				+ "	d.nome_formato,	" + "    d.nome_stato," + "    d.anno_di_uscita,"
 				+ "	   generi_disco(d.id) as 'generi'," + "    inf.barcode," + "    inf.note," + "    inf.numero_copie,"
-				+ "    e.id as \"IDE\"," + "    e.nome," + "    e.partitaIVA, d.id_collezione as 'IDC' " + "from info_disco inf "
+				+ "    e.id as \"IDE\"," + "    e.nome," + "    e.partitaIVA, d.id_collezione_di_dischi as 'IDC' " + "from info_disco inf "
 				+ "join disco d on inf.id_disco = d.id " + "join etichetta e on d.id_etichetta = e.id;");) {
 			
 			ResultSet queryResult = query.executeQuery();
