@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -105,6 +104,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			});
 			this.generiTableView.setItems(FXCollections.observableArrayList());
 			this.titoloTextField.setContextMenu(new ContextMenu());
+			this.barcodeTextField.setContextMenu(new ContextMenu());
 			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
 				@Override
 				public String toString(Etichetta object) {
@@ -175,8 +175,10 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 		String titolo = titoloTextField.getText();
 		List<DiscoInCollezione> filteredList = poolDischi.stream().filter(disco->disco.getTitolo().toLowerCase().contains(titolo.toLowerCase())).collect(Collectors.toList());
 		Collections.sort(filteredList, new StringByLengthComparator(titolo, null));
+		if(filteredList.isEmpty())
+			return;
 		this.searchedWthTitle = filteredList.get(0);
-		populateTextField(this.searchedWthTitle);
+		populateTextField(filteredList);
 		if(this.titoloTextField.getContextMenu().getItems().size() > 0) {
 			this.titoloTextField.getContextMenu().show(this.titoloTextField, Side.BOTTOM, 0, 0);
 		}
@@ -191,8 +193,16 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			return;
 		}
 		if (barcodeTextField.getText().length() >= 5) {
+			this.barcodeTextField.getContextMenu().getItems().clear();
 			this.searchedWthBarcode = this.barcodeMap.get(barcodeTextField.getText());
-			searchUnion();
+			if(this.searchedWthBarcode != null) {
+				this.barcodeTextField.getContextMenu().getItems().add(new CustomMenuItem(new Label(this.searchedWthBarcode.getTitolo())));
+				this.barcodeTextField.getContextMenu().show(this.barcodeTextField, Side.BOTTOM, 0, 0);
+			}
+			else {
+				this.barcodeTextField.getContextMenu().getItems().clear();
+				this.barcodeTextField.getContextMenu().hide();
+			}
 		}
 	}
 
@@ -225,16 +235,20 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 		}
 		this.mostCoherent = null;
 	}
-	private void populateTextField(DiscoInCollezione disco) {
+	private void populateTextField(List<DiscoInCollezione> dischi) {
 		this.titoloTextField.getContextMenu();
-		 CustomMenuItem item = new CustomMenuItem(new Label(disco.getTitolo()), true);
-	      item.setOnAction(new EventHandler<ActionEvent>(){
-	        @Override
-	        public void handle(ActionEvent actionEvent) {
-	        	complete();
-	        }
-	      });
+		List<CustomMenuItem> items = new ArrayList<CustomMenuItem>();
+		for(DiscoInCollezione disco : dischi) {
+			CustomMenuItem item = new CustomMenuItem(new Label(disco.getTitolo()), true);
+		      item.setOnAction(new EventHandler<ActionEvent>(){
+		        @Override
+		        public void handle(ActionEvent actionEvent) {
+		        	complete();
+		        }
+		      });
+		      items.add(item);
+		}
 	    titoloTextField.getContextMenu().getItems().clear();
-	    titoloTextField.getContextMenu().getItems().add(item);
+	    titoloTextField.getContextMenu().getItems().addAll(items);
 	}
 }
