@@ -136,12 +136,13 @@ public class Query_JDBC {
 	}
 
 	public List<DiscoInCollezione> getAllDischi() throws DatabaseConnectionException {
+		List<DiscoInCollezione> dischi = new ArrayList<DiscoInCollezione>();
 		try (PreparedStatement query = connection.prepareStatement("Select d.id as \"IDD\",d.titolo,"
 				+ "	d.nome_formato,	" + "    d.nome_stato," + "    d.anno_di_uscita,"
 				+ "	   generi_disco(d.id) as 'generi'," + "    inf.barcode," + "    inf.note," + "    inf.numero_copie,"
 				+ "    e.id as \"IDE\"," + "    e.nome," + "    e.partitaIVA " + "from info_disco inf "
 				+ "join disco d on inf.id_disco = d.id " + "join etichetta e on d.id_etichetta = e.id;");) {
-			List<DiscoInCollezione> dischi = new ArrayList<DiscoInCollezione>();
+			
 			ResultSet queryResult = query.executeQuery();
 			while (queryResult.next()) {
 				DiscoInCollezione disco = new DiscoInCollezione(queryResult.getInt("IDD"),
@@ -153,10 +154,10 @@ public class Query_JDBC {
 						queryResult.getString("note"), queryResult.getInt("numero_copie"), null, null);
 				dischi.add(disco);
 			}
-			return dischi;
 		} catch (SQLException e) {
 			throw new DatabaseConnectionException("Ricerca fallita", e);
 		}
+		return dischi;
 	}
 
 	public Set<Etichetta> getAllEtichette() throws DatabaseConnectionException {
