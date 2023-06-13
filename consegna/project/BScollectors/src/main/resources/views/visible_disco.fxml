@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="443.2" prefWidth="734.4" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.univaq.disim.oop.collectors.controllers.VisibleDiscoController">
+   <children>
+      <HBox>
+         <children>
+            <Label prefHeight="27.0" prefWidth="670.0" text="Modifica collezione:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      <HBox prefHeight="416.0" prefWidth="734.0">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <children>
+            <VBox prefHeight="341.0" prefWidth="770.0">
+               <children>
+                  <TableView fx:id="discoTableView" editable="true" prefHeight="431.0" prefWidth="726.0" stylesheets="@../style/style.css">
+                    <columns>
+                      <TableColumn fx:id="titoloTableColumn" prefWidth="133.6000002026558" text="Titolo" />
+                      <TableColumn fx:id="dataTableColumn" prefWidth="92.0" text="Anno" />
+                        <TableColumn fx:id="statoTableColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Stato" />
+                        <TableColumn fx:id="formatoTableColumn" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Formato" />
+                        <TableColumn fx:id="collezioneTableColumn" prefWidth="149.5999755859375" text="Collezione" />
+                        <TableColumn fx:id="proprietarioTableColumn" prefWidth="68.79998779296875" text="Proprietario" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
