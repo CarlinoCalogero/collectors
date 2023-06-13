@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 
 public class HomeController implements Initializable, DataInitalizable<Collector> {
 
@@ -18,23 +20,28 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 	private Collector collector;
 
 	@FXML
-	private Button homeButton, logoutButton, cercaDiscoButton;
+	private Button homeButton, logoutButton;
 
 	@FXML
 	private Label benvenutoLabel;
-
+	
 	@FXML
-	private Button collezioniPrivateButton;
-
-	@FXML
-	private Button collezioniCondiviseButton;
-
-	@FXML
-	private Button collezioniTutteButton;
+	private ImageView privateImageView, pubblicheImageView,condiviseImageView,tutteImageView,cercaImageView;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		roundImageView(cercaImageView);
+		roundImageView(privateImageView);
+		roundImageView(pubblicheImageView);
+		roundImageView(condiviseImageView);
+		roundImageView(tutteImageView);
+	}
+	
+	private void roundImageView(ImageView imageView) {
+		Rectangle rectangle = new Rectangle(0, 0, 150, 150);
+		rectangle.setArcWidth(20);
+        rectangle.setArcHeight(20);
+		imageView.setClip(rectangle);
 	}
 
 	public void initializeData(Collector collector) {
