@@ -140,7 +140,7 @@ public class Query_JDBC {
 		try (PreparedStatement query = connection.prepareStatement("Select d.id as \"IDD\",d.titolo,"
 				+ "	d.nome_formato,	" + "    d.nome_stato," + "    d.anno_di_uscita,"
 				+ "	   generi_disco(d.id) as 'generi'," + "    inf.barcode," + "    inf.note," + "    inf.numero_copie,"
-				+ "    e.id as \"IDE\"," + "    e.nome," + "    e.partitaIVA " + "from info_disco inf "
+				+ "    e.id as \"IDE\"," + "    e.nome," + "    e.partitaIVA, d.id_collezione as 'IDC' " + "from info_disco inf "
 				+ "join disco d on inf.id_disco = d.id " + "join etichetta e on d.id_etichetta = e.id;");) {
 			
 			ResultSet queryResult = query.executeQuery();
@@ -151,7 +151,7 @@ public class Query_JDBC {
 						new Etichetta(queryResult.getInt("IDE"), queryResult.getString("partitaIVA"),
 								queryResult.getString("nome")),
 						queryResult.getString("generi").split(","), queryResult.getString("barcode"),
-						queryResult.getString("note"), queryResult.getInt("numero_copie"), null, null);
+						queryResult.getString("note"), queryResult.getInt("numero_copie"),String.valueOf(queryResult.getInt("IDC")), null);
 				dischi.add(disco);
 			}
 		} catch (SQLException e) {

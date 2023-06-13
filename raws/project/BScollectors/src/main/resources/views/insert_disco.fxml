@@ -142,7 +142,7 @@
                         <Label prefHeight="18.0" prefWidth="381.0" text="Barcode: " />
                         <HBox alignment="CENTER">
                            <children>
-                              <TextField fx:id="barcodeTextField" onKeyTyped="#isSearchingBarcode" prefHeight="26.0" prefWidth="245.0" promptText="Barcode..." />
+                              <TextField fx:id="barcodeTextField" prefHeight="26.0" prefWidth="245.0" promptText="Barcode..." />
                            </children>
                         </HBox>
                      </children>
@@ -173,14 +173,6 @@
                            <font>
                               <Font size="16.0" />
                            </font>
-                        </Button>
-                        <Button fx:id="saveButton1" mnemonicParsing="false" onAction="#complete" prefHeight="37.0" prefWidth="100.0" text="Completa">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets left="50.0" />
-                           </HBox.margin>
                         </Button>
                      </children>
                      <VBox.margin>
