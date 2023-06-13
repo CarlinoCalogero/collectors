@@ -35,6 +35,7 @@ public class HomeController implements Initializable, DataInitalizable<Collector
 		roundImageView(pubblicheImageView);
 		roundImageView(condiviseImageView);
 		roundImageView(tutteImageView);
+		
 	}
 	
 	private void roundImageView(ImageView imageView) {
