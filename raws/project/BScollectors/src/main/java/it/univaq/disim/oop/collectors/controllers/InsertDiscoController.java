@@ -1,5 +1,7 @@
 package it.univaq.disim.oop.collectors.controllers;
 
+import java.awt.Event;
+import java.beans.EventHandler;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import org.controlsfx.control.SearchableComboBox;
 
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
@@ -36,6 +40,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 
 public class InsertDiscoController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
@@ -56,7 +61,8 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 	private ComboBox<String> formatoComboBox, statoComboBox, generiComboBox;
 	@FXML
 	private ComboBox<Etichetta> etichettaComboBox;
-
+	@FXML
+	private HBox HBoxTitolo;
 	@FXML
 	private DatePicker dataPicker;
 
@@ -74,7 +80,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private TextField barcodeTextField, titoloTextField, numeroCopieTextField;
-
+	private SearchableComboBox<DiscoInCollezione> titoloSearchableField = new SearchableComboBox<DiscoInCollezione>();
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
@@ -95,6 +101,16 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 				return new SimpleObjectProperty<Button>(rimuoviButton);
 			});
 			this.generiTableView.setItems(FXCollections.observableArrayList());
+			titoloSearchableField.setOnInputMethodTextChanged(event ->{
+				System.out.print("Ciao");
+				event.consume();
+			});
+			titoloSearchableField.setOnKeyTyped(event ->{
+				System.out.println("Ciao2");
+				event.consume();
+			});
+			setUpSearchableField("Inserisci Titolo", this.titoloSearchableField);
+			this.HBoxTitolo.getChildren().add(titoloSearchableField);
 			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
 				@Override
 				public String toString(Etichetta object) {
@@ -103,6 +119,19 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 				@Override
 				public Etichetta fromString(String string) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			});
+			titoloSearchableField.setConverter(new StringConverter<DiscoInCollezione>() {
+
+				@Override
+				public String toString(DiscoInCollezione object) {
+					return object.getTitolo();
+				}
+
+				@Override
+				public DiscoInCollezione fromString(String string) {
 					// TODO Auto-generated method stub
 					return null;
 				}
@@ -205,5 +234,13 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			return;
 		}
 		this.mostCoherent = null;
+	}
+	private<T> void setUpSearchableField(String prompt, SearchableComboBox<T> field) {
+		
+		field.setPrefWidth(245);
+		field.setMaxWidth(245);
+		field.setPrefHeight(26);
+		field.setMaxHeight(26);
+		field.setPromptText(prompt);
 	}
 }

@@ -41,7 +41,7 @@
                               <Insets left="5.0" />
                            </VBox.margin>
                         </Label>
-                        <HBox alignment="CENTER">
+                        <HBox fx:id="HBoxTitolo" alignment="CENTER">
                            <children>
                               <TextField fx:id="titoloTextField" onKeyTyped="#isSearching" prefHeight="26.0" prefWidth="225.0" />
                            </children>
