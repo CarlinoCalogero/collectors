@@ -14,7 +14,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.controlsfx.control.SearchableComboBox;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import it.univaq.disim.oop.collectors.business.BusinessFactory;
 import it.univaq.disim.oop.collectors.business.JBCD.DatabaseConnectionException;
 import it.univaq.disim.oop.collectors.business.JBCD.Query_JDBC;
@@ -41,6 +43,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 public class InsertDiscoController implements Initializable, DataInitalizable<Couple<Collection, Collector>> {
@@ -80,6 +83,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 
 	@FXML
 	private TextField barcodeTextField, titoloTextField, numeroCopieTextField;
+	
 	private SearchableComboBox<DiscoInCollezione> titoloSearchableField = new SearchableComboBox<DiscoInCollezione>();
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -105,10 +109,23 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 				System.out.print("Ciao");
 				event.consume();
 			});
-			titoloSearchableField.setOnKeyTyped(event ->{
+			titoloSearchableField.setOnKeyPressed(event ->{
 				System.out.println("Ciao2");
 				event.consume();
 			});
+			titoloSearchableField.setOnAction(action -> {
+				System.out.println(action.getSource());
+				System.out.println(action.getTarget());
+			});
+			System.out.println(titoloSearchableField.getParent());
+			/*titoloSearchableField.textProperty().addListener(new ChangeListener<String>() {
+			    @Override
+			    public void changed(ObservableValue<? extends String> observable,
+			            String oldValue, String newValue) {
+
+			        System.out.println(" Text Changed to  " + newValue + ")\n");
+			    }
+			});*/
 			setUpSearchableField("Inserisci Titolo", this.titoloSearchableField);
 			this.HBoxTitolo.getChildren().add(titoloSearchableField);
 			etichettaComboBox.setConverter(new StringConverter<Etichetta>() {
@@ -140,6 +157,7 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	public void initializeData(Couple<Collection, Collector> couple) {
