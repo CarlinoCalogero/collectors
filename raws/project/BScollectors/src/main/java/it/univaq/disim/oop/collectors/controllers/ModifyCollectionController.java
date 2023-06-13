@@ -82,12 +82,6 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 			});
 			return new SimpleObjectProperty<Button>(condividiButton);
 		});
-	}
-
-	public void initializeData(Couple<Collector, Collection> couple) {
-		this.collection = couple.getSecond();
-		this.collector = couple.getFirst();
-
 		publicRadioButton.setOnMousePressed(event -> {
 			if (collection.getVisibilita() == Visibilita.PRIVATA) {
 				try {
@@ -107,9 +101,16 @@ public class ModifyCollectionController implements Initializable, DataInitalizab
 				}
 			}
 		});
+	}
 
+	public void initializeData(Couple<Collector, Collection> couple) {
+		this.collector = couple.getFirst();
+		this.collection = couple.getSecond();
+		if(collection.getVisibilita() == Visibilita.PRIVATA)
+			privateRadioButton.setSelected(true);
+		else
+			publicRadioButton.setSelected(true);
 		try {
-
 			// Per prendere i collezionisti con cui la collezione è già condivisa
 			sharingCollector = FXCollections.observableArrayList(implementation.getSharingOf(collection));
 			List<Collector> collectors = new ArrayList<>();

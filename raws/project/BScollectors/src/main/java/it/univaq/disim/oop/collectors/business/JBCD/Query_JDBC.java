@@ -96,11 +96,11 @@ public class Query_JDBC {
 		List<TracciaECollezione> trackList = new ArrayList<>();
 
 		try (PreparedStatement s = connection.prepareStatement(
-				"select t.id as \"id_traccia\", t.titolo, t.durata, t.id_etichetta, t.id_disco, c.id as \"id_collezione\", c.visibilita"
-						+ "from incide as i" + "join autore as a on i.id_autore=a.id"
-						+ "join traccia as t on i.id_disco=t.id_disco" + "join disco as d on d.id=i.id_disco"
-						+ "join collezione_di_dischi as c on c.id=d.id_collezione_di_dischi"
-						+ "where i.id_autore=?;")) {
+				"select t.id as \"id_traccia\", t.titolo, t.durata, t.id_etichetta, t.id_disco, c.id as \"id_collezione\", c.visibilita "
+						+ " from incide as i " + " join autore as a on i.id_autore=a.id "
+						+ " join traccia as t on i.id_disco=t.id_disco " + " join disco as d on d.id=i.id_disco "
+						+ " join collezione_di_dischi as c on c.id=d.id_collezione_di_dischi "
+						+ " where i.id_autore=?;")) {
 			s.setInt(1, autore.getId());
 			try (ResultSet rs = s.executeQuery()) {
 				while (rs.next()) {
