@@ -155,12 +155,10 @@ public class InsertDiscoController implements Initializable, DataInitalizable<Co
 					barcodeTextField.getText(), noteTextArea.getText(),
 					Integer.parseInt(numeroCopieTextField.getText()));
 			implementation.aggiungiDiscoACollezione(disco, collection.getID());
+			dispatcher.renderHome(collector);
 		} catch (DatabaseConnectionException e) {
 			System.err.println(e);
-		} catch (Exception e1) {
-			System.err.println("Inserimento fallito");
 		}
-		dispatcher.renderHome(collector);
 	}
 
 	@FXML
